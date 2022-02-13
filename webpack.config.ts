@@ -1,24 +1,25 @@
-import path from "path";
+import path from 'path';
 
 const webpackConfig = () => ({
-  mode: "production",
-  entry: path.resolve(__dirname, "./src/index.ts"),
+  mode: 'development',
+  entry: path.resolve(__dirname, './src/index.ts'),
   module: {
     rules: [
       {
         test: /\.ts?$/,
-        use: "ts-loader",
+        use: 'ts-loader',
         exclude: /node_modules/
       }
     ]
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".js"]
+    extensions: ['.tsx', '.ts', '.js']
   },
   output: {
-    filename: "script.js",
-    path: path.resolve(__dirname, "public", "static", "bundle")
-  }
+    filename: 'script.js',
+    path: path.resolve(__dirname, 'public', 'static', 'bundle')
+  },
+  devtool: 'source-map'
 });
 
 export default webpackConfig;
