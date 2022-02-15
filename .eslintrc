@@ -17,6 +17,7 @@
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-unused-vars": "warn",
     "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/lines-between-class-members": "off",
     "class-methods-use-this": "off",
     "func-names": "off",
     "import/prefer-default-export": "warn",
@@ -26,6 +27,8 @@
     "no-return-assign": "off",
     "no-plusplus": "warn",
     "no-param-reassign": "off",
+    "no-underscore-dangle": "off",
+    "max-classes-per-file": "off",
     "prefer-const": "warn",
     "object-shorthand": "off",
     "spaced-comment": "warn"

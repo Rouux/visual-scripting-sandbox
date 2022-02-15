@@ -1,3 +1,5 @@
+import Node, { Input, Output } from './node';
+
 const debugElement = <HTMLDivElement>document.getElementById('debug');
 const canvas = <HTMLCanvasElement>document.getElementById('main-canvas');
 const context = canvas.getContext('2d');
@@ -19,17 +21,16 @@ let cameraY = -window.innerHeight / 2;
 let oldMouseX = 0;
 let oldMouseY = 0;
 
-const rects = [
-  {
-    x: 0,
-    y: 0,
-    width: 50,
-    height: 50
-  }
+const nodes = [
+  new Node('sysout')
+    .addInput(new Input<string>('text', 'hello world'))
+    .addInput(new Input<string>('text', 'hello world'))
+    .addInput(new Input<string>('text', 'hello world'))
+    .addOutput(new Output<string>('text'))
 ];
 
-const debug = (...text: unknown[]) => {
-  debugElement.innerText = text.join('');
+const debug = (...args: unknown[]) => {
+  debugElement.innerText = args.join('');
 };
 
 const draw = () => {
@@ -39,14 +40,9 @@ const draw = () => {
   drawBackgroundGraph();
 
   context.fillStyle = '#FF0000';
-  rects.forEach((rect) =>
-    context.fillRect(
-      rect.x - cameraX,
-      rect.y - cameraY,
-      rect.width,
-      rect.height
-    )
-  );
+  nodes.forEach((node) => {
+    node.draw(context, { x: cameraX, y: cameraY });
+  });
 };
 
 function drawBackgroundGraph() {
@@ -78,8 +74,18 @@ const roundUp = (x: number, threshold = 100) => {
   return x % threshold === 0 ? x : x - (x % threshold);
 };
 
-canvas.addEventListener('mousedown', () => (mouseHeld = true));
-canvas.addEventListener('mouseup', () => (mouseHeld = false));
+let target: Node;
+
+canvas.addEventListener('mousedown', (ev) => {
+  const x = ev.offsetX + cameraX;
+  const y = ev.offsetY + cameraY;
+  target = nodes.find((node) => node.inHeaderBounds(x, y));
+  if (!target) mouseHeld = !nodes.some((node) => node.inBodyBounds(x, y));
+});
+canvas.addEventListener('mouseup', () => {
+  mouseHeld = false;
+  target = undefined;
+});
 canvas.addEventListener('focusout', () => (mouseHeld = false));
 window.addEventListener('mousemove', (event) => {
   const mouseX = event.clientX - bounds.left;
@@ -89,8 +95,11 @@ window.addEventListener('mousemove', (event) => {
     cameraX += oldMouseX - mouseX;
     cameraY += oldMouseY - mouseY;
     requestAnimationFrame(draw);
+  } else if (target) {
+    target.x -= oldMouseX - mouseX;
+    target.y -= oldMouseY - mouseY;
+    requestAnimationFrame(draw);
   }
-
   oldMouseX = mouseX;
   oldMouseY = mouseY;
 });
