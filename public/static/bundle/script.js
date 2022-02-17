@@ -2,30 +2,6 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/camera.service.ts":
-/*!*******************************!*\
-  !*** ./src/camera.service.ts ***!
-  \*******************************/
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const service_1 = __importDefault(__webpack_require__(/*! ./core/service */ "./src/core/service.ts"));
-class CameraService extends service_1.default {
-    constructor(x = 0, y = 0) {
-        super();
-        this.x = x;
-        this.y = y;
-    }
-}
-exports["default"] = CameraService;
-
-
-/***/ }),
-
 /***/ "./src/core/service.ts":
 /*!*****************************!*\
   !*** ./src/core/service.ts ***!
@@ -58,6 +34,7 @@ Service.services = new Map();
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.roundUp = void 0;
+// eslint-disable-next-line import/prefer-default-export
 const roundUp = (x, threshold = 100) => {
     if (x >= 0) {
         return x % threshold === 0 ? x : x + threshold - (x % threshold);
@@ -76,127 +53,19 @@ exports.roundUp = roundUp;
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const camera_service_1 = __importDefault(__webpack_require__(/*! ./camera.service */ "./src/camera.service.ts"));
+const camera_service_1 = __importDefault(__webpack_require__(/*! ./service/camera.service */ "./src/service/camera.service.ts"));
 const service_1 = __importDefault(__webpack_require__(/*! ./core/service */ "./src/core/service.ts"));
-const utils_1 = __webpack_require__(/*! ./core/utils */ "./src/core/utils.ts");
-const node_1 = __importStar(__webpack_require__(/*! ./node */ "./src/node.ts"));
-const debugElement = document.getElementById('debug');
-const canvas = document.getElementById('main-canvas');
-const context = canvas.getContext('2d');
-let bounds;
-const resize = () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    bounds = canvas.getBoundingClientRect();
-    camera.width = bounds.width;
-    camera.height = bounds.height;
-    requestAnimationFrame(draw);
-};
-window.addEventListener('load', resize);
-window.addEventListener('resize', resize);
+const debug_service_1 = __importDefault(__webpack_require__(/*! ./service/debug.service */ "./src/service/debug.service.ts"));
+const render_service_1 = __importDefault(__webpack_require__(/*! ./service/render.service */ "./src/service/render.service.ts"));
+const debug = service_1.default.provide(new debug_service_1.default());
 const camera = service_1.default.provide(new camera_service_1.default(-window.innerWidth / 2, -window.innerHeight / 2));
-let mouseHeld = false;
-let oldMouseX = 0;
-let oldMouseY = 0;
-const nodes = [
-    new node_1.default('sysout')
-        .addInput(new node_1.Input('text', 'hello world'))
-        .addInput(new node_1.Input('text', 'hello world'))
-        .addInput(new node_1.Input('text', 'hello world'))
-        .addOutput(new node_1.Output('text'))
-];
-const debug = (...args) => {
-    debugElement.innerText = args.join('');
-};
-const draw = () => {
-    debug('x: ', camera.x, ', y: ', camera.y);
-    context.clearRect(0, 0, bounds.width, bounds.height);
-    drawBackgroundGraph();
-    context.fillStyle = '#FF0000';
-    nodes.forEach((node) => {
-        node.draw(context, { x: camera.x, y: camera.y });
-    });
-};
-function drawBackgroundGraph() {
-    context.fillStyle = 'rgba(220, 220, 220, 0.2)';
-    for (let startX = (0, utils_1.roundUp)(camera.x); startX < bounds.width + (0, utils_1.roundUp)(camera.x); startX += 100) {
-        context.fillRect(startX - camera.x, 0, 1, bounds.height);
-    }
-    for (let startY = (0, utils_1.roundUp)(camera.y); startY < bounds.width + (0, utils_1.roundUp)(camera.y); startY += 100) {
-        context.fillRect(0, startY - camera.y, bounds.width, 1);
-    }
-    context.fillStyle = 'rgba(200, 200, 200, 0.6)';
-    context.fillRect(-camera.x, 0, 3, bounds.height);
-    context.fillRect(0, -camera.y, bounds.width, 3);
-}
-let target;
-canvas.addEventListener('mousedown', (event) => {
-    const x = event.offsetX + camera.x;
-    const y = event.offsetY + camera.y;
-    target = nodes.find((node) => node.inBounds(x, y));
-    if (target) {
-        target.interact(event, x, y);
-    }
-    else {
-        mouseHeld = true;
-    }
-});
-canvas.addEventListener('focusout', () => (mouseHeld = false));
-window.addEventListener('mouseup', () => {
-    mouseHeld = false;
-    target = undefined;
-});
-window.addEventListener('focusout', () => (mouseHeld = false));
-window.addEventListener('mousemove', (event) => {
-    const x = event.offsetX + camera.x;
-    const y = event.offsetY + camera.y;
-    const targetNode = nodes.find((node) => node.inBounds(x, y));
-    if (targetNode) {
-        targetNode.mouseHover(event, x, y);
-    }
-    else {
-        document.body.style.cursor = 'default';
-    }
-});
-window.addEventListener('mousemove', (event) => {
-    const mouseX = event.clientX - bounds.left;
-    const mouseY = event.clientY - bounds.top;
-    if (mouseHeld) {
-        camera.x += oldMouseX - mouseX;
-        camera.y += oldMouseY - mouseY;
-        requestAnimationFrame(draw);
-    }
-    else if (target) {
-        target.move(event, oldMouseX - mouseX, oldMouseY - mouseY);
-        requestAnimationFrame(draw);
-    }
-    oldMouseX = mouseX;
-    oldMouseY = mouseY;
-});
-resize();
+const canvas = document.getElementById('main-canvas');
+const render = service_1.default.provide(new render_service_1.default(camera, debug, canvas));
+render.draw();
 
 
 /***/ }),
@@ -215,10 +84,10 @@ class Node {
     constructor(name, x = 0, y = 0) {
         this._inputs = [];
         this._outputs = [];
-        this._canBeDragged = false;
         this.name = name;
         this.x = x;
         this.y = y;
+        this._canBeDragged = false;
     }
     addInput(input) {
         this._inputs.push(input);
@@ -237,11 +106,11 @@ class Node {
             // Nothing so far ...
         }
     }
-    move(event, x, y) {
+    move(event, deltaX, deltaY) {
         if (!this._canBeDragged)
             return;
-        this.x -= x;
-        this.y -= y;
+        this.x += deltaX;
+        this.y += deltaY;
     }
     mouseHover(event, x, y) {
         if (this._inHeaderBounds(x, y)) {
@@ -304,6 +173,202 @@ class Output {
     }
 }
 exports.Output = Output;
+
+
+/***/ }),
+
+/***/ "./src/service/camera.service.ts":
+/*!***************************************!*\
+  !*** ./src/service/camera.service.ts ***!
+  \***************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const service_1 = __importDefault(__webpack_require__(/*! ../core/service */ "./src/core/service.ts"));
+class CameraService extends service_1.default {
+    constructor(x = 0, y = 0) {
+        super();
+        this.x = x;
+        this.y = y;
+    }
+    move(deltaX, deltaY) {
+        this.x += deltaX;
+        this.y += deltaY;
+    }
+}
+exports["default"] = CameraService;
+
+
+/***/ }),
+
+/***/ "./src/service/debug.service.ts":
+/*!**************************************!*\
+  !*** ./src/service/debug.service.ts ***!
+  \**************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const service_1 = __importDefault(__webpack_require__(/*! ../core/service */ "./src/core/service.ts"));
+class DebugService extends service_1.default {
+    constructor() {
+        super(...arguments);
+        this.debug = (...args) => {
+            this.debugElement.innerText = args.join('');
+        };
+    }
+    get debugElement() {
+        if (!this._debugElement) {
+            this._debugElement = document.getElementById('debug');
+        }
+        return this._debugElement;
+    }
+}
+exports["default"] = DebugService;
+
+
+/***/ }),
+
+/***/ "./src/service/render.service.ts":
+/*!***************************************!*\
+  !*** ./src/service/render.service.ts ***!
+  \***************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const service_1 = __importDefault(__webpack_require__(/*! ../core/service */ "./src/core/service.ts"));
+const node_1 = __importStar(__webpack_require__(/*! ../node */ "./src/node.ts"));
+const utils_1 = __webpack_require__(/*! ../core/utils */ "./src/core/utils.ts");
+class RenderService extends service_1.default {
+    constructor(camera, debugService, canvas) {
+        super();
+        this.resize = () => {
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
+            this.bounds = this.canvas.getBoundingClientRect();
+            this.camera.width = this.bounds.width;
+            this.camera.height = this.bounds.height;
+            requestAnimationFrame(this.draw);
+        };
+        this.draw = () => {
+            this.debugService.debug('x: ', this.camera.x, ', y: ', this.camera.y);
+            this.context.clearRect(0, 0, this.bounds.width, this.bounds.height);
+            this.drawBackgroundGraph();
+            this.context.fillStyle = '#FF0000';
+            this.nodes.forEach((node) => {
+                node.draw(this.context, { x: this.camera.x, y: this.camera.y });
+            });
+        };
+        this.updateCursorStyleOnNodeHover = (event) => {
+            const x = event.offsetX + this.camera.x;
+            const y = event.offsetY + this.camera.y;
+            const targetNode = this.nodes.find((node) => node.inBounds(x, y));
+            if (targetNode) {
+                targetNode.mouseHover(event, x, y);
+            }
+            else {
+                document.body.style.cursor = 'default';
+            }
+        };
+        this.camera = camera;
+        this.debugService = debugService;
+        this.canvas = canvas;
+        this.context = canvas.getContext('2d');
+        this.mouseHeld = false;
+        this.oldMouseX = 0;
+        this.oldMouseY = 0;
+        this.nodes = [
+            new node_1.default('sysout')
+                .addInput(new node_1.Input('text', 'hello world'))
+                .addInput(new node_1.Input('text', 'hello world'))
+                .addInput(new node_1.Input('text', 'hello world'))
+                .addOutput(new node_1.Output('text'))
+        ];
+        this.initListeners();
+        this.resize();
+    }
+    initListeners() {
+        window.addEventListener('load', this.resize);
+        window.addEventListener('resize', this.resize);
+        window.addEventListener('mouseup', () => {
+            this.mouseHeld = false;
+            this.targetNode = undefined;
+        });
+        window.addEventListener('focusout', () => (this.mouseHeld = false));
+        window.addEventListener('mousemove', this.updateCursorStyleOnNodeHover);
+        window.addEventListener('mousemove', (event) => {
+            const mouseX = event.clientX - this.bounds.left;
+            const mouseY = event.clientY - this.bounds.top;
+            const mouseDeltaX = this.oldMouseX - mouseX;
+            const mouseDeltaY = this.oldMouseY - mouseY;
+            if (this.mouseHeld) {
+                this.camera.move(mouseDeltaX, mouseDeltaY);
+                requestAnimationFrame(this.draw);
+            }
+            else if (this.targetNode) {
+                this.targetNode.move(event, -mouseDeltaX, -mouseDeltaY);
+                requestAnimationFrame(this.draw);
+            }
+            this.oldMouseX = mouseX;
+            this.oldMouseY = mouseY;
+        });
+        this.canvas.addEventListener('mousedown', (event) => {
+            const localX = event.offsetX + this.camera.x;
+            const localY = event.offsetY + this.camera.y;
+            this.targetNode = this.nodes.find((node) => node.inBounds(localX, localY));
+            if (this.targetNode) {
+                this.targetNode.interact(event, localX, localY);
+            }
+            else {
+                this.mouseHeld = true;
+            }
+        });
+        this.canvas.addEventListener('focusout', () => (this.mouseHeld = false));
+    }
+    drawBackgroundGraph() {
+        this.context.fillStyle = 'rgba(220, 220, 220, 0.2)';
+        for (let startX = (0, utils_1.roundUp)(this.camera.x); startX < this.bounds.width + (0, utils_1.roundUp)(this.camera.x); startX += 100) {
+            this.context.fillRect(startX - this.camera.x, 0, 1, this.bounds.height);
+        }
+        for (let startY = (0, utils_1.roundUp)(this.camera.y); startY < this.bounds.width + (0, utils_1.roundUp)(this.camera.y); startY += 100) {
+            this.context.fillRect(0, startY - this.camera.y, this.bounds.width, 1);
+        }
+        this.context.fillStyle = 'rgba(200, 200, 200, 0.6)';
+        this.context.fillRect(-this.camera.x, 0, 3, this.bounds.height);
+        this.context.fillRect(0, -this.camera.y, this.bounds.width, 3);
+    }
+}
+exports["default"] = RenderService;
 
 
 /***/ })

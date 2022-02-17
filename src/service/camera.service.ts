@@ -1,4 +1,4 @@
-import Service from './core/service';
+import Service from '../core/service';
 
 export default class CameraService extends Service {
   public x: number;
@@ -10,5 +10,10 @@ export default class CameraService extends Service {
     super();
     this.x = x;
     this.y = y;
+  }
+
+  move(deltaX: number, deltaY: number) {
+    this.x += deltaX;
+    this.y += deltaY;
   }
 }

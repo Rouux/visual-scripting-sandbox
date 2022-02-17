@@ -9,12 +9,13 @@ export default class Node {
 
   private _inputs: Input<unknown>[] = [];
   private _outputs: Output<unknown>[] = [];
-  private _canBeDragged = false;
+  private _canBeDragged: boolean;
 
   constructor(name: string, x = 0, y = 0) {
     this.name = name;
     this.x = x;
     this.y = y;
+    this._canBeDragged = false;
   }
 
   addInput(input: Input<unknown>): this {
@@ -36,10 +37,10 @@ export default class Node {
     }
   }
 
-  move(event: MouseEvent, x: number, y: number) {
+  move(event: MouseEvent, deltaX: number, deltaY: number) {
     if (!this._canBeDragged) return;
-    this.x -= x;
-    this.y -= y;
+    this.x += deltaX;
+    this.y += deltaY;
   }
 
   mouseHover(event: MouseEvent, x: number, y: number) {
