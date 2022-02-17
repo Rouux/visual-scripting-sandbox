@@ -33,7 +33,7 @@ const node_1 = __importStar(__webpack_require__(/*! ./node */ "./src/node.ts"));
 const debugElement = document.getElementById('debug');
 const canvas = document.getElementById('main-canvas');
 const context = canvas.getContext('2d');
-let bounds = canvas.getBoundingClientRect();
+let bounds;
 const resize = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -85,18 +85,33 @@ const roundUp = (x, threshold = 100) => {
     return x % threshold === 0 ? x : x - (x % threshold);
 };
 let target;
-canvas.addEventListener('mousedown', (ev) => {
-    const x = ev.offsetX + cameraX;
-    const y = ev.offsetY + cameraY;
-    target = nodes.find((node) => node.inHeaderBounds(x, y));
-    if (!target)
-        mouseHeld = !nodes.some((node) => node.inBodyBounds(x, y));
+canvas.addEventListener('mousedown', (event) => {
+    const x = event.offsetX + cameraX;
+    const y = event.offsetY + cameraY;
+    target = nodes.find((node) => node.inBounds(x, y));
+    if (target) {
+        target.interact(event, x, y);
+    }
+    else {
+        mouseHeld = true;
+    }
 });
 canvas.addEventListener('mouseup', () => {
     mouseHeld = false;
     target = undefined;
 });
 canvas.addEventListener('focusout', () => (mouseHeld = false));
+window.addEventListener('mousemove', (event) => {
+    const x = event.offsetX + cameraX;
+    const y = event.offsetY + cameraY;
+    const targetNode = nodes.find((node) => node.inBounds(x, y));
+    if (targetNode) {
+        targetNode.mouseHover(event, x, y);
+    }
+    else {
+        document.body.style.cursor = 'default';
+    }
+});
 window.addEventListener('mousemove', (event) => {
     const mouseX = event.clientX - bounds.left;
     const mouseY = event.clientY - bounds.top;
@@ -106,14 +121,13 @@ window.addEventListener('mousemove', (event) => {
         requestAnimationFrame(draw);
     }
     else if (target) {
-        target.x -= oldMouseX - mouseX;
-        target.y -= oldMouseY - mouseY;
+        target.move(event, oldMouseX - mouseX, oldMouseY - mouseY);
         requestAnimationFrame(draw);
     }
     oldMouseX = mouseX;
     oldMouseY = mouseY;
 });
-requestAnimationFrame(draw);
+resize();
 
 
 /***/ }),
@@ -132,6 +146,7 @@ class Node {
     constructor(name, x = 0, y = 0) {
         this._inputs = [];
         this._outputs = [];
+        this._canBeDragged = false;
         this.name = name;
         this.x = x;
         this.y = y;
@@ -144,17 +159,28 @@ class Node {
         this._outputs.push(output);
         return this;
     }
-    inHeaderBounds(x, y) {
-        return (x > this.x &&
-            x < this.x + this.width &&
-            y > this.y &&
-            y < this.y + HEADER_MARGIN);
+    interact(event, x, y) {
+        this._canBeDragged = false;
+        if (this._inHeaderBounds(x, y)) {
+            this._canBeDragged = true;
+        }
+        else if (this._inBodyBounds(x, y)) {
+            // Nothing so far ...
+        }
     }
-    inBodyBounds(x, y) {
-        return (x > this.x &&
-            x < this.x + this.width &&
-            y > this.y + HEADER_MARGIN &&
-            y < this.y + this.height);
+    move(event, x, y) {
+        if (!this._canBeDragged)
+            return;
+        this.x -= x;
+        this.y -= y;
+    }
+    mouseHover(event, x, y) {
+        if (this._inHeaderBounds(x, y)) {
+            document.body.style.cursor = 'grab';
+        }
+        else {
+            document.body.style.cursor = 'default';
+        }
     }
     draw(context, camera) {
         context.fillStyle = 'red';
@@ -175,6 +201,24 @@ class Node {
             context.fillStyle = 'cyan';
             context.fillRect(this.x + this.width - 20 - 5 - camera.x, this.y + HEADER_MARGIN + index * 10 - camera.y, 20, 20);
         });
+    }
+    inBounds(x, y) {
+        return (x > this.x &&
+            x < this.x + this.width &&
+            y > this.y &&
+            y < this.y + this.height);
+    }
+    _inHeaderBounds(x, y) {
+        return (x > this.x &&
+            x < this.x + this.width &&
+            y > this.y &&
+            y < this.y + HEADER_MARGIN);
+    }
+    _inBodyBounds(x, y) {
+        return (x > this.x &&
+            x < this.x + this.width &&
+            y > this.y + HEADER_MARGIN &&
+            y < this.y + this.height);
     }
 }
 exports["default"] = Node;

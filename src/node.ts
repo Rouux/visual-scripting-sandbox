@@ -6,8 +6,10 @@ export default class Node {
   public y: number;
   public width: number;
   public height: number;
+
   private _inputs: Input<unknown>[] = [];
   private _outputs: Output<unknown>[] = [];
+  private _canBeDragged = false;
 
   constructor(name: string, x = 0, y = 0) {
     this.name = name;
@@ -25,22 +27,27 @@ export default class Node {
     return this;
   }
 
-  inHeaderBounds(x: number, y: number) {
-    return (
-      x > this.x &&
-      x < this.x + this.width &&
-      y > this.y &&
-      y < this.y + HEADER_MARGIN
-    );
+  interact(event: MouseEvent, x: number, y: number) {
+    this._canBeDragged = false;
+    if (this._inHeaderBounds(x, y)) {
+      this._canBeDragged = true;
+    } else if (this._inBodyBounds(x, y)) {
+      // Nothing so far ...
+    }
   }
 
-  inBodyBounds(x: number, y: number) {
-    return (
-      x > this.x &&
-      x < this.x + this.width &&
-      y > this.y + HEADER_MARGIN &&
-      y < this.y + this.height
-    );
+  move(event: MouseEvent, x: number, y: number) {
+    if (!this._canBeDragged) return;
+    this.x -= x;
+    this.y -= y;
+  }
+
+  mouseHover(event: MouseEvent, x: number, y: number) {
+    if (this._inHeaderBounds(x, y)) {
+      document.body.style.cursor = 'grab';
+    } else {
+      document.body.style.cursor = 'default';
+    }
   }
 
   draw(context: CanvasRenderingContext2D, camera: any): void {
@@ -85,6 +92,33 @@ export default class Node {
         20
       );
     });
+  }
+
+  inBounds(x: number, y: number) {
+    return (
+      x > this.x &&
+      x < this.x + this.width &&
+      y > this.y &&
+      y < this.y + this.height
+    );
+  }
+
+  private _inHeaderBounds(x: number, y: number) {
+    return (
+      x > this.x &&
+      x < this.x + this.width &&
+      y > this.y &&
+      y < this.y + HEADER_MARGIN
+    );
+  }
+
+  private _inBodyBounds(x: number, y: number) {
+    return (
+      x > this.x &&
+      x < this.x + this.width &&
+      y > this.y + HEADER_MARGIN &&
+      y < this.y + this.height
+    );
   }
 }
 

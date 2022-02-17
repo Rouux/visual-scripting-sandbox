@@ -3,7 +3,7 @@ import Node, { Input, Output } from './node';
 const debugElement = <HTMLDivElement>document.getElementById('debug');
 const canvas = <HTMLCanvasElement>document.getElementById('main-canvas');
 const context = canvas.getContext('2d');
-let bounds = canvas.getBoundingClientRect();
+let bounds: DOMRect;
 
 const resize = () => {
   canvas.width = window.innerWidth;
@@ -76,17 +76,31 @@ const roundUp = (x: number, threshold = 100) => {
 
 let target: Node;
 
-canvas.addEventListener('mousedown', (ev) => {
-  const x = ev.offsetX + cameraX;
-  const y = ev.offsetY + cameraY;
-  target = nodes.find((node) => node.inHeaderBounds(x, y));
-  if (!target) mouseHeld = !nodes.some((node) => node.inBodyBounds(x, y));
+canvas.addEventListener('mousedown', (event) => {
+  const x = event.offsetX + cameraX;
+  const y = event.offsetY + cameraY;
+  target = nodes.find((node) => node.inBounds(x, y));
+  if (target) {
+    target.interact(event, x, y);
+  } else {
+    mouseHeld = true;
+  }
 });
 canvas.addEventListener('mouseup', () => {
   mouseHeld = false;
   target = undefined;
 });
 canvas.addEventListener('focusout', () => (mouseHeld = false));
+window.addEventListener('mousemove', (event) => {
+  const x = event.offsetX + cameraX;
+  const y = event.offsetY + cameraY;
+  const targetNode = nodes.find((node) => node.inBounds(x, y));
+  if (targetNode) {
+    targetNode.mouseHover(event, x, y);
+  } else {
+    document.body.style.cursor = 'default';
+  }
+});
 window.addEventListener('mousemove', (event) => {
   const mouseX = event.clientX - bounds.left;
   const mouseY = event.clientY - bounds.top;
@@ -96,12 +110,11 @@ window.addEventListener('mousemove', (event) => {
     cameraY += oldMouseY - mouseY;
     requestAnimationFrame(draw);
   } else if (target) {
-    target.x -= oldMouseX - mouseX;
-    target.y -= oldMouseY - mouseY;
+    target.move(event, oldMouseX - mouseX, oldMouseY - mouseY);
     requestAnimationFrame(draw);
   }
   oldMouseX = mouseX;
   oldMouseY = mouseY;
 });
 
-requestAnimationFrame(draw);
+resize();
