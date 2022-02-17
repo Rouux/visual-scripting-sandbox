@@ -2,6 +2,73 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./src/camera.service.ts":
+/*!*******************************!*\
+  !*** ./src/camera.service.ts ***!
+  \*******************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const service_1 = __importDefault(__webpack_require__(/*! ./core/service */ "./src/core/service.ts"));
+class CameraService extends service_1.default {
+    constructor(x = 0, y = 0) {
+        super();
+        this.x = x;
+        this.y = y;
+    }
+}
+exports["default"] = CameraService;
+
+
+/***/ }),
+
+/***/ "./src/core/service.ts":
+/*!*****************************!*\
+  !*** ./src/core/service.ts ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+class Service {
+    static provide(instance) {
+        Service.services.set(instance.constructor.name, instance);
+        return instance;
+    }
+    static retrieve(clazz) {
+        return Service.services.get(clazz.name);
+    }
+}
+exports["default"] = Service;
+Service.services = new Map();
+
+
+/***/ }),
+
+/***/ "./src/core/utils.ts":
+/*!***************************!*\
+  !*** ./src/core/utils.ts ***!
+  \***************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.roundUp = void 0;
+const roundUp = (x, threshold = 100) => {
+    if (x >= 0) {
+        return x % threshold === 0 ? x : x + threshold - (x % threshold);
+    }
+    return x % threshold === 0 ? x : x - (x % threshold);
+};
+exports.roundUp = roundUp;
+
+
+/***/ }),
+
 /***/ "./src/index.ts":
 /*!**********************!*\
   !*** ./src/index.ts ***!
@@ -28,7 +95,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const camera_service_1 = __importDefault(__webpack_require__(/*! ./camera.service */ "./src/camera.service.ts"));
+const service_1 = __importDefault(__webpack_require__(/*! ./core/service */ "./src/core/service.ts"));
+const utils_1 = __webpack_require__(/*! ./core/utils */ "./src/core/utils.ts");
 const node_1 = __importStar(__webpack_require__(/*! ./node */ "./src/node.ts"));
 const debugElement = document.getElementById('debug');
 const canvas = document.getElementById('main-canvas');
@@ -38,13 +111,14 @@ const resize = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
     bounds = canvas.getBoundingClientRect();
+    camera.width = bounds.width;
+    camera.height = bounds.height;
     requestAnimationFrame(draw);
 };
 window.addEventListener('load', resize);
 window.addEventListener('resize', resize);
+const camera = service_1.default.provide(new camera_service_1.default(-window.innerWidth / 2, -window.innerHeight / 2));
 let mouseHeld = false;
-let cameraX = -window.innerWidth / 2;
-let cameraY = -window.innerHeight / 2;
 let oldMouseX = 0;
 let oldMouseY = 0;
 const nodes = [
@@ -58,36 +132,30 @@ const debug = (...args) => {
     debugElement.innerText = args.join('');
 };
 const draw = () => {
-    debug('x: ', cameraX, ', y: ', cameraY);
+    debug('x: ', camera.x, ', y: ', camera.y);
     context.clearRect(0, 0, bounds.width, bounds.height);
     drawBackgroundGraph();
     context.fillStyle = '#FF0000';
     nodes.forEach((node) => {
-        node.draw(context, { x: cameraX, y: cameraY });
+        node.draw(context, { x: camera.x, y: camera.y });
     });
 };
 function drawBackgroundGraph() {
     context.fillStyle = 'rgba(220, 220, 220, 0.2)';
-    for (let startX = roundUp(cameraX); startX < bounds.width + roundUp(cameraX); startX += 100) {
-        context.fillRect(startX - cameraX, 0, 1, bounds.height);
+    for (let startX = (0, utils_1.roundUp)(camera.x); startX < bounds.width + (0, utils_1.roundUp)(camera.x); startX += 100) {
+        context.fillRect(startX - camera.x, 0, 1, bounds.height);
     }
-    for (let startY = roundUp(cameraY); startY < bounds.width + roundUp(cameraY); startY += 100) {
-        context.fillRect(0, startY - cameraY, bounds.width, 1);
+    for (let startY = (0, utils_1.roundUp)(camera.y); startY < bounds.width + (0, utils_1.roundUp)(camera.y); startY += 100) {
+        context.fillRect(0, startY - camera.y, bounds.width, 1);
     }
     context.fillStyle = 'rgba(200, 200, 200, 0.6)';
-    context.fillRect(-cameraX, 0, 3, bounds.height);
-    context.fillRect(0, -cameraY, bounds.width, 3);
+    context.fillRect(-camera.x, 0, 3, bounds.height);
+    context.fillRect(0, -camera.y, bounds.width, 3);
 }
-const roundUp = (x, threshold = 100) => {
-    if (x >= 0) {
-        return x % threshold === 0 ? x : x + threshold - (x % threshold);
-    }
-    return x % threshold === 0 ? x : x - (x % threshold);
-};
 let target;
 canvas.addEventListener('mousedown', (event) => {
-    const x = event.offsetX + cameraX;
-    const y = event.offsetY + cameraY;
+    const x = event.offsetX + camera.x;
+    const y = event.offsetY + camera.y;
     target = nodes.find((node) => node.inBounds(x, y));
     if (target) {
         target.interact(event, x, y);
@@ -96,14 +164,15 @@ canvas.addEventListener('mousedown', (event) => {
         mouseHeld = true;
     }
 });
-canvas.addEventListener('mouseup', () => {
+canvas.addEventListener('focusout', () => (mouseHeld = false));
+window.addEventListener('mouseup', () => {
     mouseHeld = false;
     target = undefined;
 });
-canvas.addEventListener('focusout', () => (mouseHeld = false));
+window.addEventListener('focusout', () => (mouseHeld = false));
 window.addEventListener('mousemove', (event) => {
-    const x = event.offsetX + cameraX;
-    const y = event.offsetY + cameraY;
+    const x = event.offsetX + camera.x;
+    const y = event.offsetY + camera.y;
     const targetNode = nodes.find((node) => node.inBounds(x, y));
     if (targetNode) {
         targetNode.mouseHover(event, x, y);
@@ -116,8 +185,8 @@ window.addEventListener('mousemove', (event) => {
     const mouseX = event.clientX - bounds.left;
     const mouseY = event.clientY - bounds.top;
     if (mouseHeld) {
-        cameraX += oldMouseX - mouseX;
-        cameraY += oldMouseY - mouseY;
+        camera.x += oldMouseX - mouseX;
+        camera.y += oldMouseY - mouseY;
         requestAnimationFrame(draw);
     }
     else if (target) {
