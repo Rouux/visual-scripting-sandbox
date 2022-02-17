@@ -1,4 +1,7 @@
+import CameraService from './service/camera.service';
+
 const HEADER_MARGIN = 25;
+const PIN_SIZE = 20;
 
 export default class Node {
   public name: string;
@@ -51,48 +54,82 @@ export default class Node {
     }
   }
 
-  draw(context: CanvasRenderingContext2D, camera: any): void {
-    context.fillStyle = 'red';
-    this.width = 100;
-    this.height = Math.max(
-      HEADER_MARGIN +
-        10 +
-        Math.max(this._inputs.length, this._outputs.length) * 20,
-      60
-    );
-    context.fillRect(
-      this.x - camera.x,
-      this.y - camera.y,
-      this.width,
-      this.height
-    );
-    context.font = '18px arial';
-    context.textAlign = 'center';
-    context.fillStyle = 'white';
-    context.fillText(
-      this.name,
-      this.x + 50 - camera.x,
-      this.y + 15 - camera.y,
-      this.width
-    );
-    this._inputs.forEach((input, index) => {
-      context.fillStyle = 'purple';
-      context.fillRect(
-        this.x + 5 - camera.x,
-        this.y + HEADER_MARGIN + index * 22 - camera.y,
-        20,
-        20
-      );
-    });
+  draw(context: CanvasRenderingContext2D, camera: CameraService): void {
+    const localX = this.x - camera.x;
+    let localY = this.y - camera.y;
+    this.drawHeader(context, localX, localY);
+    this.drawName(context, localX, localY);
+    this.drawBack(context, localX, localY);
+
+    localY += HEADER_MARGIN + 5;
+    this.drawInputs(context, localX, localY);
+    this.drawOutputs(context, localX, localY);
+  }
+
+  private drawOutputs(
+    context: CanvasRenderingContext2D,
+    localX: number,
+    localY: number
+  ) {
     this._outputs.forEach((output, index) => {
       context.fillStyle = 'cyan';
       context.fillRect(
-        this.x + this.width - 20 - 5 - camera.x,
-        this.y + HEADER_MARGIN + index * 10 - camera.y,
-        20,
-        20
+        localX + this.width - PIN_SIZE - 5,
+        localY + index * (PIN_SIZE + 2),
+        PIN_SIZE,
+        PIN_SIZE
       );
     });
+  }
+
+  private drawInputs(
+    context: CanvasRenderingContext2D,
+    localX: number,
+    localY: number
+  ) {
+    this._inputs.forEach((input, index) => {
+      context.fillStyle = 'purple';
+      context.fillRect(
+        localX + 5,
+        localY + index * (PIN_SIZE + 2),
+        PIN_SIZE,
+        PIN_SIZE
+      );
+    });
+  }
+
+  private drawHeader(
+    context: CanvasRenderingContext2D,
+    localX: number,
+    localY: number
+  ) {
+    context.fillStyle = 'darkred';
+    this.width = 100;
+    context.fillRect(localX, localY, this.width, HEADER_MARGIN);
+  }
+
+  private drawBack(
+    context: CanvasRenderingContext2D,
+    localX: number,
+    localY: number
+  ) {
+    context.fillStyle = 'red';
+    this.height = Math.max(
+      5 + Math.max(this._inputs.length, this._outputs.length) * 22 + 5,
+      60
+    );
+    context.fillRect(localX, localY + HEADER_MARGIN, this.width, this.height);
+  }
+
+  private drawName(
+    context: CanvasRenderingContext2D,
+    localX: number,
+    localY: number
+  ) {
+    context.font = '16px arial';
+    context.textAlign = 'center';
+    context.fillStyle = 'white';
+    context.fillText(this.name, localX + 50, localY + 17, this.width);
   }
 
   inBounds(x: number, y: number) {

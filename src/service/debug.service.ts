@@ -2,6 +2,7 @@ import Service from '../core/service';
 
 export default class DebugService extends Service {
   private _debugElement: HTMLDivElement;
+
   debug = (...args: unknown[]) => {
     this.debugElement.innerText = args.join('');
   };

@@ -18,6 +18,7 @@
     "@typescript-eslint/no-unused-vars": "warn",
     "@typescript-eslint/no-use-before-define": "off",
     "@typescript-eslint/lines-between-class-members": "off",
+    "import/no-cycle": "off",
     "class-methods-use-this": "off",
     "func-names": "off",
     "import/prefer-default-export": "warn",

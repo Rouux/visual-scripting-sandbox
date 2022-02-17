@@ -1,48 +1,38 @@
 import CameraService from './camera.service';
 import Service from '../core/service';
 import DebugService from './debug.service';
-import Node, { Input, Output } from '../node';
+import Node from '../node';
 import { roundUp } from '../core/utils';
+import NodeService from './node.service';
 
 export default class RenderService extends Service {
   camera: CameraService;
   debugService: DebugService;
+  nodeService: NodeService;
 
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
   bounds: DOMRect;
-  nodes: Node[];
   targetNode: Node;
   mouseHeld: boolean;
   oldMouseX: number;
   oldMouseY: number;
 
-  constructor(
-    camera: CameraService,
-    debugService: DebugService,
-    canvas: HTMLCanvasElement
-  ) {
+  constructor(canvas: HTMLCanvasElement) {
     super();
-    this.camera = camera;
-    this.debugService = debugService;
     this.canvas = canvas;
     this.context = canvas.getContext('2d');
     this.mouseHeld = false;
     this.oldMouseX = 0;
     this.oldMouseY = 0;
+  }
 
-    this.nodes = [
-      new Node('sysout')
-        .addInput(new Input<string>('text', 'hello world'))
-        .addInput(new Input<string>('text', 'hello world'))
-        .addInput(new Input<string>('text', 'hello world'))
-        .addOutput(new Output<string>('text'))
-    ];
+  init() {
     this.initListeners();
     this.resize();
   }
 
-  initListeners() {
+  private initListeners() {
     window.addEventListener('load', this.resize);
     window.addEventListener('resize', this.resize);
     window.addEventListener('mouseup', () => {
@@ -71,10 +61,9 @@ export default class RenderService extends Service {
     this.canvas.addEventListener('mousedown', (event) => {
       const localX = event.offsetX + this.camera.x;
       const localY = event.offsetY + this.camera.y;
-      this.targetNode = this.nodes.find((node) =>
-        node.inBounds(localX, localY)
-      );
+      this.targetNode = this.nodeService.getNodeAt(localX, localY);
       if (this.targetNode) {
+        this.nodeService.selectNode(this.targetNode);
         this.targetNode.interact(event, localX, localY);
       } else {
         this.mouseHeld = true;
@@ -99,15 +88,15 @@ export default class RenderService extends Service {
     this.drawBackgroundGraph();
 
     this.context.fillStyle = '#FF0000';
-    this.nodes.forEach((node) => {
-      node.draw(this.context, { x: this.camera.x, y: this.camera.y });
+    this.nodeService.nodes.forEach((node) => {
+      node.draw(this.context, this.camera);
     });
   };
 
   private updateCursorStyleOnNodeHover = (event: MouseEvent) => {
     const x = event.offsetX + this.camera.x;
     const y = event.offsetY + this.camera.y;
-    const targetNode = this.nodes.find((node) => node.inBounds(x, y));
+    const targetNode = this.nodeService.getNodeAt(x, y);
     if (targetNode) {
       targetNode.mouseHover(event, x, y);
     } else {
