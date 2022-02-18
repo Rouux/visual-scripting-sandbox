@@ -1,7 +1,7 @@
 import CameraService from './service/camera.service';
 
-const HEADER_MARGIN = 25;
-const PIN_SIZE = 20;
+export const HEADER_MARGIN = 25;
+export const PIN_SIZE = 20;
 
 export default class Node {
   public name: string;
