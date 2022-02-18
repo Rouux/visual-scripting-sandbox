@@ -1,25 +1,494 @@
-(()=>{"use strict";var i={"./src/core/service.ts":
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "./src/core/service.ts":
 /*!*****************************!*\
   !*** ./src/core/service.ts ***!
-  \*****************************/(e,t)=>{Object.defineProperty(t,"__esModule",{value:!0});class s{static provide(e){return s.services.set(e.constructor.name,e),e}static retrieve(e){return s.services.get(e.name)}}(t.default=s).services=new Map},"./src/core/utils.ts":
+  \*****************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+class Service {
+    static provide(instance) {
+        Service.services.set(instance.constructor.name, instance);
+        return instance;
+    }
+    static retrieve(clazz) {
+        return Service.services.get(clazz.name);
+    }
+}
+exports["default"] = Service;
+Service.services = new Map();
+
+
+/***/ }),
+
+/***/ "./src/core/utils.ts":
 /*!***************************!*\
   !*** ./src/core/utils.ts ***!
-  \***************************/(e,t)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.roundUp=void 0;t.roundUp=(e,t=100)=>0<=e?e%t==0?e:e+t-e%t:e%t==0?e:e-e%t},"./src/index.ts":
+  \***************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.roundUp = void 0;
+// eslint-disable-next-line import/prefer-default-export
+const roundUp = (x, threshold = 100) => {
+    if (x >= 0) {
+        return x % threshold === 0 ? x : x + threshold - (x % threshold);
+    }
+    return x % threshold === 0 ? x : x - (x % threshold);
+};
+exports.roundUp = roundUp;
+
+
+/***/ }),
+
+/***/ "./src/index.ts":
 /*!**********************!*\
   !*** ./src/index.ts ***!
-  \**********************/function(h,e,t){var i=this&&this.__createBinding||(Object.create?function(e,t,s,i){void 0===i&&(i=s),Object.defineProperty(e,i,{enumerable:!0,get:function(){return t[s]}})}:function(e,t,s,i){e[i=void 0===i?s:i]=t[s]}),r=this&&this.__setModuleDefault||(Object.create?function(e,t){Object.defineProperty(e,"default",{enumerable:!0,value:t})}:function(e,t){e.default=t}),s=this&&this.__importStar||function(e){if(e&&e.__esModule)return e;var t={};if(null!=e)for(var s in e)"default"!==s&&Object.prototype.hasOwnProperty.call(e,s)&&i(t,e,s);return r(t,e),t},d=this&&this.__importDefault||function(e){return e&&e.__esModule?e:{default:e}};Object.defineProperty(e,"__esModule",{value:!0});const c=d(t(/*! ./service/camera.service */"./src/service/camera.service.ts")),n=d(t(/*! ./core/service */"./src/core/service.ts")),l=d(t(/*! ./service/debug.service */"./src/service/debug.service.ts")),f=d(t(/*! ./service/render.service */"./src/service/render.service.ts")),v=d(t(/*! ./service/node.service */"./src/service/node.service.ts")),o=s(t(/*! ./node */"./src/node.ts"));e=n.default.provide(new l.default),d=n.default.provide(new c.default(-window.innerWidth/2,-window.innerHeight/2)),s=document.getElementById("main-canvas");const u=n.default.provide(new f.default(s)),a=(u.camera=d,u.debugService=e,n.default.provide(new v.default));(a.renderService=u).nodeService=a,u.init(),u.draw(),a.addNode(new o.default("sysout").addInput(new o.Input("text","hello world")).addInput(new o.Input("text","hello world")).addInput(new o.Input("text","hello world")).addOutput(new o.Output("text"))),a.addNode(new o.default("sysin").addInput(new o.Input("text","hello world")).addInput(new o.Input("text","hello world")).addInput(new o.Input("text","hello world")).addOutput(new o.Output("text")))},"./src/node.ts":
+  \**********************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const camera_service_1 = __importDefault(__webpack_require__(/*! ./service/camera.service */ "./src/service/camera.service.ts"));
+const service_1 = __importDefault(__webpack_require__(/*! ./core/service */ "./src/core/service.ts"));
+const debug_service_1 = __importDefault(__webpack_require__(/*! ./service/debug.service */ "./src/service/debug.service.ts"));
+const render_service_1 = __importDefault(__webpack_require__(/*! ./service/render.service */ "./src/service/render.service.ts"));
+const node_service_1 = __importDefault(__webpack_require__(/*! ./service/node.service */ "./src/service/node.service.ts"));
+const node_1 = __importStar(__webpack_require__(/*! ./node */ "./src/node.ts"));
+const debugService = service_1.default.provide(new debug_service_1.default());
+const cameraService = service_1.default.provide(new camera_service_1.default(-window.innerWidth / 2, -window.innerHeight / 2));
+const canvas = document.getElementById('main-canvas');
+const renderService = service_1.default.provide(new render_service_1.default(canvas));
+renderService.camera = cameraService;
+renderService.debugService = debugService;
+const nodeService = service_1.default.provide(new node_service_1.default());
+nodeService.renderService = renderService;
+renderService.nodeService = nodeService;
+renderService.init();
+renderService.draw();
+// --- Tests --- //
+nodeService.addNode(new node_1.default('sysout')
+    .addInput(new node_1.Input('text', 'hello world'))
+    .addInput(new node_1.Input('text', 'hello world'))
+    .addInput(new node_1.Input('text', 'hello world'))
+    .addOutput(new node_1.Output('text')));
+nodeService.addNode(new node_1.default('sysin')
+    .addInput(new node_1.Input('text', 'hello world'))
+    .addInput(new node_1.Input('text', 'hello world'))
+    .addInput(new node_1.Input('text', 'hello world'))
+    .addOutput(new node_1.Output('text')));
+
+
+/***/ }),
+
+/***/ "./src/node.ts":
 /*!*********************!*\
   !*** ./src/node.ts ***!
-  \*********************/(e,t)=>{Object.defineProperty(t,"__esModule",{value:!0}),t.Output=t.Input=void 0;const d=20;t.default=class{constructor(e,t=0,s=0){this._inputs=[],this._outputs=[],this.name=e,this.x=t,this.y=s,this._canBeDragged=!1}addInput(e){return this._inputs.push(e),this}addOutput(e){return this._outputs.push(e),this}interact(e,t,s){this._canBeDragged=!1,this._inHeaderBounds(t,s)?this._canBeDragged=!0:this._inBodyBounds(t,s)}move(e,t,s){this._canBeDragged&&(this.x+=t,this.y+=s)}mouseHover(e,t,s){this._inHeaderBounds(t,s)?document.body.style.cursor="grab":document.body.style.cursor="default"}draw(e,t){var s=this.x-t.x,t=this.y-t.y;this.drawHeader(e,s,t),this.drawName(e,s,t),this.drawBack(e,s,t),this.drawInputs(e,s,t+=30),this.drawOutputs(e,s,t)}drawOutputs(s,i,r){this._outputs.forEach((e,t)=>{s.fillStyle="cyan",s.fillRect(i+this.width-d-5,r+22*t,d,d)})}drawInputs(s,i,r){this._inputs.forEach((e,t)=>{s.fillStyle="purple",s.fillRect(i+5,r+22*t,d,d)})}drawHeader(e,t,s){e.fillStyle="darkred",this.width=100,e.fillRect(t,s,this.width,25)}drawBack(e,t,s){e.fillStyle="red",this.height=Math.max(5+22*Math.max(this._inputs.length,this._outputs.length)+5,60),e.fillRect(t,s+25,this.width,this.height)}drawName(e,t,s){e.font="16px arial",e.textAlign="center",e.fillStyle="white",e.fillText(this.name,t+50,s+17,this.width)}inBounds(e,t){return e>this.x&&e<this.x+this.width&&t>this.y&&t<this.y+this.height}_inHeaderBounds(e,t){return e>this.x&&e<this.x+this.width&&t>this.y&&t<this.y+25}_inBodyBounds(e,t){return e>this.x&&e<this.x+this.width&&t>this.y+25&&t<this.y+this.height}};t.Input=class{constructor(e,t=void 0){this.name=e,this.defaultValue=t}};t.Output=class{constructor(e){this.name=e}}},"./src/service/camera.service.ts":
+  \*********************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Output = exports.Input = void 0;
+const HEADER_MARGIN = 25;
+const PIN_SIZE = 20;
+class Node {
+    constructor(name, x = 0, y = 0) {
+        this._inputs = [];
+        this._outputs = [];
+        this.name = name;
+        this.x = x;
+        this.y = y;
+        this._canBeDragged = false;
+    }
+    get width() {
+        return 100;
+    }
+    get height() {
+        return Math.max(HEADER_MARGIN +
+            5 +
+            Math.max(this._inputs.length, this._outputs.length) * 22 +
+            5, 60);
+    }
+    addInput(input) {
+        this._inputs.push(input);
+        return this;
+    }
+    addOutput(output) {
+        this._outputs.push(output);
+        return this;
+    }
+    interact(event, x, y) {
+        this._canBeDragged = false;
+        if (this._inHeaderBounds(x, y)) {
+            this._canBeDragged = true;
+        }
+        else if (this._inBodyBounds(x, y)) {
+            // Nothing so far ...
+        }
+    }
+    move(event, deltaX, deltaY) {
+        if (!this._canBeDragged)
+            return;
+        this.x += deltaX;
+        this.y += deltaY;
+    }
+    mouseHover(event, x, y) {
+        if (this._inHeaderBounds(x, y)) {
+            document.body.style.cursor = 'grab';
+        }
+        else {
+            document.body.style.cursor = 'default';
+        }
+    }
+    draw(context, camera) {
+        const localX = this.x - camera.x;
+        let localY = this.y - camera.y;
+        this.drawHeader(context, localX, localY);
+        this.drawName(context, localX, localY);
+        this.drawBack(context, localX, localY);
+        localY += HEADER_MARGIN + 5;
+        this.drawInputs(context, localX, localY);
+        this.drawOutputs(context, localX, localY);
+    }
+    drawOutputs(context, localX, localY) {
+        this._outputs.forEach((output, index) => {
+            context.fillStyle = 'cyan';
+            context.fillRect(localX + this.width - PIN_SIZE - 5, localY + index * (PIN_SIZE + 2), PIN_SIZE, PIN_SIZE);
+        });
+    }
+    drawInputs(context, localX, localY) {
+        this._inputs.forEach((input, index) => {
+            context.fillStyle = 'purple';
+            context.fillRect(localX + 5, localY + index * (PIN_SIZE + 2), PIN_SIZE, PIN_SIZE);
+        });
+    }
+    drawHeader(context, localX, localY) {
+        context.fillStyle = 'darkred';
+        context.fillRect(localX, localY, this.width, HEADER_MARGIN);
+    }
+    drawBack(context, localX, localY) {
+        context.fillStyle = 'red';
+        context.fillRect(localX, localY + HEADER_MARGIN, this.width, this.height - HEADER_MARGIN);
+    }
+    drawName(context, localX, localY) {
+        context.font = '16px arial';
+        context.textAlign = 'center';
+        context.fillStyle = 'white';
+        context.fillText(this.name, localX + 50, localY + 17, this.width);
+    }
+    inBounds(x, y) {
+        return (x > this.x &&
+            x < this.x + this.width &&
+            y > this.y &&
+            y < this.y + this.height);
+    }
+    _inHeaderBounds(x, y) {
+        return (x > this.x &&
+            x < this.x + this.width &&
+            y > this.y &&
+            y < this.y + HEADER_MARGIN);
+    }
+    _inBodyBounds(x, y) {
+        return (x > this.x &&
+            x < this.x + this.width &&
+            y > this.y + HEADER_MARGIN &&
+            y < this.y + this.height);
+    }
+}
+exports["default"] = Node;
+class Input {
+    constructor(name, defaultValue = undefined) {
+        this.name = name;
+        this.defaultValue = defaultValue;
+    }
+}
+exports.Input = Input;
+class Output {
+    constructor(name) {
+        this.name = name;
+    }
+}
+exports.Output = Output;
+
+
+/***/ }),
+
+/***/ "./src/service/camera.service.ts":
 /*!***************************************!*\
   !*** ./src/service/camera.service.ts ***!
-  \***************************************/function(e,t,s){var i=this&&this.__importDefault||function(e){return e&&e.__esModule?e:{default:e}},i=(Object.defineProperty(t,"__esModule",{value:!0}),i(s(/*! ../core/service */"./src/core/service.ts")));class r extends i.default{constructor(e=0,t=0){super(),this.x=e,this.y=t}move(e,t){this.x+=e,this.y+=t}}t.default=r},"./src/service/debug.service.ts":
+  \***************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const service_1 = __importDefault(__webpack_require__(/*! ../core/service */ "./src/core/service.ts"));
+class CameraService extends service_1.default {
+    constructor(x = 0, y = 0) {
+        super();
+        this.x = x;
+        this.y = y;
+    }
+    move(deltaX, deltaY) {
+        this.x += deltaX;
+        this.y += deltaY;
+    }
+}
+exports["default"] = CameraService;
+
+
+/***/ }),
+
+/***/ "./src/service/debug.service.ts":
 /*!**************************************!*\
   !*** ./src/service/debug.service.ts ***!
-  \**************************************/function(e,t,s){var i=this&&this.__importDefault||function(e){return e&&e.__esModule?e:{default:e}},i=(Object.defineProperty(t,"__esModule",{value:!0}),i(s(/*! ../core/service */"./src/core/service.ts")));class r extends i.default{constructor(){super(...arguments),this.debug=(...e)=>{this.debugElement.innerText=e.join("")}}get debugElement(){return this._debugElement||(this._debugElement=document.getElementById("debug")),this._debugElement}}t.default=r},"./src/service/node.service.ts":
+  \**************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const service_1 = __importDefault(__webpack_require__(/*! ../core/service */ "./src/core/service.ts"));
+class DebugService extends service_1.default {
+    constructor() {
+        super(...arguments);
+        this.debug = (...args) => {
+            this.debugElement.innerText = args.join('');
+        };
+    }
+    get debugElement() {
+        if (!this._debugElement) {
+            this._debugElement = document.getElementById('debug');
+        }
+        return this._debugElement;
+    }
+}
+exports["default"] = DebugService;
+
+
+/***/ }),
+
+/***/ "./src/service/node.service.ts":
 /*!*************************************!*\
   !*** ./src/service/node.service.ts ***!
-  \*************************************/function(e,t,s){var i=this&&this.__importDefault||function(e){return e&&e.__esModule?e:{default:e}},i=(Object.defineProperty(t,"__esModule",{value:!0}),i(s(/*! ../core/service */"./src/core/service.ts")));class r extends i.default{constructor(){super(...arguments),this._nodes=[]}addNode(e){return this._nodes.push(e),this.renderService.draw(),e}selectNode(t){var e=this.nodes.findIndex(e=>t===e),e=this.nodes.splice(e,1);this.nodes.push(...e),this.renderService.draw()}get nodes(){return this._nodes}getNodeAt(t,s){for(let e=this.nodes.length-1;0<=e;e--){const i=this.nodes[e];if(i.inBounds(t,s))return i}}}t.default=r},"./src/service/render.service.ts":
+  \*************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const service_1 = __importDefault(__webpack_require__(/*! ../core/service */ "./src/core/service.ts"));
+class NodeService extends service_1.default {
+    constructor() {
+        super(...arguments);
+        this._nodes = [];
+    }
+    addNode(node) {
+        this._nodes.push(node);
+        this.renderService.draw();
+        return node;
+    }
+    selectNode(selectedNode) {
+        const index = this.nodes.findIndex((node) => selectedNode === node);
+        const selected = this.nodes.splice(index, 1);
+        this.nodes.push(...selected);
+        this.renderService.draw();
+    }
+    get nodes() {
+        return this._nodes;
+    }
+    getNodeAt(x, y) {
+        for (let index = this.nodes.length - 1; index >= 0; index--) {
+            const node = this.nodes[index];
+            if (node.inBounds(x, y))
+                return node;
+        }
+        return undefined;
+    }
+}
+exports["default"] = NodeService;
+
+
+/***/ }),
+
+/***/ "./src/service/render.service.ts":
 /*!***************************************!*\
   !*** ./src/service/render.service.ts ***!
-  \***************************************/function(e,t,s){var i=this&&this.__importDefault||function(e){return e&&e.__esModule?e:{default:e}},i=(Object.defineProperty(t,"__esModule",{value:!0}),i(s(/*! ../core/service */"./src/core/service.ts")));const r=s(/*! ../core/utils */"./src/core/utils.ts");class d extends i.default{constructor(e){super(),this.resize=()=>{this.canvas.width=window.innerWidth,this.canvas.height=window.innerHeight,this.bounds=this.canvas.getBoundingClientRect(),this.camera.width=this.bounds.width,this.camera.height=this.bounds.height,requestAnimationFrame(this.draw)},this.draw=()=>{this.debugService.debug("x: ",this.camera.x,", y: ",this.camera.y),this.context.clearRect(0,0,this.bounds.width,this.bounds.height),this.drawBackgroundGraph(),this.context.fillStyle="#FF0000",this.nodeService.nodes.forEach(e=>{e.draw(this.context,this.camera)})},this.updateCursorStyleOnNodeHover=e=>{var t=e.offsetX+this.camera.x,s=e.offsetY+this.camera.y;const i=this.nodeService.getNodeAt(t,s);i?i.mouseHover(e,t,s):document.body.style.cursor="default"},this.canvas=e,this.context=e.getContext("2d"),this.mouseHeld=!1,this.oldMouseX=0,this.oldMouseY=0}init(){this.initListeners(),this.resize()}initListeners(){window.addEventListener("load",this.resize),window.addEventListener("resize",this.resize),window.addEventListener("mouseup",()=>{this.mouseHeld=!1,this.targetNode=void 0}),window.addEventListener("focusout",()=>this.mouseHeld=!1),window.addEventListener("mousemove",this.updateCursorStyleOnNodeHover),window.addEventListener("mousemove",e=>{var t=e.clientX-this.bounds.left,s=e.clientY-this.bounds.top,i=this.oldMouseX-t,r=this.oldMouseY-s;this.mouseHeld?(this.camera.move(i,r),requestAnimationFrame(this.draw)):this.targetNode&&(this.targetNode.move(e,-i,-r),requestAnimationFrame(this.draw)),this.oldMouseX=t,this.oldMouseY=s}),this.canvas.addEventListener("mousedown",e=>{var t=e.offsetX+this.camera.x,s=e.offsetY+this.camera.y;this.targetNode=this.nodeService.getNodeAt(t,s),this.targetNode?(this.nodeService.selectNode(this.targetNode),this.targetNode.interact(e,t,s)):this.mouseHeld=!0}),this.canvas.addEventListener("focusout",()=>this.mouseHeld=!1)}drawBackgroundGraph(){this.context.fillStyle="rgba(220, 220, 220, 0.2)";for(let e=(0,r.roundUp)(this.camera.x);e<this.bounds.width+(0,r.roundUp)(this.camera.x);e+=100)this.context.fillRect(e-this.camera.x,0,1,this.bounds.height);for(let e=(0,r.roundUp)(this.camera.y);e<this.bounds.width+(0,r.roundUp)(this.camera.y);e+=100)this.context.fillRect(0,e-this.camera.y,this.bounds.width,1);this.context.fillStyle="rgba(200, 200, 200, 0.6)",this.context.fillRect(-this.camera.x,0,3,this.bounds.height),this.context.fillRect(0,-this.camera.y,this.bounds.width,3)}}t.default=d}},r={};(function e(t){var s=r[t];if(void 0!==s)return s.exports;s=r[t]={exports:{}};return i[t].call(s.exports,s,s.exports,e),s.exports})("./src/index.ts")})();
+  \***************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const service_1 = __importDefault(__webpack_require__(/*! ../core/service */ "./src/core/service.ts"));
+const utils_1 = __webpack_require__(/*! ../core/utils */ "./src/core/utils.ts");
+class RenderService extends service_1.default {
+    constructor(canvas) {
+        super();
+        this.resize = () => {
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
+            this.bounds = this.canvas.getBoundingClientRect();
+            this.camera.width = this.bounds.width;
+            this.camera.height = this.bounds.height;
+            requestAnimationFrame(this.draw);
+        };
+        this.draw = () => {
+            this.debugService.debug('x: ', this.camera.x, ', y: ', this.camera.y);
+            this.context.clearRect(0, 0, this.bounds.width, this.bounds.height);
+            this.drawBackgroundGraph();
+            this.context.fillStyle = '#FF0000';
+            this.nodeService.nodes.forEach((node) => {
+                node.draw(this.context, this.camera);
+            });
+        };
+        this.updateCursorStyleOnNodeHover = (event) => {
+            const x = event.offsetX + this.camera.x;
+            const y = event.offsetY + this.camera.y;
+            const targetNode = this.nodeService.getNodeAt(x, y);
+            if (targetNode) {
+                targetNode.mouseHover(event, x, y);
+            }
+            else {
+                document.body.style.cursor = 'default';
+            }
+        };
+        this.canvas = canvas;
+        this.context = canvas.getContext('2d');
+        this.mouseHeld = false;
+        this.oldMouseX = 0;
+        this.oldMouseY = 0;
+    }
+    init() {
+        this.initListeners();
+        this.resize();
+    }
+    initListeners() {
+        window.addEventListener('load', this.resize);
+        window.addEventListener('resize', this.resize);
+        window.addEventListener('mouseup', () => {
+            this.mouseHeld = false;
+            this.targetNode = undefined;
+        });
+        window.addEventListener('focusout', () => (this.mouseHeld = false));
+        window.addEventListener('mousemove', this.updateCursorStyleOnNodeHover);
+        window.addEventListener('mousemove', (event) => {
+            const mouseX = event.clientX - this.bounds.left;
+            const mouseY = event.clientY - this.bounds.top;
+            const mouseDeltaX = this.oldMouseX - mouseX;
+            const mouseDeltaY = this.oldMouseY - mouseY;
+            if (this.mouseHeld) {
+                this.camera.move(mouseDeltaX, mouseDeltaY);
+                requestAnimationFrame(this.draw);
+            }
+            else if (this.targetNode) {
+                this.targetNode.move(event, -mouseDeltaX, -mouseDeltaY);
+                requestAnimationFrame(this.draw);
+            }
+            this.oldMouseX = mouseX;
+            this.oldMouseY = mouseY;
+        });
+        this.canvas.addEventListener('mousedown', (event) => {
+            const localX = event.offsetX + this.camera.x;
+            const localY = event.offsetY + this.camera.y;
+            this.targetNode = this.nodeService.getNodeAt(localX, localY);
+            if (this.targetNode) {
+                this.nodeService.selectNode(this.targetNode);
+                this.targetNode.interact(event, localX, localY);
+            }
+            else {
+                this.mouseHeld = true;
+            }
+        });
+        this.canvas.addEventListener('focusout', () => (this.mouseHeld = false));
+    }
+    drawBackgroundGraph() {
+        this.context.fillStyle = 'rgba(220, 220, 220, 0.2)';
+        for (let startX = (0, utils_1.roundUp)(this.camera.x); startX < this.bounds.width + (0, utils_1.roundUp)(this.camera.x); startX += 100) {
+            this.context.fillRect(startX - this.camera.x, 0, 1, this.bounds.height);
+        }
+        for (let startY = (0, utils_1.roundUp)(this.camera.y); startY < this.bounds.width + (0, utils_1.roundUp)(this.camera.y); startY += 100) {
+            this.context.fillRect(0, startY - this.camera.y, this.bounds.width, 1);
+        }
+        this.context.fillStyle = 'rgba(200, 200, 200, 0.6)';
+        this.context.fillRect(-this.camera.x, 0, 3, this.bounds.height);
+        this.context.fillRect(0, -this.camera.y, this.bounds.width, 3);
+    }
+}
+exports["default"] = RenderService;
+
+
+/***/ })
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __webpack_require__("./src/index.ts");
+/******/ 	
+/******/ })()
+;
+//# sourceMappingURL=script.js.map

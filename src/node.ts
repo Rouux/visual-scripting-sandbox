@@ -7,8 +7,6 @@ export default class Node {
   public name: string;
   public x: number;
   public y: number;
-  public width: number;
-  public height: number;
 
   private _inputs: Input<unknown>[] = [];
   private _outputs: Output<unknown>[] = [];
@@ -19,6 +17,20 @@ export default class Node {
     this.x = x;
     this.y = y;
     this._canBeDragged = false;
+  }
+
+  public get width() {
+    return 100;
+  }
+
+  public get height() {
+    return Math.max(
+      HEADER_MARGIN +
+        5 +
+        Math.max(this._inputs.length, this._outputs.length) * 22 +
+        5,
+      60
+    );
   }
 
   addInput(input: Input<unknown>): this {
@@ -104,7 +116,6 @@ export default class Node {
     localY: number
   ) {
     context.fillStyle = 'darkred';
-    this.width = 100;
     context.fillRect(localX, localY, this.width, HEADER_MARGIN);
   }
 
@@ -114,11 +125,12 @@ export default class Node {
     localY: number
   ) {
     context.fillStyle = 'red';
-    this.height = Math.max(
-      5 + Math.max(this._inputs.length, this._outputs.length) * 22 + 5,
-      60
+    context.fillRect(
+      localX,
+      localY + HEADER_MARGIN,
+      this.width,
+      this.height - HEADER_MARGIN
     );
-    context.fillRect(localX, localY + HEADER_MARGIN, this.width, this.height);
   }
 
   private drawName(
