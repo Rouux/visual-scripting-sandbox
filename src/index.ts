@@ -3,7 +3,8 @@ import Service from './core/service';
 import DebugService from './service/debug.service';
 import RenderService from './service/render.service';
 import NodeService from './service/node.service';
-import Node, { Input, Output } from './node';
+import MathLibrary from './lib/math/node-math';
+import NodeLibrary from './core/node-library';
 
 const debugService = Service.provide(new DebugService());
 const cameraService = Service.provide(
@@ -24,18 +25,5 @@ renderService.draw();
 
 // --- Tests --- //
 
-nodeService.addNode(
-  new Node('sysout')
-    .addInput(new Input<string>('text', 'hello world'))
-    .addInput(new Input<string>('text', 'hello world'))
-    .addInput(new Input<string>('text', 'hello world'))
-    .addOutput(new Output<string>('text'))
-);
-
-nodeService.addNode(
-  new Node('sysin')
-    .addInput(new Input<string>('text', 'hello world'))
-    .addInput(new Input<string>('text', 'hello world'))
-    .addInput(new Input<string>('text', 'hello world'))
-    .addOutput(new Output<string>('text'))
-);
+const nodes = NodeLibrary.loadLibrary(MathLibrary);
+nodes.forEach((node) => nodeService.addNode(node));
