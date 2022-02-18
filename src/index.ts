@@ -1,10 +1,10 @@
-import CameraService from './service/camera.service';
-import Service from './core/service';
-import DebugService from './service/debug.service';
-import RenderService from './service/render.service';
-import NodeService from './service/node.service';
-import MathLibrary from './lib/math/node-math';
 import NodeLibrary from './core/node-library';
+import Service from './core/service';
+import MathLibrary from './lib/math/node-math';
+import CameraService from './service/camera.service';
+import DebugService from './service/debug.service';
+import NodeService from './service/node.service';
+import RenderService from './service/render.service';
 
 const debugService = Service.provide(new DebugService());
 const cameraService = Service.provide(

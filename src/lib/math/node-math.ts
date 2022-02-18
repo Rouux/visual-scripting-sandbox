@@ -1,13 +1,12 @@
 import 'reflect-metadata';
 import {
-  inputsDecorator,
   inputMetadata,
-  outputsDecorator,
-  outputMetadata
+  inputsDecorator,
+  outputMetadata,
+  outputsDecorator
 } from '../../core/metadata-handling';
-import Library from '../library';
 
-export default class MathLibrary extends Library {
+export default class MathLibrary {
   @inputsDecorator(
     inputMetadata('arg0', 'number'),
     inputMetadata('arg1', 'number')
