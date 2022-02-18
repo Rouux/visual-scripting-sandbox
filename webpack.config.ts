@@ -1,5 +1,4 @@
 import path from 'path';
-import UglifyJsPlugin from 'uglifyjs-webpack-plugin';
 
 const webpackConfig = () => ({
   mode: 'development',
@@ -21,12 +20,7 @@ const webpackConfig = () => ({
     path: path.resolve(__dirname, 'public', 'static', 'bundle')
   },
   optimization: {
-    minimize: false,
-    minimizer: [
-      new UglifyJsPlugin({
-        test: /\.js(\?.*)?$/i
-      })
-    ]
+    minimize: false
   },
   devtool: 'source-map'
 });
