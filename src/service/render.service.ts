@@ -1,8 +1,8 @@
-import CameraService from './camera.service';
 import Service from '../core/service';
-import DebugService from './debug.service';
-import Node from '../node';
 import { roundUp } from '../core/utils';
+import GraphNode from '../model/graph-node';
+import CameraService from './camera.service';
+import DebugService from './debug.service';
 import NodeService from './node.service';
 
 export default class RenderService extends Service {
@@ -13,7 +13,7 @@ export default class RenderService extends Service {
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
   bounds: DOMRect;
-  targetNode: Node;
+  targetNode: GraphNode;
   mouseHeld: boolean;
   oldMouseX: number;
   oldMouseY: number;
@@ -61,9 +61,9 @@ export default class RenderService extends Service {
     this.canvas.addEventListener('mousedown', (event) => {
       const localX = event.offsetX + this.camera.x;
       const localY = event.offsetY + this.camera.y;
-      this.targetNode = this.nodeService.getNodeAt(localX, localY);
+      this.targetNode = this.nodeService.getGraphNodeAt(localX, localY);
       if (this.targetNode) {
-        this.nodeService.selectNode(this.targetNode);
+        this.nodeService.selectNode(this.targetNode.node);
         this.targetNode.interact(event, localX, localY);
       } else {
         this.mouseHeld = true;
@@ -89,14 +89,14 @@ export default class RenderService extends Service {
 
     this.context.fillStyle = '#FF0000';
     this.nodeService.nodes.forEach((node) => {
-      node.draw(this.context, this.camera);
+      node.graphNode.draw(this.context, this.camera);
     });
   };
 
   private updateCursorStyleOnNodeHover = (event: MouseEvent) => {
     const x = event.offsetX + this.camera.x;
     const y = event.offsetY + this.camera.y;
-    const targetNode = this.nodeService.getNodeAt(x, y);
+    const targetNode = this.nodeService.getGraphNodeAt(x, y);
     if (targetNode) {
       targetNode.mouseHover(event, x, y);
     } else {

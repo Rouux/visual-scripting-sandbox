@@ -1,4 +1,4 @@
-import Node, { Input, Output } from '../node';
+import Node, { Input, Output } from '../model/node';
 import { getMetadata, MetadataDecorators } from './metadata-handling';
 
 export default class NodeLibrary {

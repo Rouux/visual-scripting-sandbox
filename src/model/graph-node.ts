@@ -1,19 +1,18 @@
-import CameraService from './service/camera.service';
+import CameraService from '../service/camera.service';
+import Node from './node';
 
 export const HEADER_MARGIN = 25;
 export const PIN_SIZE = 20;
 
-export default class Node {
-  public name: string;
+export default class GraphNode {
+  public node: Node;
   public x: number;
   public y: number;
 
-  private _inputs: Input<unknown>[] = [];
-  private _outputs: Output<unknown>[] = [];
   private _canBeDragged: boolean;
 
-  constructor(name: string, x = 0, y = 0) {
-    this.name = name;
+  constructor(node: Node, x = 0, y = 0) {
+    this.node = node;
     this.x = x;
     this.y = y;
     this._canBeDragged = false;
@@ -27,20 +26,10 @@ export default class Node {
     return Math.max(
       HEADER_MARGIN +
         5 +
-        Math.max(this._inputs.length, this._outputs.length) * 22 +
+        Math.max(this.node.inputs.length, this.node.outputs.length) * 22 +
         5,
       60
     );
-  }
-
-  addInput(input: Input<unknown>): this {
-    this._inputs.push(input);
-    return this;
-  }
-
-  addOutput(output: Output<unknown>): this {
-    this._outputs.push(output);
-    return this;
   }
 
   interact(event: MouseEvent, x: number, y: number) {
@@ -66,6 +55,10 @@ export default class Node {
     }
   }
 
+  inBounds(x: number, y: number) {
+    return this._inHeaderBounds(x, y) || this._inBodyBounds(x, y);
+  }
+
   draw(context: CanvasRenderingContext2D, camera: CameraService): void {
     const localX = this.x - camera.x;
     let localY = this.y - camera.y;
@@ -83,7 +76,7 @@ export default class Node {
     localX: number,
     localY: number
   ) {
-    this._outputs.forEach((output, index) => {
+    this.node.outputs.forEach((output, index) => {
       context.fillStyle = 'cyan';
       context.fillRect(
         localX + this.width - PIN_SIZE - 5,
@@ -99,7 +92,7 @@ export default class Node {
     localX: number,
     localY: number
   ) {
-    this._inputs.forEach((input, index) => {
+    this.node.inputs.forEach((input, index) => {
       context.fillStyle = 'purple';
       context.fillRect(
         localX + 5,
@@ -141,16 +134,7 @@ export default class Node {
     context.font = '16px arial';
     context.textAlign = 'center';
     context.fillStyle = 'white';
-    context.fillText(this.name, localX + 50, localY + 17, this.width);
-  }
-
-  inBounds(x: number, y: number) {
-    return (
-      x > this.x &&
-      x < this.x + this.width &&
-      y > this.y &&
-      y < this.y + this.height
-    );
+    context.fillText(this.node.name, localX + 50, localY + 17, this.width);
   }
 
   private _inHeaderBounds(x: number, y: number) {
@@ -169,21 +153,5 @@ export default class Node {
       y > this.y + HEADER_MARGIN &&
       y < this.y + this.height
     );
-  }
-}
-
-export class Input<T> {
-  public name: string;
-  public defaultValue: T;
-  constructor(name: string, defaultValue: T = undefined) {
-    this.name = name;
-    this.defaultValue = defaultValue;
-  }
-}
-
-export class Output<T> {
-  public name: string;
-  constructor(name: string) {
-    this.name = name;
   }
 }

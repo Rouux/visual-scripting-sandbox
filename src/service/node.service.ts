@@ -1,6 +1,6 @@
 import Service from '../core/service';
+import Node from '../model/node';
 import RenderService from './render.service';
-import Node from '../node';
 
 export default class NodeService extends Service {
   private readonly _nodes: Node[] = [];
@@ -23,10 +23,10 @@ export default class NodeService extends Service {
     return this._nodes;
   }
 
-  getNodeAt(x: number, y: number) {
+  getGraphNodeAt(x: number, y: number) {
     for (let index = this.nodes.length - 1; index >= 0; index--) {
       const node = this.nodes[index];
-      if (node.inBounds(x, y)) return node;
+      if (node.graphNode.inBounds(x, y)) return node.graphNode;
     }
     return undefined;
   }
