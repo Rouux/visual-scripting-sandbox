@@ -1,11 +1,11 @@
 import Node, { Input, Output } from '../model/node';
-import { getMetadata, MetadataDecorators } from './metadata-handling';
+import { getDecorators, MetadataDecorators } from './decorator-handling';
 
 export default class NodeLibrary {
   static loadLibrary(...libraries: any[]) {
     return libraries.flatMap((library) =>
       Object.keys(library).map((property) => {
-        const metadatas = getMetadata(library, property);
+        const metadatas = getDecorators(library, property);
         return this.buildNodeFromDecorators(property, metadatas);
       })
     );

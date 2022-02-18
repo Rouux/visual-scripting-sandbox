@@ -1,4 +1,4 @@
-import { defineMetadata } from '../metadata-handling';
+import { defineMetadata } from '../decorator-handling';
 
 export interface InputMetadata {
   name: string;

@@ -1,14 +1,16 @@
 import { InputMetadata } from './decorators/inputs.decorator';
+import { Metadata } from './decorators/metadata.decorator';
 import { OutputMetadata } from './decorators/outputs.decorator';
 
 export interface MetadataDecorators {
   inputs: InputMetadata[];
   outputs: OutputMetadata[];
+  metadata: Metadata;
 }
 
 const METADATA_TO_IGNORE = ['design:type'];
 
-export function getMetadata<T>(
+export function getDecorators<T>(
   library: T,
   property: keyof T
 ): MetadataDecorators {
