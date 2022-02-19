@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import inputsDecorator from '../core/decorators/inputs.decorator';
 import outputsDecorator from '../core/decorators/outputs.decorator';
-import { Input, Output } from '../model/pin';
+import { Input, Output } from '../model/pin/pin';
 
 export default class MathLibrary {
   @inputsDecorator(

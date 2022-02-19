@@ -1,7 +1,7 @@
-import Service from '../core/service';
-import CameraService from '../service/camera.service';
-import RenderService from '../service/render.service';
-import { GraphInput, GraphOutput, PIN_SIZE } from './graph-pin';
+import Service from '../../core/service';
+import CameraService from '../../service/camera.service';
+import RenderService from '../../service/render.service';
+import { GraphInput, GraphOutput, PIN_SIZE } from '../pin/graph-pin';
 import Node from './node';
 
 export const HEADER_MARGIN = 25;

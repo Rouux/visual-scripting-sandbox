@@ -1,5 +1,5 @@
 import GraphPin, { GraphInput, GraphOutput } from './graph-pin';
-import Node from './node';
+import Node from '../node/node';
 
 export type AvailableType = {
   number: number;

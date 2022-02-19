@@ -1,7 +1,7 @@
-import Service from '../core/service';
-import RenderService from '../service/render.service';
+import Service from '../../core/service';
+import RenderService from '../../service/render.service';
 import Pin, { Input, Output } from './pin';
-import Rectangle from './rectangle';
+import Rectangle from '../rectangle';
 
 export const PIN_SIZE = 20;
 

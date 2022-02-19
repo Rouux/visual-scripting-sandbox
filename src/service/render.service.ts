@@ -1,6 +1,6 @@
 import Service from '../core/service';
 import { roundUp } from '../core/utils';
-import GraphNode from '../model/graph-node';
+import GraphNode from '../model/node/graph-node';
 import CameraService from './camera.service';
 import DebugService from './debug.service';
 import NodeService from './node.service';

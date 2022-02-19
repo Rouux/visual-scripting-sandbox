@@ -1,5 +1,5 @@
 import Service from '../core/service';
-import Node from '../model/node';
+import Node from '../model/node/node';
 import RenderService from './render.service';
 
 export default class NodeService extends Service {

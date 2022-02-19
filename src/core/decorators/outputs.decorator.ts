@@ -1,4 +1,4 @@
-import { Output } from '../../model/pin';
+import { Output } from '../../model/pin/pin';
 import { defineMetadata } from '../decorator-handling';
 
 export default function outputsDecorator(...outputs: Output[]) {
