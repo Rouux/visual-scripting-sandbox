@@ -1,8 +1,8 @@
 import Service from '../../core/service';
 import CameraService from '../../service/camera.service';
 import RenderService from '../../service/render.service';
-import { GraphInput, GraphOutput, PIN_SIZE } from '../pin/graph-pin';
-import Node from './node';
+import { GraphDataPin } from '../pin/graph-pin';
+import Node, { PIN_SIZE } from './node';
 
 export const HEADER_MARGIN = 25;
 
@@ -66,7 +66,7 @@ export default class GraphNode {
     }
   }
 
-  getPinAt(x: number, y: number) {
+  getPinAt(x: number, y: number): GraphDataPin {
     const node = this.node.inputs
       .map((inputPin) => inputPin.graphPin)
       .find((element) => element.inBounds(x, y));
@@ -147,11 +147,16 @@ export default class GraphNode {
     context.font = '16px arial';
     context.textAlign = 'center';
     context.fillStyle = 'white';
-    context.fillText(this.node.name, localX + 50, localY + 17, this.width);
+    context.fillText(
+      this.node.name,
+      localX + this.width / 2,
+      localY + 17,
+      this.width
+    );
   }
 
   private showUserInputToSetDefaultValue(
-    { pin }: GraphInput | GraphOutput,
+    { pin }: GraphDataPin,
     event: MouseEvent
   ) {
     const inputHtml = document.createElement('input');
@@ -172,7 +177,7 @@ export default class GraphNode {
     inputHtml.addEventListener('focusout', () => inputHtml.remove());
   }
 
-  private showDefaultValueInTooltip(graphPin: GraphInput | GraphOutput) {
+  private showDefaultValueInTooltip(graphPin: GraphDataPin) {
     const span = document.createElement('span');
     span.textContent = graphPin.pin.defaultValue ?? '';
     const x = graphPin.x + PIN_SIZE + 2;

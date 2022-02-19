@@ -1,10 +1,10 @@
 import 'reflect-metadata';
 import { metadataDecorator } from '../core/decorators/metadata.decorator';
 import outputsDecorator from '../core/decorators/outputs.decorator';
-import { Output } from '../model/pin/pin';
+import OutputPin from '../model/pin/output-pin';
 
 export default class VariableLibrary {
   @metadataDecorator({ nodeName: 'Variable' })
-  @outputsDecorator(new Output('value', 'any', undefined))
+  @outputsDecorator(new OutputPin('value', 'any', undefined))
   static any = (value: unknown): unknown => value;
 }
