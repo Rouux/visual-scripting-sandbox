@@ -1,4 +1,4 @@
-import { Input, Output } from '../model/node';
+import { Input, Output } from '../model/pin';
 import { Metadata } from './decorators/metadata.decorator';
 
 export interface MetadataDecorators {

@@ -1,13 +1,10 @@
 import Service from '../core/service';
 import CameraService from '../service/camera.service';
 import RenderService from '../service/render.service';
+import { GraphInput, GraphOutput, PIN_SIZE } from './graph-pin';
 import Node from './node';
-import Rectangle from './rectangle';
 
 export const HEADER_MARGIN = 25;
-export const PIN_SIZE = 20;
-
-export type GraphElement = [Rectangle, any];
 
 export default class GraphNode {
   public renderService: RenderService;
@@ -16,7 +13,6 @@ export default class GraphNode {
   public y: number;
 
   private _canBeDragged: boolean;
-  private _elements: GraphElement[] = [];
 
   constructor(node: Node, x = 0, y = 0) {
     this.renderService = Service.retrieve(RenderService);
@@ -63,15 +59,21 @@ export default class GraphNode {
       document.body.style.cursor = 'grab';
     } else {
       document.body.style.cursor = 'default';
-      const pin = this.getPinAt(event.offsetX, event.offsetY);
-      if (pin && pin[1].defaultValue !== undefined) {
-        this.showDefaultValueInTooltip(pin);
+      const graphPin = this.getPinAt(event.offsetX, event.offsetY);
+      if (graphPin?.pin?.defaultValue !== undefined) {
+        this.showDefaultValueInTooltip(graphPin);
       }
     }
   }
 
   getPinAt(x: number, y: number) {
-    return this._elements.find((element) => element[0].inBounds(x, y));
+    const node = this.node.inputs
+      .map((inputPin) => inputPin.graphPin)
+      .find((element) => element.inBounds(x, y));
+    if (node) return node;
+    return this.node.outputs
+      .map((outputPin) => outputPin.graphPin)
+      .find((element) => element.inBounds(x, y));
   }
 
   inBounds(x: number, y: number) {
@@ -79,7 +81,6 @@ export default class GraphNode {
   }
 
   draw(context: CanvasRenderingContext2D, camera: CameraService): void {
-    this._elements = [];
     const localX = this.x - camera.x;
     let localY = this.y - camera.y;
     this.drawHeader(context, localX, localY);
@@ -91,39 +92,27 @@ export default class GraphNode {
     this.drawOutputs(context, localX, localY);
   }
 
-  private drawOutputs(
-    context: CanvasRenderingContext2D,
-    localX: number,
-    localY: number
-  ) {
-    this.node.outputs.forEach((output, index) => {
-      context.fillStyle = 'cyan';
-      const rect = new Rectangle(
-        localX + this.width - PIN_SIZE - 5,
-        localY + index * (PIN_SIZE + 3),
-        PIN_SIZE,
-        PIN_SIZE
-      );
-      this._elements.push([rect, output]);
-      rect.drawSelf(context);
-    });
-  }
-
   private drawInputs(
     context: CanvasRenderingContext2D,
     localX: number,
     localY: number
   ) {
     this.node.inputs.forEach((input, index) => {
-      context.fillStyle = 'purple';
-      const rect = new Rectangle(
-        localX + 5,
-        localY + index * (PIN_SIZE + 3),
-        PIN_SIZE,
-        PIN_SIZE
+      input.graphPin.draw(context, localX + 5, localY + index * (PIN_SIZE + 3));
+    });
+  }
+
+  private drawOutputs(
+    context: CanvasRenderingContext2D,
+    localX: number,
+    localY: number
+  ) {
+    this.node.outputs.forEach((output, index) => {
+      output.graphPin.draw(
+        context,
+        localX + this.width - PIN_SIZE - 5,
+        localY + index * (PIN_SIZE + 3)
       );
-      this._elements.push([rect, input]);
-      rect.drawSelf(context);
     });
   }
 
@@ -161,9 +150,12 @@ export default class GraphNode {
     context.fillText(this.node.name, localX + 50, localY + 17, this.width);
   }
 
-  private showUserInputToSetDefaultValue(pin: GraphElement, event: MouseEvent) {
+  private showUserInputToSetDefaultValue(
+    { pin }: GraphInput | GraphOutput,
+    event: MouseEvent
+  ) {
     const inputHtml = document.createElement('input');
-    inputHtml.value = pin[1].defaultValue ?? '';
+    inputHtml.value = pin.defaultValue ?? '';
     inputHtml.placeholder = 'Set a default value for this pin.';
     inputHtml.style.position = 'absolute';
     inputHtml.style.left = `${event.offsetX}px`;
@@ -173,18 +165,18 @@ export default class GraphNode {
     inputHtml.focus();
     inputHtml.addEventListener('keyup', ({ key }) => {
       if (key === 'Enter') {
-        pin[1].defaultValue = inputHtml.value;
+        pin.defaultValue = inputHtml.value;
         inputHtml.remove();
       }
     });
     inputHtml.addEventListener('focusout', () => inputHtml.remove());
   }
 
-  private showDefaultValueInTooltip(pin: GraphElement) {
+  private showDefaultValueInTooltip(graphPin: GraphInput | GraphOutput) {
     const span = document.createElement('span');
-    span.textContent = pin[1].defaultValue ?? '';
-    const x = pin[0].x + pin[0].width + 2;
-    const y = pin[0].y + pin[0].height + 2;
+    span.textContent = graphPin.pin.defaultValue ?? '';
+    const x = graphPin.x + PIN_SIZE + 2;
+    const y = graphPin.y + PIN_SIZE + 2;
     span.style.backgroundColor = 'white';
     span.style.border = '1px solid black';
     span.style.padding = '0px 2px 0px 2px';

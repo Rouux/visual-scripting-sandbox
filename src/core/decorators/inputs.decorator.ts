@@ -1,4 +1,4 @@
-import { Input } from '../../model/node';
+import { Input } from '../../model/pin';
 import { defineMetadata } from '../decorator-handling';
 
 export default function inputsDecorator(...inputs: Input[]) {

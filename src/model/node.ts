@@ -1,4 +1,5 @@
 import GraphNode from './graph-node';
+import { Input, Output } from './pin';
 
 export const HEADER_MARGIN = 25;
 export const PIN_SIZE = 20;
@@ -24,41 +25,14 @@ export default class Node {
   }
 
   addInput(input: Input): this {
+    input.node = this;
     this._inputs.push(input);
     return this;
   }
 
   addOutput(output: Output): this {
+    output.node = this;
     this._outputs.push(output);
     return this;
-  }
-}
-
-export type AvailableType = {
-  number: number;
-  string: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  any: any;
-};
-
-export class Input<K extends keyof AvailableType = keyof AvailableType> {
-  public name: string;
-  public type: K;
-  public defaultValue: AvailableType[K];
-  constructor(name: string, type: K, defaultValue?: AvailableType[K]) {
-    this.name = name;
-    this.type = type;
-    this.defaultValue = defaultValue;
-  }
-}
-
-export class Output<K extends keyof AvailableType = keyof AvailableType> {
-  public name: string;
-  public type: K;
-  public defaultValue: AvailableType[K];
-  constructor(name: string, type: K, defaultValue?: AvailableType[K]) {
-    this.name = name;
-    this.type = type;
-    this.defaultValue = defaultValue;
   }
 }
