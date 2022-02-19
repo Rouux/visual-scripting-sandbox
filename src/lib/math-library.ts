@@ -2,11 +2,11 @@ import 'reflect-metadata';
 import {
   inputMetadata,
   inputsDecorator
-} from '../../core/decorators/inputs.decorator';
+} from '../core/decorators/inputs.decorator';
 import {
   outputMetadata,
   outputsDecorator
-} from '../../core/decorators/outputs.decorator';
+} from '../core/decorators/outputs.decorator';
 
 export default class MathLibrary {
   @inputsDecorator(

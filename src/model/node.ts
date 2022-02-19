@@ -7,45 +7,45 @@ export default class Node {
   public name: string;
   public graphNode: GraphNode;
 
-  private _inputs: Input<unknown>[] = [];
-  private _outputs: Output<unknown>[] = [];
+  private _inputs: Input[] = [];
+  private _outputs: Output[] = [];
 
   constructor(name: string) {
     this.name = name;
     this.graphNode = new GraphNode(this);
   }
 
-  public get inputs(): Input<unknown>[] {
+  public get inputs(): Input[] {
     return [...this._inputs];
   }
 
-  public get outputs(): Output<unknown>[] {
+  public get outputs(): Output[] {
     return [...this._outputs];
   }
 
-  addInput(input: Input<unknown>): this {
+  addInput(input: Input): this {
     this._inputs.push(input);
     return this;
   }
 
-  addOutput(output: Output<unknown>): this {
+  addOutput(output: Output): this {
     this._outputs.push(output);
     return this;
   }
 }
 
-export class Input<T> {
-  public name: string;
-  public defaultValue: T;
-  constructor(name: string, defaultValue: T = undefined) {
-    this.name = name;
-    this.defaultValue = defaultValue;
-  }
-}
-
-export class Output<T> {
+export class Input {
   public name: string;
   constructor(name: string) {
     this.name = name;
+  }
+}
+
+export class Output {
+  public name: string;
+  public defaultValue: unknown;
+  constructor(name: string, defaultValue?: unknown) {
+    this.name = name;
+    this.defaultValue = defaultValue;
   }
 }

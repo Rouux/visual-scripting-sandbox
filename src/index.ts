@@ -1,6 +1,7 @@
 import NodeLibrary from './core/node-library';
 import Service from './core/service';
-import MathLibrary from './lib/math/node-math';
+import MathLibrary from './lib/math-library';
+import VariableLibrary from './lib/variable-library';
 import CameraService from './service/camera.service';
 import DebugService from './service/debug.service';
 import NodeService from './service/node.service';
@@ -25,5 +26,5 @@ renderService.draw();
 
 // --- Tests --- //
 
-const nodes = NodeLibrary.loadLibrary(MathLibrary);
+const nodes = NodeLibrary.loadLibrary(MathLibrary, VariableLibrary);
 nodes.forEach((node) => nodeService.addNode(node));

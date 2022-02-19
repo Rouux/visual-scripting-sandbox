@@ -1,4 +1,4 @@
-export type Class<T> = new () => T;
+export type Class<T> = new (...args: never[]) => T;
 
 export default abstract class Service {
   static services = new Map<string, unknown>();
