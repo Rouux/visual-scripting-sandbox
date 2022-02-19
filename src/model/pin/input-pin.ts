@@ -1,4 +1,4 @@
-import { GraphInput } from './graph-pin';
+import GraphInputPin from './graph-input-pin';
 import { AvailableType, DataPin } from './pin';
 
 export default class InputPin<
@@ -6,10 +6,10 @@ export default class InputPin<
 > extends DataPin<K> {
   constructor(name: string, type: K, defaultValue?: AvailableType[K]) {
     super(name, type, defaultValue);
-    this._graphPin = new GraphInput(this);
+    this._graphPin = new GraphInputPin(this);
   }
 
-  public get graphPin(): GraphInput {
-    return this._graphPin as GraphInput;
+  public get graphPin(): GraphInputPin {
+    return this._graphPin as GraphInputPin;
   }
 }

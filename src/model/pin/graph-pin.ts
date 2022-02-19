@@ -1,9 +1,7 @@
 import Service from '../../core/service';
 import RenderService from '../../service/render.service';
 import Rectangle from '../rectangle';
-import InputPin from './input-pin';
-import OutputPin from './output-pin';
-import { Pin } from './pin';
+import { DataPin, Pin } from './pin';
 
 export const PIN_SIZE = 20;
 
@@ -41,32 +39,6 @@ export default abstract class GraphPin {
   }
 }
 
-export class GraphInput extends GraphPin {
-  public get pin(): InputPin {
-    return this._pin as InputPin;
-  }
-
-  public draw(
-    context: CanvasRenderingContext2D,
-    localX: number,
-    localY: number
-  ) {
-    context.fillStyle = 'purple';
-    super.draw(context, localX, localY);
-  }
-}
-
-export class GraphOutput extends GraphPin {
-  public get pin(): OutputPin {
-    return this._pin as OutputPin;
-  }
-
-  public draw(
-    context: CanvasRenderingContext2D,
-    localX: number,
-    localY: number
-  ) {
-    context.fillStyle = 'cyan';
-    super.draw(context, localX, localY);
-  }
+export abstract class GraphDataPin extends GraphPin {
+  public abstract get pin(): DataPin;
 }
