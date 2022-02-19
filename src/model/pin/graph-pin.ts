@@ -1,7 +1,9 @@
 import Service from '../../core/service';
 import RenderService from '../../service/render.service';
-import Pin, { Input, Output } from './pin';
 import Rectangle from '../rectangle';
+import InputPin from './input-pin';
+import OutputPin from './output-pin';
+import { Pin } from './pin';
 
 export const PIN_SIZE = 20;
 
@@ -40,8 +42,8 @@ export default abstract class GraphPin {
 }
 
 export class GraphInput extends GraphPin {
-  public get pin(): Input {
-    return this._pin as Input;
+  public get pin(): InputPin {
+    return this._pin as InputPin;
   }
 
   public draw(
@@ -55,8 +57,8 @@ export class GraphInput extends GraphPin {
 }
 
 export class GraphOutput extends GraphPin {
-  public get pin(): Output {
-    return this._pin as Output;
+  public get pin(): OutputPin {
+    return this._pin as OutputPin;
   }
 
   public draw(

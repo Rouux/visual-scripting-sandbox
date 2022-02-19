@@ -1,5 +1,6 @@
 import Node from '../model/node/node';
-import { Input, Output } from '../model/pin/pin';
+import InputPin from '../model/pin/input-pin';
+import OutputPin from '../model/pin/output-pin';
 import { getDecorators, MetadataDecorators } from './decorator-handling';
 
 export default class NodeLibrary {
@@ -20,10 +21,10 @@ export default class NodeLibrary {
     const nodeName = metadata ? metadata.nodeName : property;
     const node = new Node(nodeName);
     metadatas.inputs.forEach(({ name, type, defaultValue }) =>
-      node.addInput(new Input(name, type, defaultValue))
+      node.addInput(new InputPin(name, type, defaultValue))
     );
     metadatas.outputs.forEach(({ name, type, defaultValue }) =>
-      node.addOutput(new Output(name, type, defaultValue))
+      node.addOutput(new OutputPin(name, type, defaultValue))
     );
     return node;
   }
