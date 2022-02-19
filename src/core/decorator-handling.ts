@@ -1,10 +1,9 @@
-import { InputMetadata } from './decorators/inputs.decorator';
+import { Input, Output } from '../model/node';
 import { Metadata } from './decorators/metadata.decorator';
-import { OutputMetadata } from './decorators/outputs.decorator';
 
 export interface MetadataDecorators {
-  inputs: InputMetadata[];
-  outputs: OutputMetadata[];
+  inputs: Input[];
+  outputs: Output[];
   metadata: Metadata;
 }
 
@@ -22,7 +21,11 @@ export function getDecorators<T>(
       ...result,
       [key]: Reflect.getMetadata(key, library, property as string)
     }),
-    {}
+    {
+      inputs: [],
+      outputs: [],
+      metadata: undefined
+    } as Partial<MetadataDecorators>
   );
 }
 

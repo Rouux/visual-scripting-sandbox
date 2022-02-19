@@ -34,18 +34,31 @@ export default class Node {
   }
 }
 
-export class Input {
+export type AvailableType = {
+  number: number;
+  string: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  any: any;
+};
+
+export class Input<K extends keyof AvailableType = keyof AvailableType> {
   public name: string;
-  constructor(name: string) {
+  public type: K;
+  public defaultValue: AvailableType[K];
+  constructor(name: string, type: K, defaultValue?: AvailableType[K]) {
     this.name = name;
+    this.type = type;
+    this.defaultValue = defaultValue;
   }
 }
 
-export class Output {
+export class Output<K extends keyof AvailableType = keyof AvailableType> {
   public name: string;
-  public defaultValue: unknown;
-  constructor(name: string, defaultValue?: unknown) {
+  public type: K;
+  public defaultValue: AvailableType[K];
+  constructor(name: string, type: K, defaultValue?: AvailableType[K]) {
     this.name = name;
+    this.type = type;
     this.defaultValue = defaultValue;
   }
 }

@@ -15,13 +15,14 @@ export default class NodeLibrary {
     property: string,
     metadatas: MetadataDecorators
   ): Node {
-    const nodeName = metadatas.metadata
-      ? metadatas.metadata.nodeName
-      : property;
+    const { metadata } = metadatas;
+    const nodeName = metadata ? metadata.nodeName : property;
     const node = new Node(nodeName);
-    metadatas.inputs?.forEach(({ name }) => node.addInput(new Input(name)));
-    metadatas.outputs?.forEach(({ name, defaultValue }) =>
-      node.addOutput(new Output(name, defaultValue))
+    metadatas.inputs.forEach(({ name, type, defaultValue }) =>
+      node.addInput(new Input(name, type, defaultValue))
+    );
+    metadatas.outputs.forEach(({ name, type, defaultValue }) =>
+      node.addOutput(new Output(name, type, defaultValue))
     );
     return node;
   }
