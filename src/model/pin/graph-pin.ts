@@ -1,13 +1,18 @@
 import Service from '../../core/service';
 import RenderService from '../../service/render.service';
-import Rectangle from '../rectangle';
-import { DataPin, Pin } from './pin';
+import { AvailableType, DataPin, Pin } from './pin';
 
 export const PIN_SIZE = 20;
 
+export const PIN_COLOR: Record<keyof AvailableType, string> = {
+  number: '#22cc22',
+  string: 'purple',
+  any: 'white'
+};
+
 export default abstract class GraphPin {
   public renderService: RenderService;
-  protected rectangle: Rectangle;
+  protected bounds: DOMRect;
   protected _pin: Pin;
 
   constructor(pin: Pin) {
@@ -16,11 +21,19 @@ export default abstract class GraphPin {
   }
 
   public get x() {
-    return this.rectangle?.x || 0;
+    return this.bounds?.x || 0;
   }
 
   public get y() {
-    return this.rectangle?.y || 0;
+    return this.bounds?.y || 0;
+  }
+
+  public get width() {
+    return this.bounds?.width || 0;
+  }
+
+  public get height() {
+    return this.bounds?.height || 0;
   }
 
   public abstract get pin(): Pin;
@@ -30,15 +43,52 @@ export default abstract class GraphPin {
     localX: number,
     localY: number
   ) {
-    this.rectangle = new Rectangle(localX, localY, PIN_SIZE, PIN_SIZE);
-    this.rectangle.drawSelf(context);
+    this.updateBounds(localX, localY);
+    const halfPinSize = PIN_SIZE / 2;
+    const circleCenterX = this.x + halfPinSize;
+    const circleCenterY = this.y + halfPinSize;
+    context.beginPath();
+    context.arc(circleCenterX, circleCenterY, halfPinSize - 3, 0, 2 * Math.PI);
+    context.fill();
+    context.arc(circleCenterX, circleCenterY, halfPinSize - 2, 0, 2 * Math.PI);
+    context.lineWidth = 2;
+    context.strokeStyle = '#333';
+    context.stroke();
+  }
+
+  private updateBounds(localX: number, localY: number) {
+    if (this.bounds === undefined) {
+      this.bounds = DOMRect.fromRect({
+        x: localX,
+        y: localY,
+        width: PIN_SIZE,
+        height: PIN_SIZE
+      });
+    } else {
+      this.bounds.x = localX;
+      this.bounds.y = localY;
+    }
   }
 
   public inBounds(x: number, y: number) {
-    return this.rectangle?.inBounds(x, y);
+    return (
+      x > this.x &&
+      x < this.x + this.width &&
+      y > this.y &&
+      y < this.y + this.height
+    );
   }
 }
 
 export abstract class GraphDataPin extends GraphPin {
   public abstract get pin(): DataPin;
+
+  public draw(
+    context: CanvasRenderingContext2D,
+    localX: number,
+    localY: number
+  ) {
+    context.fillStyle = PIN_COLOR[this.pin.type];
+    super.draw(context, localX, localY);
+  }
 }

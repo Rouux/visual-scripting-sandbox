@@ -147,7 +147,12 @@ export default class GraphNode {
     context.font = '16px arial';
     context.textAlign = 'center';
     context.fillStyle = 'white';
-    context.fillText(this.node.name, localX + 50, localY + 17, this.width);
+    context.fillText(
+      this.node.name,
+      localX + this.width / 2,
+      localY + 17,
+      this.width
+    );
   }
 
   private showUserInputToSetDefaultValue(
