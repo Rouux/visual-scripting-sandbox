@@ -1,5 +1,5 @@
 import Service from '../core/service';
-import { roundUp } from '../core/utils';
+import { MouseButton, roundUp } from '../core/utils';
 import GraphNode from '../model/node/graph-node';
 import CameraService from './camera.service';
 import DebugService from './debug.service';
@@ -35,19 +35,14 @@ export default class RenderService extends Service {
   private initListeners() {
     window.addEventListener('load', this.resize);
     window.addEventListener('resize', this.resize);
-    window.addEventListener('mouseup', () => {
-      this.mouseHeld = false;
-      this.targetNode = undefined;
-    });
     window.addEventListener('focusout', () => (this.mouseHeld = false));
-    window.addEventListener('mousemove', this.updateCursorStyleOnNodeHover);
     window.addEventListener('mousemove', (event) => {
       const mouseX = event.clientX - this.bounds.left;
       const mouseY = event.clientY - this.bounds.top;
       const mouseDeltaX = this.oldMouseX - mouseX;
       const mouseDeltaY = this.oldMouseY - mouseY;
 
-      if (this.mouseHeld) {
+      if (this.mouseHeld && event.buttons === 4) {
         this.camera.move(mouseDeltaX, mouseDeltaY);
         requestAnimationFrame(this.draw);
       } else if (this.targetNode) {
@@ -57,16 +52,45 @@ export default class RenderService extends Service {
       this.oldMouseX = mouseX;
       this.oldMouseY = mouseY;
     });
-
+    window.addEventListener('mouseup', () => {
+      this.mouseHeld = false;
+      this.targetNode = undefined;
+    });
+    this.canvas.addEventListener(
+      'mousemove',
+      this.updateCursorStyleOnNodeHover
+    );
     this.canvas.addEventListener('mousedown', (event) => {
       const localX = event.offsetX + this.camera.x;
       const localY = event.offsetY + this.camera.y;
       this.targetNode = this.nodeService.getGraphNodeAt(localX, localY);
       if (this.targetNode) {
         this.nodeService.selectNode(this.targetNode.node);
-        this.targetNode.interact(event, localX, localY);
+        this.targetNode.mousedown(event, localX, localY);
       } else {
         this.mouseHeld = true;
+        if (event.button === MouseButton.WHEEL) {
+          document.body.style.cursor = 'crosshair';
+        }
+      }
+    });
+    this.canvas.addEventListener('dblclick', (event) => {
+      const localX = event.offsetX + this.camera.x;
+      const localY = event.offsetY + this.camera.y;
+      const targetNode = this.nodeService.getGraphNodeAt(localX, localY);
+      if (targetNode) {
+        targetNode.dblclick(event, localX, localY);
+      }
+    });
+    this.canvas.addEventListener('contextmenu', (event) =>
+      event.preventDefault()
+    );
+    this.canvas.addEventListener('mouseup', (event) => {
+      const localX = event.offsetX + this.camera.x;
+      const localY = event.offsetY + this.camera.y;
+      const targetNode = this.nodeService.getGraphNodeAt(localX, localY);
+      if (targetNode) {
+        targetNode.mouseup(event, localX, localY);
       }
     });
     this.canvas.addEventListener('focusout', () => (this.mouseHeld = false));
@@ -99,7 +123,7 @@ export default class RenderService extends Service {
     const targetNode = this.nodeService.getGraphNodeAt(x, y);
     if (targetNode) {
       targetNode.mouseHover(event, x, y);
-    } else {
+    } else if (!this.mouseHeld) {
       document.body.style.cursor = 'default';
     }
   };

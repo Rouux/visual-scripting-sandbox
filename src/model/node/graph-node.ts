@@ -37,14 +37,31 @@ export default class GraphNode {
     );
   }
 
-  interact(event: MouseEvent, x: number, y: number) {
+  mousedown(event: MouseEvent, x: number, y: number) {
     this._canBeDragged = false;
     if (this._inHeaderBounds(x, y)) {
       this._canBeDragged = true;
     } else if (this._inBodyBounds(x, y)) {
       event.preventDefault();
       const pin = this.getPinAt(event.offsetX, event.offsetY);
-      if (pin) this.showUserInputToSetDefaultValue(pin, event);
+      if (pin) pin.mousedown(event);
+    }
+  }
+
+  mouseup(event: MouseEvent, x: number, y: number) {
+    this._canBeDragged = false;
+    if (this._inBodyBounds(x, y)) {
+      event.preventDefault();
+      const pin = this.getPinAt(event.offsetX, event.offsetY);
+      if (pin) pin.mouseup(event);
+    }
+  }
+
+  dblclick(event: MouseEvent, x: number, y: number) {
+    if (this._inBodyBounds(x, y)) {
+      event.preventDefault();
+      const pin = this.getPinAt(event.offsetX, event.offsetY);
+      if (pin) pin.dblclick(event);
     }
   }
 

@@ -38,6 +38,10 @@ export default abstract class GraphPin {
 
   public abstract get pin(): Pin;
 
+  public abstract mouseup(event: MouseEvent): void;
+
+  public abstract mousedown(event: MouseEvent): void;
+
   public draw(
     context: CanvasRenderingContext2D,
     localX: number,
@@ -90,5 +94,31 @@ export abstract class GraphDataPin extends GraphPin {
   ) {
     context.fillStyle = PIN_COLOR[this.pin.type];
     super.draw(context, localX, localY);
+  }
+
+  public mouseup(event: MouseEvent) {}
+
+  public mousedown(event: MouseEvent) {}
+
+  public dblclick(event: MouseEvent) {
+    const inputHtml = document.createElement('input');
+    inputHtml.value = this.pin.defaultValue ?? '';
+    inputHtml.placeholder = 'Set a default value for this pin.';
+    inputHtml.style.position = 'absolute';
+    inputHtml.style.left = `${event.offsetX}px`;
+    inputHtml.style.top = `${event.offsetY}px`;
+    if (this.pin.defaultValue === undefined) {
+      inputHtml.style.width = '12rem';
+    }
+    document.body.appendChild(inputHtml);
+    event.preventDefault();
+    inputHtml.focus();
+    inputHtml.addEventListener('keyup', ({ key }) => {
+      if (key === 'Enter') {
+        this.pin.defaultValue = inputHtml.value;
+        inputHtml.remove();
+      }
+    });
+    inputHtml.addEventListener('focusout', () => inputHtml.remove());
   }
 }

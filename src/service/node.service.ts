@@ -4,7 +4,7 @@ import RenderService from './render.service';
 
 export default class NodeService extends Service {
   private readonly _nodes: Node[] = [];
-  renderService: RenderService;
+  public renderService: RenderService;
 
   addNode(node: Node): Node {
     this._nodes.push(node);
@@ -14,8 +14,8 @@ export default class NodeService extends Service {
 
   selectNode(selectedNode: Node) {
     const index = this.nodes.findIndex((node) => selectedNode === node);
-    const selected = this.nodes.splice(index, 1);
-    this.nodes.push(...selected);
+    const selected = this.nodes.splice(index, 1)[0];
+    this.nodes.push(selected);
     this.renderService.draw();
   }
 
