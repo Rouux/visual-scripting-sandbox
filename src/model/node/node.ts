@@ -7,6 +7,8 @@ import GraphNode from './graph-node';
 
 export const HEADER_MARGIN = 25;
 
+export type NodeCallback = (...args: unknown[]) => unknown;
+
 export default class Node {
   public name: string;
   public graphNode: GraphNode;
@@ -15,9 +17,11 @@ export default class Node {
   private _executionOutputs: OutputExecutionPin[] = [];
   private _inputs: InputPin[] = [];
   private _outputs: OutputPin[] = [];
+  private _callback: NodeCallback;
 
-  constructor(name: string) {
+  constructor(name: string, callback?: NodeCallback) {
     this.name = name;
+    this._callback = callback;
     this.graphNode = new GraphNode(this);
   }
 
@@ -46,27 +50,50 @@ export default class Node {
     return [...this._outputs];
   }
 
-  addExecutionInput(input: InputExecutionPin): this {
+  public executeCode() {
+    if (!this._callback) {
+      throw new Error(`No code implemented for ${this.name}`);
+    }
+    const results = this.getCallbackResults();
+    console.debug('executing code in ', this.name, ' resulting in ', results);
+    results.forEach((result, index) => {
+      if (this._outputs[index]) {
+        this._outputs[index].value = result;
+      }
+    });
+
+    this._executionOutputs.forEach((output) => output.executeNext());
+  }
+
+  public addExecutionInput(input: InputExecutionPin): this {
     input.node = this;
     this._executionInputs.push(input);
     return this;
   }
 
-  addExecutionOutput(input: OutputExecutionPin): this {
+  public addExecutionOutput(input: OutputExecutionPin): this {
     input.node = this;
     this._executionOutputs.push(input);
     return this;
   }
 
-  addInput(input: InputPin): this {
+  public addInput(input: InputPin): this {
     input.node = this;
     this._inputs.push(input);
     return this;
   }
 
-  addOutput(output: OutputPin): this {
+  public addOutput(output: OutputPin): this {
     output.node = this;
     this._outputs.push(output);
     return this;
+  }
+
+  private getCallbackResults() {
+    let results = this._callback(
+      ...this._inputs.map((input) => input.value)
+    ) as unknown[];
+    if (!Array.isArray(results)) results = [results];
+    return results;
   }
 }

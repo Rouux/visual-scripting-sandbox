@@ -25,4 +25,9 @@ export default class OutputExecutionPin extends ExecutionPin {
     this._linkedPin = target as InputExecutionPin;
     return true;
   }
+
+  public executeNext() {
+    if (!this.hasLinkedPin) return;
+    this.linkedPin.executeNode();
+  }
 }

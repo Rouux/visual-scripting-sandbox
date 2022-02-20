@@ -90,7 +90,7 @@ export default class GraphNode {
       if (
         graphPin !== undefined &&
         graphPin instanceof GraphDataPin &&
-        graphPin.pin.defaultValue !== undefined
+        graphPin.pin.value !== undefined
       ) {
         this.showDefaultValueInTooltip(graphPin);
       }
@@ -198,31 +198,10 @@ export default class GraphNode {
     );
   }
 
-  private showUserInputToSetDefaultValue(
-    { pin }: GraphDataPin,
-    event: MouseEvent
-  ) {
-    const inputHtml = document.createElement('input');
-    inputHtml.value = pin.defaultValue ?? '';
-    inputHtml.placeholder = 'Set a default value for this pin.';
-    inputHtml.style.position = 'absolute';
-    inputHtml.style.left = `${event.offsetX}px`;
-    inputHtml.style.top = `${event.offsetY}px`;
-    inputHtml.style.width = '12rem';
-    document.body.appendChild(inputHtml);
-    inputHtml.focus();
-    inputHtml.addEventListener('keyup', ({ key }) => {
-      if (key === 'Enter') {
-        pin.defaultValue = inputHtml.value;
-        inputHtml.remove();
-      }
-    });
-    inputHtml.addEventListener('focusout', () => inputHtml.remove());
-  }
-
+  // @todo move to graph pin itself, has no need here it's all data of graph pin
   private showDefaultValueInTooltip(graphPin: GraphDataPin) {
     const span = document.createElement('span');
-    span.textContent = graphPin.pin.defaultValue ?? '';
+    span.textContent = graphPin.pin.value ?? '';
     const x = graphPin.x + PIN_SIZE + 2;
     const y = graphPin.y + PIN_SIZE + 2;
     span.style.backgroundColor = 'white';
@@ -232,6 +211,7 @@ export default class GraphNode {
     span.style.left = `${x}px`;
     span.style.top = `${y}px`;
     span.style.minWidth = '3rem';
+    span.style.minHeight = '1.5rem';
     document.body.appendChild(span);
     const destroySpan = () => {
       span.remove();

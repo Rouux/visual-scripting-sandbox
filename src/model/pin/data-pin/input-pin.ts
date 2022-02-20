@@ -16,12 +16,17 @@ export default class InputPin<
     return this._graphPin as GraphInputPin;
   }
 
-  public get linkedPin(): Pin {
+  public get linkedPin(): OutputPin {
     return this._linkedPin as OutputPin;
   }
 
   public get hasLinkedPin(): boolean {
     return this._linkedPin !== undefined;
+  }
+
+  public get value(): AvailableType[K] {
+    const value = this.hasLinkedPin ? this.linkedPin.value : this.defaultValue;
+    return this.castedToRequiredType(value);
   }
 
   public canLinkTo(target: Pin): boolean {

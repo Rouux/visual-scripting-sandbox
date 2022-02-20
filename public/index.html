@@ -14,13 +14,18 @@
   <body>
     <section class="middle-section flex-center">
       <span class="flex middle-section-text"> Hello </span>
+      <div class="flex"></div>
+      <button id="btn-start">
+        <img src="assets/play-button.svg" aria-hidden="true" />
+        Start
+      </button>
     </section>
     <section id="board" class="flex-center">
       <canvas id="main-canvas"></canvas>
-      <div
-        id="debug"
-        style="color: red; position: absolute; top: 0; left: 0"
-      ></div>
+      <div id="debug"></div>
+      <div class="flex"></div>
+      <div id="warning"></div>
+      <div id="error"></div>
     </section>
   </body>
 </html>

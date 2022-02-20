@@ -10,26 +10,26 @@ export default class NodeService extends Service {
     this.renderService = Service.retrieve(RenderService);
   }
 
-  addNode(node: Node): Node {
+  public get nodes(): Node[] {
+    return [...this._nodes];
+  }
+
+  public addNode(node: Node): Node {
     this._nodes.push(node);
     this.renderService.draw();
     return node;
   }
 
-  selectNode(selectedNode: Node) {
-    const index = this.nodes.findIndex((node) => selectedNode === node);
-    const selected = this.nodes.splice(index, 1)[0];
-    this.nodes.push(selected);
+  public selectNode(selectedNode: Node) {
+    const index = this._nodes.findIndex((node) => selectedNode === node);
+    const selected = this._nodes.splice(index, 1)[0];
+    this._nodes.push(selected);
     this.renderService.draw();
   }
 
-  public get nodes(): Node[] {
-    return this._nodes;
-  }
-
-  getGraphNodeAt(x: number, y: number) {
-    for (let index = this.nodes.length - 1; index >= 0; index--) {
-      const node = this.nodes[index];
+  public getGraphNodeAt(x: number, y: number) {
+    for (let index = this._nodes.length - 1; index >= 0; index--) {
+      const node = this._nodes[index];
       if (node.graphNode.inBounds(x, y)) return node.graphNode;
     }
     return undefined;

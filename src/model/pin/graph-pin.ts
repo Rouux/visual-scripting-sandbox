@@ -100,7 +100,7 @@ export abstract class GraphDataPin extends GraphPin {
 
   public dblclick(event: MouseEvent) {
     const inputHtml = document.createElement('input');
-    inputHtml.value = this.pin.defaultValue ?? '';
+    inputHtml.value = this.pin.value ?? '';
     inputHtml.placeholder = 'Set a default value for this pin.';
     inputHtml.style.position = 'absolute';
     inputHtml.style.left = `${event.offsetX}px`;
