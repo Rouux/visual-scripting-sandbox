@@ -92,7 +92,7 @@ export default class GraphNode {
         graphPin instanceof GraphDataPin &&
         graphPin.pin.value !== undefined
       ) {
-        this.showDefaultValueInTooltip(graphPin);
+        graphPin.showDefaultValueInTooltip();
       }
     }
   }

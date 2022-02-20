@@ -17,7 +17,6 @@ export default class ExecutionService extends Service {
   }
   public start(): void {
     console.debug('Starting execution ...');
-    // Start the code execution
     this.startNode.executionOutputs[0].executeNext();
   }
 }
