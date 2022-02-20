@@ -1,5 +1,6 @@
 import Service from '../core/service';
 import { MouseButton, roundUp } from '../core/utils';
+import FpsCounter from '../model/fps-counter';
 import GraphNode from '../model/node/graph-node';
 import CameraService from './camera.service';
 import NodeService from './node.service';
@@ -19,6 +20,7 @@ export default class RenderService extends Service {
   private _nodeService: NodeService;
   private _pinService: PinService;
   private _debugElement: HTMLSpanElement;
+  private _fpsCounter: FpsCounter;
 
   constructor(canvas: HTMLCanvasElement) {
     super();
@@ -28,6 +30,7 @@ export default class RenderService extends Service {
     this.oldMouseX = 0;
     this.oldMouseY = 0;
     this.drawCalls = 0;
+    this._fpsCounter = new FpsCounter();
   }
 
   init() {
@@ -50,10 +53,8 @@ export default class RenderService extends Service {
 
       if (this.mouseHeld && event.buttons === 4) {
         this._camera.move(mouseDeltaX, mouseDeltaY);
-        requestAnimationFrame(this.draw);
       } else if (this.targetNode) {
         this.targetNode.move(event, -mouseDeltaX, -mouseDeltaY);
-        requestAnimationFrame(this.draw);
       }
       this.oldMouseX = this._camera.mouseX;
       this.oldMouseY = this._camera.mouseY;
@@ -62,7 +63,6 @@ export default class RenderService extends Service {
       this.mouseHeld = false;
       this.targetNode = undefined;
       this._pinService.selectedPin = undefined;
-      requestAnimationFrame(this.draw);
     });
     this.canvas.addEventListener(
       'mousemove',
@@ -110,12 +110,14 @@ export default class RenderService extends Service {
     this.bounds = this.canvas.getBoundingClientRect();
     this._camera.width = this.bounds.width;
     this._camera.height = this.bounds.height;
-    requestAnimationFrame(this.draw);
   };
 
   draw = () => {
+    this._fpsCounter.frameUpdate();
     this.debug(
-      `x: ${this._camera.x}, y: ${this._camera.y}, draws : ${this.drawCalls++}`
+      `x: ${this._camera.x}, y: ${
+        this._camera.y
+      }, fps : ${this._fpsCounter.fixedFps()}`
     );
     this.context.clearRect(0, 0, this.bounds.width, this.bounds.height);
 
@@ -127,10 +129,15 @@ export default class RenderService extends Service {
     });
 
     this._pinService.draw(this._camera.mouseX, this._camera.mouseY);
+
+    requestAnimationFrame(this.draw);
   };
 
   private debug = (...args: unknown[]) => {
-    this.debugElement.textContent = args.join('');
+    const text = args.join('');
+    if (this.debugElement.textContent !== text) {
+      this.debugElement.textContent = text;
+    }
   };
 
   private get debugElement() {

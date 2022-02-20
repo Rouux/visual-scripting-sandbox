@@ -4,9 +4,9 @@ import MathLibrary from './lib/math-library';
 import SystemLibrary from './lib/system-library';
 import VariableLibrary from './lib/variable-library';
 import CameraService from './service/camera.service';
-import NotificationService from './service/notification.service';
 import ExecutionService from './service/execution.service';
 import NodeService from './service/node.service';
+import NotificationService from './service/notification.service';
 import PinService from './service/pin.service';
 import RenderService from './service/render.service';
 
@@ -25,7 +25,7 @@ pinService.init();
 renderService.init();
 executionService.init();
 
-renderService.draw();
+requestAnimationFrame(renderService.draw);
 
 // --- Tests --- //
 

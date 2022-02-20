@@ -15,8 +15,9 @@ export default class CameraService extends Service {
     this.y = y;
   }
 
-  move(deltaX: number, deltaY: number) {
+  move(deltaX: number, deltaY: number): boolean {
     this.x += deltaX;
     this.y += deltaY;
+    return deltaX !== 0 && deltaY !== 0;
   }
 }

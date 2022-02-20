@@ -2,8 +2,8 @@ import Service from '../../core/service';
 import CameraService from '../../service/camera.service';
 import PinService from '../../service/pin.service';
 import RenderService from '../../service/render.service';
-import GraphPin, { PIN_SIZE } from '../pin/graph-pin';
 import GraphDataPin from '../pin/data-pin/graph/graph-data-pin';
+import GraphPin, { PIN_SIZE } from '../pin/graph-pin';
 import Node from './node';
 
 export const HEADER_MARGIN = 25;
@@ -76,10 +76,11 @@ export default class GraphNode {
     }
   }
 
-  move(event: MouseEvent, deltaX: number, deltaY: number) {
-    if (!this._canBeDragged) return;
+  move(event: MouseEvent, deltaX: number, deltaY: number): boolean {
+    if (!this._canBeDragged) return false;
     this.x += deltaX;
     this.y += deltaY;
+    return deltaX !== 0 && deltaY !== 0;
   }
 
   mouseHover(event: MouseEvent, x: number, y: number) {

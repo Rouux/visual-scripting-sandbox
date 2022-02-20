@@ -16,7 +16,6 @@ export default class NodeService extends Service {
 
   public addNode(node: Node): Node {
     this._nodes.push(node);
-    this.renderService.draw();
     return node;
   }
 
@@ -24,7 +23,6 @@ export default class NodeService extends Service {
     const index = this._nodes.findIndex((node) => selectedNode === node);
     const selected = this._nodes.splice(index, 1)[0];
     this._nodes.push(selected);
-    this.renderService.draw();
   }
 
   public getGraphNodeAt(x: number, y: number) {
