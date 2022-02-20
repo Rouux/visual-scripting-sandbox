@@ -1,5 +1,5 @@
 import Service from '../../../core/service';
-import DebugService from '../../../service/debug.service';
+import NotificationService from '../../../service/notification.service';
 import Pin, { AvailableType } from '../pin';
 
 export default abstract class DataPin<
@@ -39,7 +39,7 @@ export default abstract class DataPin<
     switch (this.type) {
       case 'number':
         if (Number.isNaN(Number(value))) {
-          Service.retrieve(DebugService).error(
+          Service.retrieve(NotificationService).error(
             `The input '${this.name}' in the node '${this.node.name}' should be a number !`
           );
         }

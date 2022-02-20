@@ -1,13 +1,8 @@
 import Service from '../core/service';
 
-export default class DebugService extends Service {
-  private _debugElement: HTMLDivElement;
+export default class NotificationService extends Service {
   private _warningElement: HTMLDivElement;
   private _errorElement: HTMLDivElement;
-
-  debug = (...args: unknown[]) => {
-    this.debugElement.innerText = args.join('');
-  };
 
   warning = (...args: unknown[]) => {
     this.warningElement.innerText = args.join('');
@@ -16,13 +11,6 @@ export default class DebugService extends Service {
   error = (...args: unknown[]) => {
     this.errorElement.innerText = args.join('');
   };
-
-  private get debugElement() {
-    if (!this._debugElement) {
-      this._debugElement = <HTMLDivElement>document.getElementById('debug');
-    }
-    return this._debugElement;
-  }
 
   private get warningElement() {
     if (!this._warningElement) {
