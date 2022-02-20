@@ -38,9 +38,13 @@ export default abstract class GraphPin {
 
   public abstract get pin(): Pin;
 
-  public abstract mouseup(event: MouseEvent): void;
+  public mouseup(event: MouseEvent) {
+    this.pin.mouseup(event);
+  }
 
-  public abstract mousedown(event: MouseEvent): void;
+  public mousedown(event: MouseEvent) {
+    this.pin.mousedown(event);
+  }
 
   public draw(
     context: CanvasRenderingContext2D,
@@ -95,10 +99,6 @@ export abstract class GraphDataPin extends GraphPin {
     context.fillStyle = PIN_COLOR[this.pin.type];
     super.draw(context, localX, localY);
   }
-
-  public mouseup(event: MouseEvent) {}
-
-  public mousedown(event: MouseEvent) {}
 
   public dblclick(event: MouseEvent) {
     const inputHtml = document.createElement('input');

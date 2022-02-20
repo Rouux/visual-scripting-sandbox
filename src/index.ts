@@ -5,23 +5,22 @@ import VariableLibrary from './lib/variable-library';
 import CameraService from './service/camera.service';
 import DebugService from './service/debug.service';
 import NodeService from './service/node.service';
+import PinService from './service/pin.service';
 import RenderService from './service/render.service';
-
-const debugService = Service.provide(new DebugService());
-const cameraService = Service.provide(
-  new CameraService(-window.innerWidth / 2, -window.innerHeight / 2)
-);
 
 const canvas = <HTMLCanvasElement>document.getElementById('main-canvas');
 const renderService = Service.provide(new RenderService(canvas));
-renderService.camera = cameraService;
-renderService.debugService = debugService;
-
+Service.provide(new DebugService());
+Service.provide(
+  new CameraService(-window.innerWidth / 2, -window.innerHeight / 2)
+);
 const nodeService = Service.provide(new NodeService());
-nodeService.renderService = renderService;
-renderService.nodeService = nodeService;
+const pinService = Service.provide(new PinService());
 
+nodeService.init();
+pinService.init();
 renderService.init();
+
 renderService.draw();
 
 // --- Tests --- //

@@ -6,6 +6,9 @@ export default class CameraService extends Service {
   public width: number;
   public height: number;
 
+  public mouseX: number;
+  public mouseY: number;
+
   constructor(x = 0, y = 0) {
     super();
     this.x = x;

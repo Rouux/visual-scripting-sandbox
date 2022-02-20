@@ -6,6 +6,10 @@ export default class NodeService extends Service {
   private readonly _nodes: Node[] = [];
   public renderService: RenderService;
 
+  public init() {
+    this.renderService = Service.retrieve(RenderService);
+  }
+
   addNode(node: Node): Node {
     this._nodes.push(node);
     this.renderService.draw();

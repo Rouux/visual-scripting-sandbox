@@ -3,7 +3,6 @@ import OutputPin from '../pin/output-pin';
 import GraphNode from './graph-node';
 
 export const HEADER_MARGIN = 25;
-export const PIN_SIZE = 20;
 
 export default class Node {
   public name: string;

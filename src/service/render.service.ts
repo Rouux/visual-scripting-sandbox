@@ -4,11 +4,13 @@ import GraphNode from '../model/node/graph-node';
 import CameraService from './camera.service';
 import DebugService from './debug.service';
 import NodeService from './node.service';
+import PinService from './pin.service';
 
 export default class RenderService extends Service {
   camera: CameraService;
   debugService: DebugService;
   nodeService: NodeService;
+  pinService: PinService;
 
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
@@ -17,6 +19,7 @@ export default class RenderService extends Service {
   mouseHeld: boolean;
   oldMouseX: number;
   oldMouseY: number;
+  drawCalls: number;
 
   constructor(canvas: HTMLCanvasElement) {
     super();
@@ -25,9 +28,14 @@ export default class RenderService extends Service {
     this.mouseHeld = false;
     this.oldMouseX = 0;
     this.oldMouseY = 0;
+    this.drawCalls = 0;
   }
 
   init() {
+    this.camera = Service.retrieve(CameraService);
+    this.debugService = Service.retrieve(DebugService);
+    this.nodeService = Service.retrieve(NodeService);
+    this.pinService = Service.retrieve(PinService);
     this.initListeners();
     this.resize();
   }
@@ -37,10 +45,10 @@ export default class RenderService extends Service {
     window.addEventListener('resize', this.resize);
     window.addEventListener('focusout', () => (this.mouseHeld = false));
     window.addEventListener('mousemove', (event) => {
-      const mouseX = event.clientX - this.bounds.left;
-      const mouseY = event.clientY - this.bounds.top;
-      const mouseDeltaX = this.oldMouseX - mouseX;
-      const mouseDeltaY = this.oldMouseY - mouseY;
+      this.camera.mouseX = event.clientX - this.bounds.left;
+      this.camera.mouseY = event.clientY - this.bounds.top;
+      const mouseDeltaX = this.oldMouseX - this.camera.mouseX;
+      const mouseDeltaY = this.oldMouseY - this.camera.mouseY;
 
       if (this.mouseHeld && event.buttons === 4) {
         this.camera.move(mouseDeltaX, mouseDeltaY);
@@ -49,12 +57,14 @@ export default class RenderService extends Service {
         this.targetNode.move(event, -mouseDeltaX, -mouseDeltaY);
         requestAnimationFrame(this.draw);
       }
-      this.oldMouseX = mouseX;
-      this.oldMouseY = mouseY;
+      this.oldMouseX = this.camera.mouseX;
+      this.oldMouseY = this.camera.mouseY;
     });
     window.addEventListener('mouseup', () => {
       this.mouseHeld = false;
       this.targetNode = undefined;
+      this.pinService.selectedPin = undefined;
+      requestAnimationFrame(this.draw);
     });
     this.canvas.addEventListener(
       'mousemove',
@@ -106,7 +116,14 @@ export default class RenderService extends Service {
   };
 
   draw = () => {
-    this.debugService.debug('x: ', this.camera.x, ', y: ', this.camera.y);
+    this.debugService.debug(
+      'x: ',
+      this.camera.x,
+      ', y: ',
+      this.camera.y,
+      ', draws : ',
+      this.drawCalls++
+    );
     this.context.clearRect(0, 0, this.bounds.width, this.bounds.height);
 
     this.drawBackgroundGraph();
@@ -115,6 +132,8 @@ export default class RenderService extends Service {
     this.nodeService.nodes.forEach((node) => {
       node.graphNode.draw(this.context, this.camera);
     });
+
+    this.pinService.draw(this.camera.mouseX, this.camera.mouseY);
   };
 
   private updateCursorStyleOnNodeHover = (event: MouseEvent) => {

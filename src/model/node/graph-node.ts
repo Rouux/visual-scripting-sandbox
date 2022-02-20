@@ -1,13 +1,16 @@
 import Service from '../../core/service';
 import CameraService from '../../service/camera.service';
+import PinService from '../../service/pin.service';
 import RenderService from '../../service/render.service';
-import { GraphDataPin } from '../pin/graph-pin';
-import Node, { PIN_SIZE } from './node';
+import { GraphDataPin, PIN_SIZE } from '../pin/graph-pin';
+import Node from './node';
 
 export const HEADER_MARGIN = 25;
 
 export default class GraphNode {
   public renderService: RenderService;
+  public pinService: PinService;
+
   public node: Node;
   public x: number;
   public y: number;
@@ -16,6 +19,7 @@ export default class GraphNode {
 
   constructor(node: Node, x = 0, y = 0) {
     this.renderService = Service.retrieve(RenderService);
+    this.pinService = Service.retrieve(PinService);
     this.node = node;
     this.x = x;
     this.y = y;
