@@ -1,16 +1,16 @@
 import Pin from '../pin';
 import ExecutionPin from './execution-pin';
-import GraphInputExecutionPin from './graph/graph-input-execution-pin';
+import GraphOutputExecutionPin from './graph/graph-output-execution-pin';
 import InputExecutionPin from './input-execution-pin';
 
 export default class OutputExecutionPin extends ExecutionPin {
   constructor() {
     super();
-    this._graphPin = new GraphInputExecutionPin(this);
+    this._graphPin = new GraphOutputExecutionPin(this);
   }
 
-  public get graphPin(): GraphInputExecutionPin {
-    return this._graphPin as GraphInputExecutionPin;
+  public get graphPin(): GraphOutputExecutionPin {
+    return this._graphPin as GraphOutputExecutionPin;
   }
 
   public get linkedPin(): InputExecutionPin {
