@@ -2,7 +2,7 @@ import Service from '../../core/service';
 import CameraService from '../../service/camera.service';
 import PinService from '../../service/pin.service';
 import RenderService from '../../service/render.service';
-import { GraphDataPin, PIN_SIZE } from '../pin/graph-pin';
+import GraphPin, { GraphDataPin, PIN_SIZE } from '../pin/graph-pin';
 import Node from './node';
 
 export const HEADER_MARGIN = 25;
@@ -31,12 +31,17 @@ export default class GraphNode {
   }
 
   public get height() {
+    const executionPinsHeight =
+      Math.max(
+        this.node.executionInputs.length,
+        this.node.executionOutputs.length
+      ) *
+      (PIN_SIZE + 3);
+    const dataPinsHeight =
+      Math.max(this.node.inputs.length, this.node.outputs.length) *
+      (PIN_SIZE + 3);
     return Math.max(
-      HEADER_MARGIN +
-        5 +
-        Math.max(this.node.inputs.length, this.node.outputs.length) *
-          (PIN_SIZE + 3) +
-        5,
+      HEADER_MARGIN + 5 + executionPinsHeight + dataPinsHeight + 5,
       60
     );
   }
@@ -47,7 +52,7 @@ export default class GraphNode {
       this._canBeDragged = true;
     } else if (this._inBodyBounds(x, y)) {
       event.preventDefault();
-      const pin = this.getPinAt(event.offsetX, event.offsetY);
+      const pin = this.getGraphPinAt(event.offsetX, event.offsetY);
       if (pin) pin.mousedown(event);
     }
   }
@@ -56,7 +61,7 @@ export default class GraphNode {
     this._canBeDragged = false;
     if (this._inBodyBounds(x, y)) {
       event.preventDefault();
-      const pin = this.getPinAt(event.offsetX, event.offsetY);
+      const pin = this.getGraphPinAt(event.offsetX, event.offsetY);
       if (pin) pin.mouseup(event);
     }
   }
@@ -64,8 +69,9 @@ export default class GraphNode {
   dblclick(event: MouseEvent, x: number, y: number) {
     if (this._inBodyBounds(x, y)) {
       event.preventDefault();
-      const pin = this.getPinAt(event.offsetX, event.offsetY);
-      if (pin) pin.dblclick(event);
+      const graphPin = this.getGraphPinAt(event.offsetX, event.offsetY);
+      if (graphPin && graphPin instanceof GraphDataPin)
+        graphPin.dblclick(event);
     }
   }
 
@@ -80,20 +86,20 @@ export default class GraphNode {
       document.body.style.cursor = 'grab';
     } else {
       document.body.style.cursor = 'default';
-      const graphPin = this.getPinAt(event.offsetX, event.offsetY);
-      if (graphPin?.pin?.defaultValue !== undefined) {
+      const graphPin = this.getGraphPinAt(event.offsetX, event.offsetY);
+      if (
+        graphPin !== undefined &&
+        graphPin instanceof GraphDataPin &&
+        graphPin.pin.defaultValue !== undefined
+      ) {
         this.showDefaultValueInTooltip(graphPin);
       }
     }
   }
 
-  getPinAt(x: number, y: number): GraphDataPin {
-    const node = this.node.inputs
-      .map((inputPin) => inputPin.graphPin)
-      .find((element) => element.inBounds(x, y));
-    if (node) return node;
-    return this.node.outputs
-      .map((outputPin) => outputPin.graphPin)
+  getGraphPinAt(x: number, y: number): GraphPin {
+    return this.node.pins
+      .map((pin) => pin.graphPin)
       .find((element) => element.inBounds(x, y));
   }
 
@@ -118,8 +124,14 @@ export default class GraphNode {
     localX: number,
     localY: number
   ) {
-    this.node.inputs.forEach((input, index) => {
+    let index = 0;
+    this.node.executionInputs.forEach((input) => {
       input.graphPin.draw(context, localX + 5, localY + index * (PIN_SIZE + 3));
+      index++;
+    });
+    this.node.inputs.forEach((input) => {
+      input.graphPin.draw(context, localX + 5, localY + index * (PIN_SIZE + 3));
+      index++;
     });
   }
 
@@ -128,12 +140,22 @@ export default class GraphNode {
     localX: number,
     localY: number
   ) {
-    this.node.outputs.forEach((output, index) => {
+    let index = 0;
+    this.node.executionOutputs.forEach((output) => {
       output.graphPin.draw(
         context,
         localX + this.width - PIN_SIZE - 5,
         localY + index * (PIN_SIZE + 3)
       );
+      index++;
+    });
+    this.node.outputs.forEach((output) => {
+      output.graphPin.draw(
+        context,
+        localX + this.width - PIN_SIZE - 5,
+        localY + index * (PIN_SIZE + 3)
+      );
+      index++;
     });
   }
 

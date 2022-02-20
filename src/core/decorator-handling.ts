@@ -1,9 +1,10 @@
-import InputPin from '../model/pin/input-pin';
+import InputPin from '../model/pin/data-pin/input-pin';
+import OutputPin from '../model/pin/data-pin/output-pin';
 import { Metadata } from './decorators/metadata.decorator';
 
 export interface MetadataDecorators {
   inputs: InputPin[];
-  outputs: InputPin[];
+  outputs: OutputPin[];
   metadata: Metadata;
 }
 

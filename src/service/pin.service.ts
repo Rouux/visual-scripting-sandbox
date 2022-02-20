@@ -1,6 +1,6 @@
 import Service from '../core/service';
 import { PIN_SIZE } from '../model/pin/graph-pin';
-import { Pin } from '../model/pin/pin';
+import { ExecutionPin, Pin } from '../model/pin/pin';
 import RenderService from './render.service';
 
 export default class PinService extends Service {
@@ -32,7 +32,11 @@ export default class PinService extends Service {
       const { context } = this.renderService;
       const offset = PIN_SIZE / 2;
       context.lineWidth = 5;
-      context.strokeStyle = 'black';
+      if (this.selectedPin instanceof ExecutionPin) {
+        context.strokeStyle = 'white';
+      } else {
+        context.strokeStyle = 'black';
+      }
       context.beginPath();
       context.moveTo(
         this.selectedPin.graphPin.x + offset,
