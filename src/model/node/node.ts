@@ -1,5 +1,5 @@
 import InputPin from '../pin/input-pin';
-import OutputPin from '../pin/output-pin';
+import OutputPin from '../pin/data-pin/output-pin';
 import GraphNode from './graph-node';
 
 export const HEADER_MARGIN = 25;

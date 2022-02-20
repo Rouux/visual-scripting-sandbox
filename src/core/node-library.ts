@@ -1,6 +1,6 @@
 import Node from '../model/node/node';
 import InputPin from '../model/pin/input-pin';
-import OutputPin from '../model/pin/output-pin';
+import OutputPin from '../model/pin/data-pin/output-pin';
 import { getDecorators, MetadataDecorators } from './decorator-handling';
 
 export default class NodeLibrary {

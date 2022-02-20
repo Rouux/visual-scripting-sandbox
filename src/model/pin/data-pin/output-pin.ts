@@ -1,6 +1,6 @@
 import GraphOutputPin from './graph-output-pin';
 import InputPin from './input-pin';
-import { AvailableType, DataPin, Pin } from './pin';
+import { AvailableType, DataPin, Pin } from '../pin';
 
 export default class OutputPin<
   K extends keyof AvailableType = keyof AvailableType
