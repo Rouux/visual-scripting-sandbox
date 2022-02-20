@@ -1,6 +1,6 @@
 import Service from '../../core/service';
 import RenderService from '../../service/render.service';
-import { AvailableType, DataPin, Pin } from './pin';
+import { AvailableType, DataPin, ExecutionPin, Pin } from './pin';
 
 export const PIN_SIZE = 20;
 
@@ -120,5 +120,18 @@ export abstract class GraphDataPin extends GraphPin {
       }
     });
     inputHtml.addEventListener('focusout', () => inputHtml.remove());
+  }
+}
+
+export abstract class GraphExecutionPin extends GraphPin {
+  public abstract get pin(): ExecutionPin;
+
+  public draw(
+    context: CanvasRenderingContext2D,
+    localX: number,
+    localY: number
+  ) {
+    context.fillStyle = 'white';
+    super.draw(context, localX, localY);
   }
 }
