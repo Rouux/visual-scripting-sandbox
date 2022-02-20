@@ -1,6 +1,6 @@
 import Service from '../../core/service';
 import RenderService from '../../service/render.service';
-import { AvailableType, DataPin, Pin } from './pin';
+import { AvailableType, DataPin, ExecutionPin, Pin } from './pin';
 
 export const PIN_SIZE = 20;
 
@@ -46,25 +46,13 @@ export default abstract class GraphPin {
     this.pin.mousedown(event);
   }
 
-  public draw(
+  public abstract draw(
     context: CanvasRenderingContext2D,
     localX: number,
     localY: number
-  ) {
-    this.updateBounds(localX, localY);
-    const halfPinSize = PIN_SIZE / 2;
-    const circleCenterX = this.x + halfPinSize;
-    const circleCenterY = this.y + halfPinSize;
-    context.beginPath();
-    context.arc(circleCenterX, circleCenterY, halfPinSize - 3, 0, 2 * Math.PI);
-    context.fill();
-    context.arc(circleCenterX, circleCenterY, halfPinSize - 2, 0, 2 * Math.PI);
-    context.lineWidth = 2;
-    context.strokeStyle = '#333';
-    context.stroke();
-  }
+  ): void;
 
-  private updateBounds(localX: number, localY: number) {
+  protected updateBounds(localX: number, localY: number) {
     if (this.bounds === undefined) {
       this.bounds = DOMRect.fromRect({
         x: localX,
@@ -97,7 +85,17 @@ export abstract class GraphDataPin extends GraphPin {
     localY: number
   ) {
     context.fillStyle = PIN_COLOR[this.pin.type];
-    super.draw(context, localX, localY);
+    super.updateBounds(localX, localY);
+    const halfPinSize = PIN_SIZE / 2;
+    const circleCenterX = this.x + halfPinSize;
+    const circleCenterY = this.y + halfPinSize;
+    context.beginPath();
+    context.arc(circleCenterX, circleCenterY, halfPinSize - 3, 0, 2 * Math.PI);
+    context.fill();
+    context.arc(circleCenterX, circleCenterY, halfPinSize - 2, 0, 2 * Math.PI);
+    context.lineWidth = 2;
+    context.strokeStyle = '#333';
+    context.stroke();
   }
 
   public dblclick(event: MouseEvent) {
@@ -120,5 +118,45 @@ export abstract class GraphDataPin extends GraphPin {
       }
     });
     inputHtml.addEventListener('focusout', () => inputHtml.remove());
+  }
+}
+
+export abstract class GraphExecutionPin extends GraphPin {
+  public abstract get pin(): ExecutionPin;
+
+  public draw(
+    context: CanvasRenderingContext2D,
+    localX: number,
+    localY: number
+  ) {
+    context.fillStyle = 'white';
+    super.updateBounds(localX, localY);
+    const halfPinSize = PIN_SIZE / 2;
+    const quarterPinSize = PIN_SIZE / 4;
+    const circleCenterX = this.x + halfPinSize;
+    const circleCenterY = this.y + halfPinSize;
+    context.beginPath();
+    context.moveTo(
+      circleCenterX - halfPinSize + 1,
+      circleCenterY - halfPinSize + 1
+    );
+    context.lineTo(
+      circleCenterX + quarterPinSize + 1,
+      circleCenterY - halfPinSize + 1
+    );
+    context.lineTo(circleCenterX + halfPinSize + 1, circleCenterY);
+    context.lineTo(
+      circleCenterX + quarterPinSize + 1,
+      circleCenterY + halfPinSize - 1
+    );
+    context.lineTo(
+      circleCenterX - halfPinSize + 1,
+      circleCenterY + halfPinSize - 1
+    );
+    context.closePath();
+    context.fill();
+    context.lineWidth = 1;
+    context.strokeStyle = 'black';
+    context.stroke();
   }
 }
