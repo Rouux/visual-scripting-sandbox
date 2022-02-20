@@ -117,12 +117,7 @@ export default class RenderService extends Service {
 
   draw = () => {
     this.debugService.debug(
-      'x: ',
-      this.camera.x,
-      ', y: ',
-      this.camera.y,
-      ', draws : ',
-      this.drawCalls++
+      `x: ${this.camera.x}, y: ${this.camera.y}, draws : ${this.drawCalls++}`
     );
     this.context.clearRect(0, 0, this.bounds.width, this.bounds.height);
 
