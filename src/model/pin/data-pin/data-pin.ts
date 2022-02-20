@@ -40,7 +40,8 @@ export default abstract class DataPin<
       case 'number':
         if (Number.isNaN(Number(value))) {
           Service.retrieve(NotificationService).error(
-            `The input '${this.name}' in the node '${this.node.name}' should be a number !`
+            `The input '${this.name}' in the node '${this.node.name}' should be a number !`,
+            `data-pin-casting-${this.node.id}${this.id}`
           );
         }
         return Number(value) as AvailableType[K];

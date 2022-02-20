@@ -1,6 +1,7 @@
 import Service from '../../core/service';
 import { MouseButton } from '../../core/utils';
 import PinService from '../../service/pin.service';
+import Entity from '../entity';
 import Node from '../node/node';
 import GraphPin from './graph-pin';
 
@@ -11,13 +12,14 @@ export type AvailableType = {
   any: any;
 };
 
-export default abstract class Pin {
+export default abstract class Pin extends Entity {
   public node: Node;
 
   protected pinService: PinService;
   protected _graphPin: GraphPin;
 
   public constructor() {
+    super();
     this.pinService = Service.retrieve(PinService);
   }
 

@@ -1,3 +1,4 @@
+import Entity from '../entity';
 import InputPin from '../pin/data-pin/input-pin';
 import OutputPin from '../pin/data-pin/output-pin';
 import InputExecutionPin from '../pin/execution-pin/input-execution-pin';
@@ -9,7 +10,7 @@ export const HEADER_MARGIN = 25;
 
 export type NodeCallback = (...args: unknown[]) => unknown;
 
-export default class Node {
+export default class Node extends Entity {
   public name: string;
   public graphNode: GraphNode;
 
@@ -20,6 +21,7 @@ export default class Node {
   private _callback: NodeCallback;
 
   constructor(name: string, callback?: NodeCallback) {
+    super();
     this.name = name;
     this._callback = callback;
     this.graphNode = new GraphNode(this);
