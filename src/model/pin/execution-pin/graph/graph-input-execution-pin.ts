@@ -1,9 +1,10 @@
-import { GraphDataPin, PIN_SIZE } from '../graph-pin';
-import InputPin from './input-pin';
+import { PIN_SIZE } from '../../graph-pin';
+import GraphExecutionPin from './graph-execution-pin';
+import OutputExecutionPin from '../output-execution-pin';
 
-export default class GraphInputPin extends GraphDataPin {
-  public get pin(): InputPin {
-    return this._pin as InputPin;
+export default class GraphInputExecutionPin extends GraphExecutionPin {
+  public get pin(): OutputExecutionPin {
+    return this._pin as OutputExecutionPin;
   }
 
   public draw(
@@ -16,7 +17,7 @@ export default class GraphInputPin extends GraphDataPin {
       const { x, y } = this.pin.linkedPin.graphPin;
       const offset = PIN_SIZE / 2;
       context.lineWidth = 5;
-      context.strokeStyle = 'black';
+      context.strokeStyle = 'white';
       context.beginPath();
       context.moveTo(this.x + offset, this.y + offset);
       context.lineTo(x + offset, y + offset);

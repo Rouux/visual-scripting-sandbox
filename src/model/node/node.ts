@@ -2,7 +2,7 @@ import InputPin from '../pin/data-pin/input-pin';
 import OutputPin from '../pin/data-pin/output-pin';
 import InputExecutionPin from '../pin/execution-pin/input-execution-pin';
 import OutputExecutionPin from '../pin/execution-pin/output-execution-pin';
-import { Pin } from '../pin/pin';
+import Pin from '../pin/pin';
 import GraphNode from './graph-node';
 
 export const HEADER_MARGIN = 25;

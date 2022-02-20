@@ -1,5 +1,6 @@
-import { AvailableType, DataPin, Pin } from '../pin';
-import GraphInputPin from './graph-input-pin';
+import Pin, { AvailableType } from '../pin';
+import DataPin from './data-pin';
+import GraphInputPin from './graph/graph-input-pin';
 import OutputPin from './output-pin';
 
 export default class InputPin<

@@ -1,5 +1,6 @@
-import { ExecutionPin, Pin } from '../pin';
-import GraphInputExecutionPin from './graph-input-execution-pin';
+import Pin from '../pin';
+import ExecutionPin from './execution-pin';
+import GraphInputExecutionPin from './graph/graph-input-execution-pin';
 import OutputExecutionPin from './output-execution-pin';
 
 export default class InputExecutionPin extends ExecutionPin {

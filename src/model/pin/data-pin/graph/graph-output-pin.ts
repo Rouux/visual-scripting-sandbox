@@ -1,5 +1,5 @@
-import { GraphDataPin } from '../graph-pin';
-import OutputPin from './output-pin';
+import GraphDataPin from './graph-data-pin';
+import OutputPin from '../output-pin';
 
 export default class GraphOutputPin extends GraphDataPin {
   public get pin(): OutputPin {
