@@ -1,37 +1,20 @@
-import InputPin from '../model/pin/data-pin/input-pin';
-import OutputPin from '../model/pin/data-pin/output-pin';
-import { Metadata } from './decorators/metadata.decorator';
+import Decorators, { IDecorators } from './decorators/decorators';
 
-export interface MetadataDecorators {
-  inputs: InputPin[];
-  outputs: OutputPin[];
-  metadata: Metadata;
-}
-
-const METADATA_TO_IGNORE = ['design:type'];
-
-export function getDecorators<T>(
-  library: T,
-  property: keyof T
-): MetadataDecorators {
-  const keys = Reflect.getMetadataKeys(library, property as string).filter(
-    (key) => !METADATA_TO_IGNORE.includes(key)
-  );
-  return keys.reduce(
-    (result, key) => ({
-      ...result,
-      [key]: Reflect.getMetadata(key, library, property as string)
-    }),
-    {
-      inputs: [],
-      outputs: [],
-      metadata: undefined
-    } as Partial<MetadataDecorators>
-  );
+export function getDecorators<T>(library: T, property: keyof T): IDecorators {
+  const decorators = new Decorators();
+  const keys = Reflect.getMetadataKeys(
+    library,
+    property as string
+  ) as (keyof Decorators)[];
+  keys.forEach((key) => {
+    const meta = Reflect.getMetadata(key, library, property as string);
+    if (meta && key in decorators) decorators[key] = meta;
+  });
+  return decorators;
 }
 
 export function defineMetadata(
-  key: keyof MetadataDecorators,
+  key: keyof IDecorators,
   value: unknown,
   target: unknown,
   propertyKey: string | symbol

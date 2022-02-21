@@ -24,7 +24,7 @@ html {
 
 #main-canvas {
   background-color: rgb(48, 48, 48);
-  position: relative;
+  position: absolute;
 }
 
 #debug {
@@ -37,7 +37,7 @@ html {
 #notification {
   position: absolute;
   top: 0;
-  right: 0;
+  right: 15em;
   flex-direction: column;
   display: flex;
 }
@@ -67,6 +67,14 @@ html {
   filter: invert(100%);
 }
 
+#node-library {
+  background-color: rgb(66, 66, 66);
+  border-left: 1px solid black;
+  height: 100vh;
+  position: relative;
+  min-width: 15em;
+}
+
 .middle-section {
   position: relative;
   width: 100%;
@@ -90,6 +98,16 @@ html {
 
 .flex-center {
   display: flex;
-  align-items: center;
   justify-content: center;
+}
+
+#node-library > ul {
+  list-style-type: none;
+}
+
+#node-library > ul > li {
+  margin: 0;
+  padding: 0;
+  padding-left: 0.5em;
+  margin-bottom: 3px;
 }

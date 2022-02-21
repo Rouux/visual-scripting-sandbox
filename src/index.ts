@@ -29,12 +29,12 @@ requestAnimationFrame(renderService.draw);
 
 // --- Tests --- //
 
-const nodes = NodeLibrary.loadLibrary(
+NodeLibrary.loadLibrary(
+  document.getElementById('node-library') as HTMLDivElement,
   MathLibrary,
   VariableLibrary,
   SystemLibrary
 );
-nodes.forEach((node) => nodeService.addNode(node));
 
 document.getElementById('btn-start').addEventListener('click', () => {
   executionService.start();
