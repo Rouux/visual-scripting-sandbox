@@ -73,6 +73,7 @@ html {
   height: 100vh;
   position: relative;
   min-width: 15em;
+  color: white;
 }
 
 .middle-section {
