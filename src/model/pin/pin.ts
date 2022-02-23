@@ -8,18 +8,21 @@ import GraphPin from './graph-pin';
 export type AvailableType = {
   number: number;
   string: string;
+  boolean: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   any: any;
 };
 
 export default abstract class Pin extends Entity {
+  public readonly name: string;
   public node: Node;
 
   protected pinService: PinService;
   protected _graphPin: GraphPin;
 
-  public constructor() {
+  public constructor(name: string) {
     super();
+    this.name = name;
     this.pinService = Service.retrieve(PinService);
   }
 

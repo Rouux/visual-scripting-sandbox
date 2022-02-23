@@ -3,7 +3,7 @@ import { defineMetadata } from '../decorator-handling';
 export interface Metadata {
   nodeName: string;
   category?: string;
-  executionLess?: boolean;
+  needExecution?: boolean;
 }
 
 export function metadataDecorator(metadata: Metadata) {

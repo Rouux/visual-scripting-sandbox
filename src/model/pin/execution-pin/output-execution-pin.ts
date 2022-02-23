@@ -4,8 +4,8 @@ import GraphOutputExecutionPin from './graph/graph-output-execution-pin';
 import InputExecutionPin from './input-execution-pin';
 
 export default class OutputExecutionPin extends ExecutionPin {
-  constructor() {
-    super();
+  constructor(name = 'execution-output') {
+    super(name);
     this._graphPin = new GraphOutputExecutionPin(this);
   }
 

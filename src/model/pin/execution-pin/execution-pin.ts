@@ -3,6 +3,10 @@ import Pin from '../pin';
 export default abstract class ExecutionPin extends Pin {
   protected _linkedPin: ExecutionPin;
 
+  public constructor(name: string) {
+    super(name);
+  }
+
   public abstract get linkedPin(): ExecutionPin;
 
   public get hasLinkedPin(): boolean {

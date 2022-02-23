@@ -10,6 +10,10 @@ export const HEADER_MARGIN = 25;
 
 export type NodeCallback = (...args: unknown[]) => unknown;
 
+export interface ExecutionResultObject {
+  _metadata: { execution: string[] };
+}
+
 export default class Node extends Entity {
   public name: string;
   public graphNode: GraphNode;
@@ -56,15 +60,31 @@ export default class Node extends Entity {
     if (!this._callback) {
       throw new Error(`No code implemented for ${this.name}`);
     }
-    const results = this.getCallbackResults();
-    console.debug('executing code in ', this.name, ' resulting in ', results);
-    results.forEach((result, index) => {
-      if (this._outputs[index]) {
-        this._outputs[index].value = result;
-      }
-    });
+    const result = this._callback(...this._inputs.map((input) => input.value));
+    console.debug('executing code in ', this.name, ' resulting in ', result);
+    let executeAll = true;
+    if (Array.isArray(result)) {
+      result.forEach((value, index) => {
+        if (this._outputs[index]) {
+          this._outputs[index].value = value;
+        }
+      });
+    } else if (typeof result === 'object') {
+      const executionResult = result as ExecutionResultObject;
+      const outputs = executionResult._metadata.execution;
+      executeAll = false;
+      outputs
+        .map((name) =>
+          this._executionOutputs.find((output) => output.name === name)
+        )
+        .forEach((output) => output?.executeNext());
+    } else if (this._outputs.length > 0) {
+      this._outputs[0].value = result;
+    }
 
-    this._executionOutputs.forEach((output) => output.executeNext());
+    if (executeAll) {
+      this._executionOutputs.forEach((output) => output.executeNext());
+    }
   }
 
   public addExecutionInput(input: InputExecutionPin): this {
@@ -89,13 +109,5 @@ export default class Node extends Entity {
     output.node = this;
     this._outputs.push(output);
     return this;
-  }
-
-  private getCallbackResults() {
-    let results = this._callback(
-      ...this._inputs.map((input) => input.value)
-    ) as unknown[];
-    if (!Array.isArray(results)) results = [results];
-    return results;
   }
 }

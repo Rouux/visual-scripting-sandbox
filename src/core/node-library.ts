@@ -45,10 +45,16 @@ export default class NodeLibrary {
     const { metadata } = metadatas;
     const nodeName = metadata ? metadata.nodeName : property;
     const node = new Node(nodeName, callback);
-    if (!metadata?.executionLess) {
+    if (metadata?.needExecution) {
       node.addExecutionInput(new InputExecutionPin());
       node.addExecutionOutput(new OutputExecutionPin());
     }
+    metadatas.executionInputs.forEach(({ name }) =>
+      node.addExecutionInput(new InputExecutionPin(name))
+    );
+    metadatas.executionOutputs.forEach(({ name }) =>
+      node.addExecutionOutput(new OutputExecutionPin(name))
+    );
     metadatas.inputs.forEach(({ name, type, defaultValue }) =>
       node.addInput(new InputPin(name, type, defaultValue))
     );

@@ -5,14 +5,12 @@ import Pin, { AvailableType } from '../pin';
 export default abstract class DataPin<
   K extends keyof AvailableType = keyof AvailableType
 > extends Pin {
-  public name: string;
   public type: K;
   private _value: AvailableType[K];
   private _defaultValue: AvailableType[K];
 
   constructor(name: string, type: K, defaultValue?: AvailableType[K]) {
-    super();
-    this.name = name;
+    super(name);
     this.type = type;
     this._defaultValue = defaultValue;
     this._value = defaultValue;
@@ -47,6 +45,8 @@ export default abstract class DataPin<
         return Number(value) as AvailableType[K];
       case 'string':
         return String(value) as AvailableType[K];
+      case 'boolean':
+        return Boolean(value === 'false' ? false : value) as AvailableType[K];
       case 'any':
       default:
         break;

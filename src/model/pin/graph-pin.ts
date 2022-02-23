@@ -7,6 +7,7 @@ export const PIN_SIZE = 20;
 export const PIN_COLOR: Record<keyof AvailableType, string> = {
   number: '#22cc22',
   string: 'purple',
+  boolean: 'red',
   any: 'white'
 };
 
