@@ -5,6 +5,9 @@ import executionOutputsDecorator from '../core/decorators/execution-outputs.deco
 import inputsDecorator from '../core/decorators/inputs.decorator';
 import { metadataDecorator } from '../core/decorators/metadata.decorator';
 import outputsDecorator from '../core/decorators/outputs.decorator';
+import ExecutionResultBuilder, {
+  IExecutionResult
+} from '../core/execution-result-builder';
 import InputPin from '../model/pin/data-pin/input-pin';
 import OutputPin from '../model/pin/data-pin/output-pin';
 import InputExecutionPin from '../model/pin/execution-pin/input-execution-pin';
@@ -26,12 +29,8 @@ export default class SystemLibrary {
     new OutputExecutionPin('true'),
     new OutputExecutionPin('false')
   )
-  static ifelse = (condition: boolean): unknown => {
+  static ifelse = (condition: boolean): IExecutionResult => {
     const execute = condition ? 'true' : 'false';
-    return {
-      _metadata: {
-        execution: [execute]
-      }
-    };
+    return ExecutionResultBuilder.builder().addExecution(execute).build();
   };
 }

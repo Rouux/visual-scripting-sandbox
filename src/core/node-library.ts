@@ -6,6 +6,10 @@ import OutputExecutionPin from '../model/pin/execution-pin/output-execution-pin'
 import NodeService from '../service/node.service';
 import { getDecorators } from './decorator-handling';
 import { IDecorators } from './decorators/decorators';
+import ExecutionResultBuilder, {
+  IExecutionResult,
+  isExecutionResult
+} from './execution-result-builder';
 import Service from './service';
 
 export default class NodeLibrary {
@@ -37,6 +41,31 @@ export default class NodeLibrary {
     return nodes;
   }
 
+  static build(callback: NodeCallback, metadatas: IDecorators) {
+    return (...args: unknown[]): IExecutionResult => {
+      const callbackResult = callback(...args);
+      if (isExecutionResult(callbackResult)) {
+        if (callbackResult._metadata.execution?.length === 0) {
+          callbackResult._metadata.execution = [
+            ...metadatas.executionOutputs.map((output) => output.name)
+          ];
+        }
+        return callbackResult;
+      }
+
+      const builder = ExecutionResultBuilder.builder().setExecutions(
+        ...metadatas.executionOutputs.map((output) => output.name)
+      );
+      const results = Array.isArray(callbackResult)
+        ? [...callbackResult]
+        : [callbackResult];
+      metadatas.outputs.forEach(({ name }, index) => {
+        builder.setValue(name, results[index]);
+      });
+      return builder.build();
+    };
+  }
+
   private static buildNodeFromDecorators(
     property: string,
     callback: NodeCallback,
@@ -44,7 +73,8 @@ export default class NodeLibrary {
   ): Node {
     const { metadata } = metadatas;
     const nodeName = metadata ? metadata.nodeName : property;
-    const node = new Node(nodeName, callback);
+
+    const node = new Node(nodeName, this.build(callback, metadatas));
     if (metadata?.needExecution) {
       node.addExecutionInput(new InputExecutionPin());
       node.addExecutionOutput(new OutputExecutionPin());

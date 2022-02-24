@@ -26,8 +26,13 @@ export default class InputPin<
   }
 
   public get value(): AvailableType[K] {
-    const value = this.hasLinkedPin ? this.linkedPin.value : this.defaultValue;
-    return this.castedToRequiredType(value);
+    if (this.hasLinkedPin) {
+      if (!this.linkedPin.node.needsExecution) {
+        this.linkedPin.node.executeCode();
+      }
+      return this.castedToRequiredType(this.linkedPin.value);
+    }
+    return this.castedToRequiredType(this.defaultValue);
   }
 
   public canLinkTo(target: Pin): boolean {
