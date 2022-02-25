@@ -8,26 +8,26 @@ import outputsDecorator from '../decorators/output/outputs.decorator';
 import ExecutionResultBuilder, {
   IExecutionResult
 } from './execution-result.builder';
-import InputPin from '../model/pin/data-pin/input/input-pin';
-import OutputPin from '../model/pin/data-pin/output/output-pin';
-import InputExecutionPin from '../model/pin/execution-pin/input/input-execution-pin';
-import OutputExecutionPin from '../model/pin/execution-pin/output/output-execution-pin';
+import DataInputPin from '../model/pin/data-pin/input/data-input-pin';
+import DataOutputPin from '../model/pin/data-pin/output/data-output-pin';
+import ExecutionInputPin from '../model/pin/execution-pin/input/execution-input-pin';
+import ExecutionOutputPin from '../model/pin/execution-pin/output/execution-output-pin';
 
 export default class SystemLibrary {
   @metadataDecorator({ nodeName: 'Print', needExecution: true })
-  @inputsDecorator(new InputPin('text', 'string', ''))
-  @outputsDecorator(new OutputPin('text', 'string', ''))
+  @inputsDecorator(new DataInputPin('text', 'string', ''))
+  @outputsDecorator(new DataOutputPin('text', 'string', ''))
   static print = (text: string): string => {
     console.info('[Print]: ', text);
     return text;
   };
 
   @metadataDecorator({ nodeName: 'If / Else' })
-  @inputsDecorator(new InputPin('condition', 'boolean', true))
-  @executionInputsDecorator(new InputExecutionPin())
+  @inputsDecorator(new DataInputPin('condition', 'boolean', true))
+  @executionInputsDecorator(new ExecutionInputPin())
   @executionOutputsDecorator(
-    new OutputExecutionPin('true'),
-    new OutputExecutionPin('false')
+    new ExecutionOutputPin('true'),
+    new ExecutionOutputPin('false')
   )
   static ifelse = (condition: boolean): IExecutionResult => {
     const execute = condition ? 'true' : 'false';

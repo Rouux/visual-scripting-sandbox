@@ -1,9 +1,9 @@
 import { IExecutionResult } from '../../library/execution-result.builder';
 import Entity from '../entity';
-import InputPin from '../pin/data-pin/input/input-pin';
-import OutputPin from '../pin/data-pin/output/output-pin';
-import InputExecutionPin from '../pin/execution-pin/input/input-execution-pin';
-import OutputExecutionPin from '../pin/execution-pin/output/output-execution-pin';
+import DataInputPin from '../pin/data-pin/input/data-input-pin';
+import DataOutputPin from '../pin/data-pin/output/data-output-pin';
+import ExecutionInputPin from '../pin/execution-pin/input/execution-input-pin';
+import ExecutionOutputPin from '../pin/execution-pin/output/execution-output-pin';
 import Pin from '../pin/pin';
 import GraphNode from './graph-node';
 
@@ -16,11 +16,11 @@ export default class Node extends Entity {
   public name: string;
   public graphNode: GraphNode;
 
-  private _executionInputs: InputExecutionPin[] = [];
-  private _executionOutputs: OutputExecutionPin[] = [];
-  private _inputs: InputPin[] = [];
-  private _outputs: OutputPin[] = [];
-  private _callback: NodeCallback;
+  private readonly _executionInputs: ExecutionInputPin[] = [];
+  private readonly _executionOutputs: ExecutionOutputPin[] = [];
+  private readonly _dataInputs: DataInputPin[] = [];
+  private readonly _dataOutputs: DataOutputPin[] = [];
+  private readonly _callback: NodeCallback;
 
   constructor(name: string, callback?: NodeCallback) {
     super();
@@ -37,35 +37,37 @@ export default class Node extends Entity {
     return [
       ...this._executionInputs,
       ...this._executionOutputs,
-      ...this.inputs,
-      ...this.outputs
+      ...this._dataInputs,
+      ...this._dataOutputs
     ];
   }
 
-  public get executionInputs(): InputExecutionPin[] {
+  public get executionInputs(): ExecutionInputPin[] {
     return [...this._executionInputs];
   }
 
-  public get executionOutputs(): OutputExecutionPin[] {
+  public get executionOutputs(): ExecutionOutputPin[] {
     return [...this._executionOutputs];
   }
 
-  public get inputs(): InputPin[] {
-    return [...this._inputs];
+  public get dataInputs(): DataInputPin[] {
+    return [...this._dataInputs];
   }
 
-  public get outputs(): OutputPin[] {
-    return [...this._outputs];
+  public get dataOutputs(): DataOutputPin[] {
+    return [...this._dataOutputs];
   }
 
   public executeCode() {
     if (!this._callback) {
       throw new Error(`No code implemented for ${this.name}`);
     }
-    const result = this._callback(...this._inputs.map((input) => input.value));
+    const result = this._callback(
+      ...this._dataInputs.map((input) => input.value)
+    );
     console.debug('executing code in ', this.name, ' resulting in ', result);
     const executionResult = result as IExecutionResult;
-    this._outputs.forEach(
+    this._dataOutputs.forEach(
       (output) => (output.value = executionResult._values[output.name])
     );
     const outputs = executionResult._metadata.execution;
@@ -80,27 +82,27 @@ export default class Node extends Entity {
     }
   }
 
-  public addExecutionInput(input: InputExecutionPin): this {
+  public addExecutionInput(input: ExecutionInputPin): this {
     input.node = this;
     this._executionInputs.push(input);
     return this;
   }
 
-  public addExecutionOutput(input: OutputExecutionPin): this {
+  public addExecutionOutput(input: ExecutionOutputPin): this {
     input.node = this;
     this._executionOutputs.push(input);
     return this;
   }
 
-  public addInput(input: InputPin): this {
+  public addInput(input: DataInputPin): this {
     input.node = this;
-    this._inputs.push(input);
+    this._dataInputs.push(input);
     return this;
   }
 
-  public addOutput(output: OutputPin): this {
+  public addOutput(output: DataOutputPin): this {
     output.node = this;
-    this._outputs.push(output);
+    this._dataOutputs.push(output);
     return this;
   }
 }

@@ -1,6 +1,6 @@
 import Service from './service';
 import Node from '../model/node/node';
-import OutputExecutionPin from '../model/pin/execution-pin/output/output-execution-pin';
+import ExecutionOutputPin from '../model/pin/execution-pin/output/execution-output-pin';
 import NodeService from './node.service';
 
 export default class ExecutionService extends Service {
@@ -11,7 +11,7 @@ export default class ExecutionService extends Service {
   public init() {
     this._nodeService = Service.retrieve(NodeService);
     this.startNode = new Node('Start').addExecutionOutput(
-      new OutputExecutionPin()
+      new ExecutionOutputPin()
     );
     this._nodeService.addNode(this.startNode);
   }

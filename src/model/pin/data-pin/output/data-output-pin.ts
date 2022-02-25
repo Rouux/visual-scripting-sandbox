@@ -1,41 +1,41 @@
 import Pin, { AvailableType } from '../../pin';
 import DataPin from '../data-pin';
-import GraphOutputPin from './graph-output-pin';
-import InputPin from '../input/input-pin';
+import DataOutputGraphPin from './data-output-graph-pin';
+import DataInputPin from '../input/data-input-pin';
 
-export default class OutputPin<
+export default class DataOutputPin<
   K extends keyof AvailableType = keyof AvailableType
 > extends DataPin<K> {
-  private _linkedPins: InputPin[] = [];
+  private _linkedPins: DataInputPin[] = [];
 
   constructor(name: string, type: K, defaultValue?: AvailableType[K]) {
     super(name, type, defaultValue);
-    this._graphPin = new GraphOutputPin(this);
+    this._graphPin = new DataOutputGraphPin(this);
   }
 
-  public get graphPin(): GraphOutputPin {
-    return this._graphPin as GraphOutputPin;
+  public get graphPin(): DataOutputGraphPin {
+    return this._graphPin as DataOutputGraphPin;
   }
 
   public get hasLinkedPin(): boolean {
     return this._linkedPins?.length > 0;
   }
 
-  public get linkedPins(): InputPin[] {
+  public get linkedPins(): DataInputPin[] {
     return [...this._linkedPins];
   }
 
   public canLinkTo(target: Pin): boolean {
-    return target !== undefined && target instanceof InputPin;
+    return target !== undefined && target instanceof DataInputPin;
   }
 
   public linkTo(target: Pin): boolean {
     if (!this.canLinkTo(target)) return false;
-    this._linkedPins.push(target as InputPin);
+    this._linkedPins.push(target as DataInputPin);
     return true;
   }
 
-  public unlink(target: InputPin, stop: boolean) {
+  public unlink(target: DataInputPin, stop: boolean) {
     if (!stop) {
       this._linkedPins
         .filter((linkedPin) => linkedPin === target)

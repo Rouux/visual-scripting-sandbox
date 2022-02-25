@@ -1,8 +1,8 @@
 import Node, { NodeCallback } from '../model/node/node';
-import InputPin from '../model/pin/data-pin/input/input-pin';
-import OutputPin from '../model/pin/data-pin/output/output-pin';
-import InputExecutionPin from '../model/pin/execution-pin/input/input-execution-pin';
-import OutputExecutionPin from '../model/pin/execution-pin/output/output-execution-pin';
+import DataInputPin from '../model/pin/data-pin/input/data-input-pin';
+import DataOutputPin from '../model/pin/data-pin/output/data-output-pin';
+import ExecutionInputPin from '../model/pin/execution-pin/input/execution-input-pin';
+import ExecutionOutputPin from '../model/pin/execution-pin/output/execution-output-pin';
 import NodeService from '../service/node.service';
 import { getDecorators } from '../utils/decorator-utils';
 import { IDecorators } from '../decorators/decorators';
@@ -76,20 +76,20 @@ export default class NodeLibrary {
 
     const node = new Node(nodeName, this.build(callback, metadatas));
     if (metadata?.needExecution) {
-      node.addExecutionInput(new InputExecutionPin());
-      node.addExecutionOutput(new OutputExecutionPin());
+      node.addExecutionInput(new ExecutionInputPin());
+      node.addExecutionOutput(new ExecutionOutputPin());
     }
     metadatas.executionInputs.forEach(({ name }) =>
-      node.addExecutionInput(new InputExecutionPin(name))
+      node.addExecutionInput(new ExecutionInputPin(name))
     );
     metadatas.executionOutputs.forEach(({ name }) =>
-      node.addExecutionOutput(new OutputExecutionPin(name))
+      node.addExecutionOutput(new ExecutionOutputPin(name))
     );
     metadatas.inputs.forEach(({ name, type, defaultValue }) =>
-      node.addInput(new InputPin(name, type, defaultValue))
+      node.addInput(new DataInputPin(name, type, defaultValue))
     );
     metadatas.outputs.forEach(({ name, type, defaultValue }) =>
-      node.addOutput(new OutputPin(name, type, defaultValue))
+      node.addOutput(new DataOutputPin(name, type, defaultValue))
     );
     return node;
   }

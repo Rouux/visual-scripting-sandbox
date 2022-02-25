@@ -1,24 +1,24 @@
 import objectHash from 'object-hash';
-import InputPin from '../model/pin/data-pin/input/input-pin';
-import OutputPin from '../model/pin/data-pin/output/output-pin';
-import InputExecutionPin from '../model/pin/execution-pin/input/input-execution-pin';
-import OutputExecutionPin from '../model/pin/execution-pin/output/output-execution-pin';
+import DataInputPin from '../model/pin/data-pin/input/data-input-pin';
+import DataOutputPin from '../model/pin/data-pin/output/data-output-pin';
+import ExecutionInputPin from '../model/pin/execution-pin/input/execution-input-pin';
+import ExecutionOutputPin from '../model/pin/execution-pin/output/execution-output-pin';
 import { Metadata } from './metadata.decorator';
 
 export interface IDecorators {
-  inputs: InputPin[];
-  outputs: OutputPin[];
-  executionOutputs: OutputExecutionPin[];
-  executionInputs: InputExecutionPin[];
+  inputs: DataInputPin[];
+  outputs: DataOutputPin[];
+  executionOutputs: ExecutionOutputPin[];
+  executionInputs: ExecutionInputPin[];
   metadata: Metadata;
   hash: () => string;
 }
 
 export default class Decorators implements IDecorators {
-  public inputs: InputPin[];
-  public outputs: OutputPin[];
-  public executionOutputs: OutputExecutionPin[];
-  public executionInputs: InputExecutionPin[];
+  public inputs: DataInputPin[];
+  public outputs: DataOutputPin[];
+  public executionOutputs: ExecutionOutputPin[];
+  public executionInputs: ExecutionInputPin[];
   public metadata: Metadata;
 
   private _hash: string;

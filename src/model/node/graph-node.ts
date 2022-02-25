@@ -1,8 +1,8 @@
-import Service from '../../service/service';
 import CameraService from '../../service/camera.service';
 import PinService from '../../service/pin.service';
 import RenderService from '../../service/render/render.service';
-import GraphDataPin from '../pin/data-pin/graph-data-pin';
+import Service from '../../service/service';
+import DataGraphPin from '../pin/data-pin/data-graph-pin';
 import GraphPin, { PIN_SIZE } from '../pin/graph-pin';
 import Node from './node';
 
@@ -39,7 +39,7 @@ export default class GraphNode {
       ) *
       (PIN_SIZE + 3);
     const dataPinsHeight =
-      Math.max(this.node.inputs.length, this.node.outputs.length) *
+      Math.max(this.node.dataInputs.length, this.node.dataOutputs.length) *
       (PIN_SIZE + 3);
     return Math.max(
       HEADER_MARGIN + 5 + executionPinsHeight + dataPinsHeight + 5,
@@ -71,7 +71,7 @@ export default class GraphNode {
     if (this._inBodyBounds(x, y)) {
       event.preventDefault();
       const graphPin = this.getGraphPinAt(event.offsetX, event.offsetY);
-      if (graphPin && graphPin instanceof GraphDataPin)
+      if (graphPin && graphPin instanceof DataGraphPin)
         graphPin.dblclick(event);
     }
   }
@@ -91,7 +91,7 @@ export default class GraphNode {
       const graphPin = this.getGraphPinAt(event.offsetX, event.offsetY);
       if (
         graphPin !== undefined &&
-        graphPin instanceof GraphDataPin &&
+        graphPin instanceof DataGraphPin &&
         graphPin.pin.value !== undefined
       ) {
         graphPin.showDefaultValueInTooltip();
@@ -131,7 +131,7 @@ export default class GraphNode {
       input.graphPin.draw(context, localX + 5, localY + index * (PIN_SIZE + 3));
       index++;
     });
-    this.node.inputs.forEach((input) => {
+    this.node.dataInputs.forEach((input) => {
       input.graphPin.draw(context, localX + 5, localY + index * (PIN_SIZE + 3));
       index++;
     });
@@ -151,7 +151,7 @@ export default class GraphNode {
       );
       index++;
     });
-    this.node.outputs.forEach((output) => {
+    this.node.dataOutputs.forEach((output) => {
       output.graphPin.draw(
         context,
         localX + this.width - PIN_SIZE - 5,
@@ -198,28 +198,6 @@ export default class GraphNode {
       localY + 17,
       this.width
     );
-  }
-
-  // @todo move to graph pin itself, has no need here it's all data of graph pin
-  private showDefaultValueInTooltip(graphPin: GraphDataPin) {
-    const span = document.createElement('span');
-    span.textContent = graphPin.pin.value ?? '';
-    const x = graphPin.x + PIN_SIZE + 2;
-    const y = graphPin.y + PIN_SIZE + 2;
-    span.style.backgroundColor = 'white';
-    span.style.border = '1px solid black';
-    span.style.padding = '0px 2px 0px 2px';
-    span.style.position = 'absolute';
-    span.style.left = `${x}px`;
-    span.style.top = `${y}px`;
-    span.style.minWidth = '3rem';
-    span.style.minHeight = '1.5rem';
-    document.body.appendChild(span);
-    const destroySpan = () => {
-      span.remove();
-      this.renderService.canvas.removeEventListener('mousemove', destroySpan);
-    };
-    this.renderService.canvas.addEventListener('mousemove', destroySpan);
   }
 
   private _inHeaderBounds(x: number, y: number) {
