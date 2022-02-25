@@ -1,5 +1,5 @@
-import Service from '../../core/service';
-import RenderService from '../../service/render.service';
+import Service from '../../service/service';
+import RenderService from '../../service/render/render.service';
 import Pin, { AvailableType } from './pin';
 
 export const PIN_SIZE = 20;

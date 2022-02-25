@@ -1,8 +1,8 @@
 import 'reflect-metadata';
-import inputsDecorator from '../core/decorators/inputs.decorator';
-import outputsDecorator from '../core/decorators/outputs.decorator';
-import InputPin from '../model/pin/data-pin/input-pin';
-import OutputPin from '../model/pin/data-pin/output-pin';
+import inputsDecorator from '../decorators/input/inputs.decorator';
+import outputsDecorator from '../decorators/output/outputs.decorator';
+import InputPin from '../model/pin/data-pin/input/input-pin';
+import OutputPin from '../model/pin/data-pin/output/output-pin';
 
 export default class MathLibrary {
   @inputsDecorator(

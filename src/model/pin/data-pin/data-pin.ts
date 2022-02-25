@@ -1,5 +1,5 @@
-import Service from '../../../core/service';
-import NotificationService from '../../../service/notification.service';
+import Service from '../../../service/service';
+import NotificationService from '../../../service/notification/notification.service';
 import Pin, { AvailableType } from '../pin';
 
 export default abstract class DataPin<

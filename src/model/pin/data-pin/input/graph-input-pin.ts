@@ -1,6 +1,6 @@
 import { PIN_SIZE } from '../../graph-pin';
-import GraphDataPin from './graph-data-pin';
-import InputPin from '../input-pin';
+import GraphDataPin from '../graph-data-pin';
+import InputPin from './input-pin';
 
 export default class GraphInputPin extends GraphDataPin {
   public get pin(): InputPin {

@@ -1,5 +1,5 @@
-import GraphPin, { PIN_SIZE } from '../../graph-pin';
-import ExecutionPin from '../execution-pin';
+import GraphPin, { PIN_SIZE } from '../graph-pin';
+import ExecutionPin from './execution-pin';
 
 export default abstract class GraphExecutionPin extends GraphPin {
   public abstract get pin(): ExecutionPin;

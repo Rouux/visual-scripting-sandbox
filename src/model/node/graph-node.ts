@@ -1,8 +1,8 @@
-import Service from '../../core/service';
+import Service from '../../service/service';
 import CameraService from '../../service/camera.service';
 import PinService from '../../service/pin.service';
-import RenderService from '../../service/render.service';
-import GraphDataPin from '../pin/data-pin/graph/graph-data-pin';
+import RenderService from '../../service/render/render.service';
+import GraphDataPin from '../pin/data-pin/graph-data-pin';
 import GraphPin, { PIN_SIZE } from '../pin/graph-pin';
 import Node from './node';
 

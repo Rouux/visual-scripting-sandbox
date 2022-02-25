@@ -1,6 +1,6 @@
 import { PIN_SIZE } from '../../graph-pin';
-import GraphExecutionPin from './graph-execution-pin';
-import OutputExecutionPin from '../output-execution-pin';
+import GraphExecutionPin from '../graph-execution-pin';
+import OutputExecutionPin from '../output/output-execution-pin';
 
 export default class GraphInputExecutionPin extends GraphExecutionPin {
   public get pin(): OutputExecutionPin {

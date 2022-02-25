@@ -1,7 +1,7 @@
-import Pin from '../pin';
-import ExecutionPin from './execution-pin';
-import GraphOutputExecutionPin from './graph/graph-output-execution-pin';
-import InputExecutionPin from './input-execution-pin';
+import Pin from '../../pin';
+import ExecutionPin from '../execution-pin';
+import GraphOutputExecutionPin from './graph-output-execution-pin';
+import InputExecutionPin from '../input/input-execution-pin';
 
 export default class OutputExecutionPin extends ExecutionPin {
   constructor(name = 'execution-output') {

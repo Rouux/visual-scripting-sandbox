@@ -1,8 +1,8 @@
-import Service from '../core/service';
+import Service from './service';
 import { PIN_SIZE } from '../model/pin/graph-pin';
 import Pin from '../model/pin/pin';
 import ExecutionPin from '../model/pin/execution-pin/execution-pin';
-import RenderService from './render.service';
+import RenderService from './render/render.service';
 
 export default class PinService extends Service {
   private _selectedPin: Pin;

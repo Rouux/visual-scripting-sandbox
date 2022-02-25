@@ -1,9 +1,9 @@
-import Service from '../core/service';
+import Service from '../service';
 import Notification, {
   NotificationLevel,
   NotificationOptions,
   NOTIFICATION_COLOR_PER_LEVEL
-} from '../model/notification';
+} from './notification';
 
 export type INotificationService = {
   maxOpened?: number;

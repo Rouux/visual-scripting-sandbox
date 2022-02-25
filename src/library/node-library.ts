@@ -1,16 +1,16 @@
 import Node, { NodeCallback } from '../model/node/node';
-import InputPin from '../model/pin/data-pin/input-pin';
-import OutputPin from '../model/pin/data-pin/output-pin';
-import InputExecutionPin from '../model/pin/execution-pin/input-execution-pin';
-import OutputExecutionPin from '../model/pin/execution-pin/output-execution-pin';
+import InputPin from '../model/pin/data-pin/input/input-pin';
+import OutputPin from '../model/pin/data-pin/output/output-pin';
+import InputExecutionPin from '../model/pin/execution-pin/input/input-execution-pin';
+import OutputExecutionPin from '../model/pin/execution-pin/output/output-execution-pin';
 import NodeService from '../service/node.service';
-import { getDecorators } from './decorator-handling';
-import { IDecorators } from './decorators/decorators';
+import { getDecorators } from '../utils/decorator-utils';
+import { IDecorators } from '../decorators/decorators';
 import ExecutionResultBuilder, {
   IExecutionResult,
   isExecutionResult
-} from './execution-result-builder';
-import Service from './service';
+} from './execution-result.builder';
+import Service from '../service/service';
 
 export default class NodeLibrary {
   private static LibraryMetadatas: [

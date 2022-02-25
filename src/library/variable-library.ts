@@ -1,7 +1,7 @@
 import 'reflect-metadata';
-import { metadataDecorator } from '../core/decorators/metadata.decorator';
-import outputsDecorator from '../core/decorators/outputs.decorator';
-import OutputPin from '../model/pin/data-pin/output-pin';
+import { metadataDecorator } from '../decorators/metadata.decorator';
+import outputsDecorator from '../decorators/output/outputs.decorator';
+import OutputPin from '../model/pin/data-pin/output/output-pin';
 
 export default class VariableLibrary {
   @metadataDecorator({ nodeName: 'Variable' })

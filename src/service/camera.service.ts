@@ -1,4 +1,4 @@
-import Service from '../core/service';
+import Service from './service';
 
 export default class CameraService extends Service {
   public x: number;

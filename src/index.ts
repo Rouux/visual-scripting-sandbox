@@ -1,14 +1,14 @@
-import NodeLibrary from './core/node-library';
-import Service from './core/service';
-import MathLibrary from './lib/math-library';
-import SystemLibrary from './lib/system-library';
-import VariableLibrary from './lib/variable-library';
+import NodeLibrary from './library/node-library';
+import Service from './service/service';
+import MathLibrary from './library/math-library';
+import SystemLibrary from './library/system-library';
+import VariableLibrary from './library/variable-library';
 import CameraService from './service/camera.service';
 import ExecutionService from './service/execution.service';
 import NodeService from './service/node.service';
-import NotificationService from './service/notification.service';
+import NotificationService from './service/notification/notification.service';
 import PinService from './service/pin.service';
-import RenderService from './service/render.service';
+import RenderService from './service/render/render.service';
 
 const canvas = <HTMLCanvasElement>document.getElementById('main-canvas');
 const renderService = Service.provide(new RenderService(canvas));

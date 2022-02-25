@@ -1,8 +1,8 @@
 import objectHash from 'object-hash';
-import InputPin from '../../model/pin/data-pin/input-pin';
-import OutputPin from '../../model/pin/data-pin/output-pin';
-import InputExecutionPin from '../../model/pin/execution-pin/input-execution-pin';
-import OutputExecutionPin from '../../model/pin/execution-pin/output-execution-pin';
+import InputPin from '../model/pin/data-pin/input/input-pin';
+import OutputPin from '../model/pin/data-pin/output/output-pin';
+import InputExecutionPin from '../model/pin/execution-pin/input/input-execution-pin';
+import OutputExecutionPin from '../model/pin/execution-pin/output/output-execution-pin';
 import { Metadata } from './metadata.decorator';
 
 export interface IDecorators {

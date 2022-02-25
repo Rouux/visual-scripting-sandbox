@@ -1,5 +1,5 @@
-import InputPin from '../../model/pin/data-pin/input-pin';
-import { defineMetadata } from '../decorator-handling';
+import InputPin from '../../model/pin/data-pin/input/input-pin';
+import { defineMetadata } from '../../utils/decorator-utils';
 
 export default function inputsDecorator(...inputs: InputPin[]) {
   return function (target: unknown, propertyKey: string) {

@@ -1,4 +1,4 @@
-import { defineMetadata } from '../decorator-handling';
+import { defineMetadata } from '../utils/decorator-utils';
 
 export interface Metadata {
   nodeName: string;

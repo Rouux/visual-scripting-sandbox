@@ -1,5 +1,5 @@
-import OutputExecutionPin from '../../model/pin/execution-pin/output-execution-pin';
-import { defineMetadata } from '../decorator-handling';
+import OutputExecutionPin from '../../model/pin/execution-pin/output/output-execution-pin';
+import { defineMetadata } from '../../utils/decorator-utils';
 
 export default function executionOutputsDecorator(
   ...outputs: OutputExecutionPin[]

@@ -1,9 +1,9 @@
-import { IExecutionResult } from '../../core/execution-result-builder';
+import { IExecutionResult } from '../../library/execution-result.builder';
 import Entity from '../entity';
-import InputPin from '../pin/data-pin/input-pin';
-import OutputPin from '../pin/data-pin/output-pin';
-import InputExecutionPin from '../pin/execution-pin/input-execution-pin';
-import OutputExecutionPin from '../pin/execution-pin/output-execution-pin';
+import InputPin from '../pin/data-pin/input/input-pin';
+import OutputPin from '../pin/data-pin/output/output-pin';
+import InputExecutionPin from '../pin/execution-pin/input/input-execution-pin';
+import OutputExecutionPin from '../pin/execution-pin/output/output-execution-pin';
 import Pin from '../pin/pin';
 import GraphNode from './graph-node';
 

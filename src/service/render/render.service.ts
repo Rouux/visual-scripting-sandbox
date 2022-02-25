@@ -1,10 +1,10 @@
-import Service from '../core/service';
-import { MouseButton, roundUp } from '../core/utils';
-import FpsCounter from '../model/fps-counter';
-import GraphNode from '../model/node/graph-node';
-import CameraService from './camera.service';
-import NodeService from './node.service';
-import PinService from './pin.service';
+import Service from '../service';
+import { MouseButton, roundUp } from '../../utils/utils';
+import FpsCounter from './fps-counter';
+import GraphNode from '../../model/node/graph-node';
+import CameraService from '../camera.service';
+import NodeService from '../node.service';
+import PinService from '../pin.service';
 
 export default class RenderService extends Service {
   public canvas: HTMLCanvasElement;

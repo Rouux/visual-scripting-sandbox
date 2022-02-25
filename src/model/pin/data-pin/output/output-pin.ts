@@ -1,7 +1,7 @@
-import Pin, { AvailableType } from '../pin';
-import DataPin from './data-pin';
-import GraphOutputPin from './graph/graph-output-pin';
-import InputPin from './input-pin';
+import Pin, { AvailableType } from '../../pin';
+import DataPin from '../data-pin';
+import GraphOutputPin from './graph-output-pin';
+import InputPin from '../input/input-pin';
 
 export default class OutputPin<
   K extends keyof AvailableType = keyof AvailableType

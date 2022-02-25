@@ -1,6 +1,6 @@
-import Service from '../core/service';
+import Service from './service';
 import Node from '../model/node/node';
-import OutputExecutionPin from '../model/pin/execution-pin/output-execution-pin';
+import OutputExecutionPin from '../model/pin/execution-pin/output/output-execution-pin';
 import NodeService from './node.service';
 
 export default class ExecutionService extends Service {
