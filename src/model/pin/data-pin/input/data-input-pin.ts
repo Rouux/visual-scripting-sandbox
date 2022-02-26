@@ -27,7 +27,7 @@ export default class DataInputPin<
 
   public get value(): AvailableType[K] {
     if (this.hasLinkedPin) {
-      if (!this.linkedPin.node.needsExecution) {
+      if (!this.linkedPin.node.hasExecutionPin) {
         this.linkedPin.node.executeCode();
       }
       return this.castedToRequiredType(this.linkedPin.value);

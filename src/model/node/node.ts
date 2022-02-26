@@ -33,7 +33,7 @@ export default class Node extends Entity {
     this.graphNode = new GraphNode(this);
   }
 
-  public get needsExecution(): boolean {
+  public get hasExecutionPin(): boolean {
     return this.executionInputs.length > 0 || this.executionOutputs.length > 0;
   }
 
@@ -92,13 +92,13 @@ export default class Node extends Entity {
     return this;
   }
 
-  public addInput(input: DataInputPin): this {
+  public addDataInput(input: DataInputPin): this {
     input.node = this;
     this._dataInputs.push(input);
     return this;
   }
 
-  public addOutput(output: DataOutputPin): this {
+  public addDataOutput(output: DataOutputPin): this {
     output.node = this;
     this._dataOutputs.push(output);
     return this;

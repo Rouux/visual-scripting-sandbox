@@ -1,16 +1,9 @@
-import Node, { NodeCallback } from '../model/node/node';
-import DataInputPin from '../model/pin/data-pin/input/data-input-pin';
-import DataOutputPin from '../model/pin/data-pin/output/data-output-pin';
-import ExecutionInputPin from '../model/pin/execution-pin/input/execution-input-pin';
-import ExecutionOutputPin from '../model/pin/execution-pin/output/execution-output-pin';
-import NodeService from '../service/node.service';
-import { getDecorators } from '../utils/decorator-utils';
 import { IDecorators } from '../decorators/decorators';
-import ExecutionResultBuilder, {
-  IExecutionResult,
-  isExecutionResult
-} from './execution-result.builder';
+import Node, { NodeCallback } from '../model/node/node';
+import NodeBuilder from '../model/node/node.builder';
+import NodeService from '../service/node.service';
 import Service from '../service/service';
+import { getDecorators } from '../utils/decorator-utils';
 
 export default class NodeLibrary {
   private static LibraryMetadatas: [
@@ -41,57 +34,17 @@ export default class NodeLibrary {
     return nodes;
   }
 
-  static build(callback: NodeCallback, metadatas: IDecorators) {
-    return (...args: unknown[]): IExecutionResult => {
-      const callbackResult = callback(...args);
-      if (isExecutionResult(callbackResult)) {
-        if (callbackResult._metadata.execution?.length === 0) {
-          callbackResult._metadata.execution = [
-            ...metadatas.executionOutputs.map((output) => output.name)
-          ];
-        }
-        return callbackResult;
-      }
-
-      const builder = ExecutionResultBuilder.builder().setExecutions(
-        ...metadatas.executionOutputs.map((output) => output.name)
-      );
-      const results = Array.isArray(callbackResult)
-        ? [...callbackResult]
-        : [callbackResult];
-      metadatas.dataOutputs.forEach(({ name }, index) => {
-        builder.setValue(name, results[index]);
-      });
-      return builder.build();
-    };
-  }
-
   private static buildNodeFromDecorators(
     property: string,
     callback: NodeCallback,
     metadatas: IDecorators
   ): Node {
-    const { metadata } = metadatas;
-    const nodeName = metadata ? metadata.nodeName : property;
-
-    const node = new Node(nodeName, this.build(callback, metadatas));
-    if (metadata?.needExecution) {
-      node.addExecutionInput(new ExecutionInputPin());
-      node.addExecutionOutput(new ExecutionOutputPin());
-    }
-    metadatas.executionInputs.forEach(({ name }) =>
-      node.addExecutionInput(new ExecutionInputPin(name))
-    );
-    metadatas.executionOutputs.forEach(({ name }) =>
-      node.addExecutionOutput(new ExecutionOutputPin(name))
-    );
-    metadatas.dataInputs.forEach(({ name, type, defaultValue }) =>
-      node.addInput(new DataInputPin(name, type, defaultValue))
-    );
-    metadatas.dataOutputs.forEach(({ name, type, defaultValue }) =>
-      node.addOutput(new DataOutputPin(name, type, defaultValue))
-    );
-    return node;
+    return NodeBuilder.builder(property, callback, metadatas)
+      .addExecutionInputs(metadatas.executionInputs)
+      .addExecutionOutputs(metadatas.executionOutputs)
+      .addDataInputs(metadatas.dataInputs)
+      .addDataOutputs(metadatas.dataOutputs)
+      .build();
   }
 
   private static buildLiElement(node: Node, hash: string) {
