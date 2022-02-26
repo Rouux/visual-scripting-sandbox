@@ -127,7 +127,7 @@ export default class RenderService extends Service {
     this.drawBackgroundGraph(this.layers.BACKGROUND.context);
 
     this._nodeService.nodes.forEach((node) => {
-      node.graphNode.draw(this.layers.NODE.context, this._camera);
+      node.graphNode.draw(this, this._camera);
     });
 
     this._pinService.draw(this._camera.mouseX, this._camera.mouseY);

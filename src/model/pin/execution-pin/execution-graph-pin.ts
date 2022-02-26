@@ -1,14 +1,12 @@
+import RenderService from '../../../service/render/render.service';
 import GraphPin, { PIN_SIZE } from '../graph-pin';
 import ExecutionPin from './execution-pin';
 
 export default abstract class ExecutionGraphPin extends GraphPin {
   public abstract get pin(): ExecutionPin;
 
-  public draw(
-    context: CanvasRenderingContext2D,
-    localX: number,
-    localY: number
-  ) {
+  public draw(renderService: RenderService, localX: number, localY: number) {
+    const { context } = renderService.layers.NODE;
     context.fillStyle = 'white';
     super.updateBounds(localX, localY);
     const halfPinSize = PIN_SIZE / 2;

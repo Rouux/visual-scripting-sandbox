@@ -109,43 +109,52 @@ export default class GraphNode {
     return this._inHeaderBounds(x, y) || this._inBodyBounds(x, y);
   }
 
-  draw(context: CanvasRenderingContext2D, camera: CameraService): void {
+  draw(renderService: RenderService, camera: CameraService): void {
     const localX = this.x - camera.x;
     let localY = this.y - camera.y;
-    this.drawHeader(context, localX, localY);
-    this.drawName(context, localX, localY);
-    this.drawBack(context, localX, localY);
+    const nodeLayerContext = renderService.layers.NODE.context;
+    this.drawHeader(nodeLayerContext, localX, localY);
+    this.drawName(nodeLayerContext, localX, localY);
+    this.drawBack(nodeLayerContext, localX, localY);
 
     localY += HEADER_MARGIN + 5;
-    this.drawInputs(context, localX, localY);
-    this.drawOutputs(context, localX, localY);
+    this.drawInputs(renderService, localX, localY);
+    this.drawOutputs(renderService, localX, localY);
   }
 
   private drawInputs(
-    context: CanvasRenderingContext2D,
+    renderService: RenderService,
     localX: number,
     localY: number
   ) {
     let index = 0;
     this.node.executionInputs.forEach((input) => {
-      input.graphPin.draw(context, localX + 5, localY + index * (PIN_SIZE + 3));
+      input.graphPin.draw(
+        renderService,
+        localX + 5,
+        localY + index * (PIN_SIZE + 3)
+      );
       index++;
     });
     this.node.dataInputs.forEach((input) => {
-      input.graphPin.draw(context, localX + 5, localY + index * (PIN_SIZE + 3));
+      input.graphPin.draw(
+        renderService,
+        localX + 5,
+        localY + index * (PIN_SIZE + 3)
+      );
       index++;
     });
   }
 
   private drawOutputs(
-    context: CanvasRenderingContext2D,
+    renderService: RenderService,
     localX: number,
     localY: number
   ) {
     let index = 0;
     this.node.executionOutputs.forEach((output) => {
       output.graphPin.draw(
-        context,
+        renderService,
         localX + this.width - PIN_SIZE - 5,
         localY + index * (PIN_SIZE + 3)
       );
@@ -153,7 +162,7 @@ export default class GraphNode {
     });
     this.node.dataOutputs.forEach((output) => {
       output.graphPin.draw(
-        context,
+        renderService,
         localX + this.width - PIN_SIZE - 5,
         localY + index * (PIN_SIZE + 3)
       );

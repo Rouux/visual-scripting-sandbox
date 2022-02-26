@@ -52,7 +52,7 @@ export default abstract class GraphPin {
   }
 
   public abstract draw(
-    context: CanvasRenderingContext2D,
+    renderService: RenderService,
     localX: number,
     localY: number
   ): void;

@@ -1,3 +1,4 @@
+import RenderService from '../../../service/render/render.service';
 import GraphPin, { PIN_COLOR, PIN_SIZE } from '../graph-pin';
 import DataPin from './data-pin';
 
@@ -20,11 +21,8 @@ export default abstract class DataGraphPin extends GraphPin {
     return this.destroyTooltip !== undefined;
   }
 
-  public draw(
-    context: CanvasRenderingContext2D,
-    localX: number,
-    localY: number
-  ) {
+  public draw(renderService: RenderService, localX: number, localY: number) {
+    const { context } = renderService.layers.NODE;
     context.fillStyle = PIN_COLOR[this.pin.type];
     super.updateBounds(localX, localY);
     const halfPinSize = PIN_SIZE / 2;
