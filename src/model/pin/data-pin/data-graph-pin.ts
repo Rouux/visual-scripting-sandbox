@@ -66,7 +66,7 @@ export default abstract class DataGraphPin extends GraphPin {
       this.y - 2
     );
     document.getElementById('board').appendChild(spanElement);
-    const { canvas } = this.renderService;
+    const canvas = this.renderService.layers.HUD.nativeElement;
     const destroyTooltip = (event?: MouseEvent) => {
       if (event && this.inBounds(event.offsetX, event.offsetY)) return;
       canvas.removeEventListener('mousemove', destroyTooltip);

@@ -1,14 +1,15 @@
-import Service from '../service';
-import { MouseButton, roundUp } from '../../utils/utils';
-import FpsCounter from './fps-counter';
 import GraphNode from '../../model/node/graph-node';
+import { MouseButton, roundUp } from '../../utils/utils';
 import CameraService from '../camera.service';
 import NodeService from '../node.service';
 import PinService from '../pin.service';
+import Service from '../service';
+import FpsCounter from './fps-counter';
+import Layers from './layers';
 
 export default class RenderService extends Service {
-  public canvas: HTMLCanvasElement;
-  public context: CanvasRenderingContext2D;
+  public readonly targetElement: HTMLElement;
+  public readonly layers: Layers;
   public bounds: DOMRect;
   public targetNode: GraphNode;
   public mouseHeld: boolean;
@@ -22,10 +23,10 @@ export default class RenderService extends Service {
   private _debugElement: HTMLSpanElement;
   private _fpsCounter: FpsCounter;
 
-  constructor(canvas: HTMLCanvasElement) {
+  constructor(targetElement: HTMLElement) {
     super();
-    this.canvas = canvas;
-    this.context = canvas.getContext('2d');
+    this.targetElement = targetElement;
+    this.layers = new Layers(targetElement);
     this.mouseHeld = false;
     this.oldMouseX = 0;
     this.oldMouseY = 0;
@@ -64,11 +65,11 @@ export default class RenderService extends Service {
       this.targetNode = undefined;
       this._pinService.selectedPin = undefined;
     });
-    this.canvas.addEventListener(
+    this.layers.HUD.nativeElement.addEventListener(
       'mousemove',
       this.updateCursorStyleOnNodeHover
     );
-    this.canvas.addEventListener('mousedown', (event) => {
+    this.layers.HUD.nativeElement.addEventListener('mousedown', (event) => {
       const localX = event.offsetX + this._camera.x;
       const localY = event.offsetY + this._camera.y;
       this.targetNode = this._nodeService.getGraphNodeAt(localX, localY);
@@ -82,7 +83,7 @@ export default class RenderService extends Service {
         }
       }
     });
-    this.canvas.addEventListener('dblclick', (event) => {
+    this.layers.HUD.nativeElement.addEventListener('dblclick', (event) => {
       const localX = event.offsetX + this._camera.x;
       const localY = event.offsetY + this._camera.y;
       const targetNode = this._nodeService.getGraphNodeAt(localX, localY);
@@ -90,10 +91,10 @@ export default class RenderService extends Service {
         targetNode.dblclick(event, localX, localY);
       }
     });
-    this.canvas.addEventListener('contextmenu', (event) =>
+    this.layers.HUD.nativeElement.addEventListener('contextmenu', (event) =>
       event.preventDefault()
     );
-    this.canvas.addEventListener('mouseup', (event) => {
+    this.layers.HUD.nativeElement.addEventListener('mouseup', (event) => {
       const localX = event.offsetX + this._camera.x;
       const localY = event.offsetY + this._camera.y;
       const targetNode = this._nodeService.getGraphNodeAt(localX, localY);
@@ -101,13 +102,15 @@ export default class RenderService extends Service {
         targetNode.mouseup(event, localX, localY);
       }
     });
-    this.canvas.addEventListener('focusout', () => (this.mouseHeld = false));
+    this.layers.HUD.nativeElement.addEventListener(
+      'focusout',
+      () => (this.mouseHeld = false)
+    );
   }
 
   resize = () => {
-    this.canvas.width = window.innerWidth;
-    this.canvas.height = window.innerHeight;
-    this.bounds = this.canvas.getBoundingClientRect();
+    this.layers.resizeAll(window.innerWidth, window.innerHeight);
+    this.bounds = this.layers.HUD.getBoundingClientRect();
     this._camera.width = this.bounds.width;
     this._camera.height = this.bounds.height;
   };
@@ -119,13 +122,12 @@ export default class RenderService extends Service {
         this._camera.y
       }, fps : ${this._fpsCounter.fixedFps()}`
     );
-    this.context.clearRect(0, 0, this.bounds.width, this.bounds.height);
+    this.layers.clearAll(this.bounds.width, this.bounds.height);
 
-    this.drawBackgroundGraph();
+    this.drawBackgroundGraph(this.layers.BACKGROUND.context);
 
-    this.context.fillStyle = '#FF0000';
     this._nodeService.nodes.forEach((node) => {
-      node.graphNode.draw(this.context, this._camera);
+      node.graphNode.draw(this.layers.NODE.context, this._camera);
     });
 
     this._pinService.draw(this._camera.mouseX, this._camera.mouseY);
@@ -158,25 +160,25 @@ export default class RenderService extends Service {
     }
   };
 
-  private drawBackgroundGraph() {
-    this.context.fillStyle = 'rgba(220, 220, 220, 0.2)';
+  private drawBackgroundGraph(context: CanvasRenderingContext2D): void {
+    context.fillStyle = 'rgba(220, 220, 220, 0.2)';
     for (
       let startX = roundUp(this._camera.x);
       startX < this.bounds.width + roundUp(this._camera.x);
       startX += 100
     ) {
-      this.context.fillRect(startX - this._camera.x, 0, 1, this.bounds.height);
+      context.fillRect(startX - this._camera.x, 0, 1, this.bounds.height);
     }
     for (
       let startY = roundUp(this._camera.y);
       startY < this.bounds.width + roundUp(this._camera.y);
       startY += 100
     ) {
-      this.context.fillRect(0, startY - this._camera.y, this.bounds.width, 1);
+      context.fillRect(0, startY - this._camera.y, this.bounds.width, 1);
     }
 
-    this.context.fillStyle = 'rgba(200, 200, 200, 0.6)';
-    this.context.fillRect(-this._camera.x, 0, 3, this.bounds.height);
-    this.context.fillRect(0, -this._camera.y, this.bounds.width, 3);
+    context.fillStyle = 'rgba(200, 200, 200, 0.6)';
+    context.fillRect(-this._camera.x, 0, 3, this.bounds.height);
+    context.fillRect(0, -this._camera.y, this.bounds.width, 3);
   }
 }

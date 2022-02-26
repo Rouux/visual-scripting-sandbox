@@ -18,11 +18,11 @@ html {
   overflow: hidden;
 }
 
-#board {
+#visual-scripting {
   position: relative;
 }
 
-#main-canvas {
+#visual-scripting > .visual-scripting-layer-canvas {
   background-color: rgb(48, 48, 48);
   position: absolute;
 }

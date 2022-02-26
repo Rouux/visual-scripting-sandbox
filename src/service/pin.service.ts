@@ -30,7 +30,7 @@ export default class PinService extends Service {
 
   draw = (mouseX: number, mouseY: number) => {
     if (this.isCreatingLink) {
-      const { context } = this.renderService;
+      const { context } = this.renderService.layers.LINK;
       const offset = PIN_SIZE / 2;
       context.lineWidth = 5;
       if (this.selectedPin instanceof ExecutionPin) {
