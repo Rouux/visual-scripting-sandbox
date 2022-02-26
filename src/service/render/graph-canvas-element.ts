@@ -11,7 +11,6 @@ export default class GraphCanvasElement {
     this._context = this._canvas.getContext('2d');
     this._canvas.id = `visual-scripting-${Layer[layer].toLowerCase()}-layer`;
     this._canvas.classList.add('visual-scripting-layer-canvas');
-    this._canvas.style.background = 'transparent';
     this._canvas.style.zIndex = String(layer);
   }
 

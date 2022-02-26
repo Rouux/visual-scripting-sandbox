@@ -161,6 +161,7 @@ export default class RenderService extends Service {
   };
 
   private drawBackgroundGraph(context: CanvasRenderingContext2D): void {
+    context.canvas.style.background = 'rgb(48, 48, 48)';
     context.fillStyle = 'rgba(220, 220, 220, 0.2)';
     for (
       let startX = roundUp(this._camera.x);

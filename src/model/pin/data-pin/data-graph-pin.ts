@@ -12,6 +12,10 @@ export default abstract class DataGraphPin extends GraphPin {
 
   public abstract get pin(): DataPin;
 
+  public get color(): string {
+    return PIN_COLOR[this.pin.type];
+  }
+
   public get isTooltipShowing() {
     return this.destroyTooltip !== undefined;
   }
@@ -40,7 +44,7 @@ export default abstract class DataGraphPin extends GraphPin {
       event.offsetX + PIN_SIZE,
       event.offsetY - PIN_SIZE
     );
-    document.getElementById('board').appendChild(inputHtml);
+    document.getElementById('visual-scripting').appendChild(inputHtml);
     event.preventDefault();
     inputHtml.focus();
     const destroyEditingInput = () => {
@@ -65,7 +69,7 @@ export default abstract class DataGraphPin extends GraphPin {
       this.x + PIN_SIZE + 2,
       this.y - 2
     );
-    document.getElementById('board').appendChild(spanElement);
+    document.getElementById('visual-scripting').appendChild(spanElement);
     const canvas = this.renderService.layers.HUD.nativeElement;
     const destroyTooltip = (event?: MouseEvent) => {
       if (event && this.inBounds(event.offsetX, event.offsetY)) return;
@@ -82,6 +86,7 @@ export default abstract class DataGraphPin extends GraphPin {
     inputHtml.value = this.pin.value ?? '';
     inputHtml.placeholder = 'Set a default value for this pin.';
     inputHtml.style.position = 'absolute';
+    inputHtml.style.zIndex = '10';
     inputHtml.style.left = `${x}px`;
     inputHtml.style.top = `${y}px`;
     if (this.pin.defaultValue === undefined) {
@@ -97,6 +102,7 @@ export default abstract class DataGraphPin extends GraphPin {
     spanElement.style.border = '1px solid black';
     spanElement.style.padding = '0px 2px 0px 2px';
     spanElement.style.position = 'absolute';
+    spanElement.style.zIndex = '10';
     spanElement.style.left = `${x}px`;
     spanElement.style.top = `${y}px`;
     spanElement.style.minWidth = '3rem';

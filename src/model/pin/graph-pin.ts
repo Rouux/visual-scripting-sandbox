@@ -1,5 +1,5 @@
-import Service from '../../service/service';
 import RenderService from '../../service/render/render.service';
+import Service from '../../service/service';
 import Pin, { AvailableType } from './pin';
 
 export const PIN_SIZE = 20;
@@ -21,6 +21,8 @@ export default abstract class GraphPin {
     this._pin = pin;
   }
 
+  public abstract get pin(): Pin;
+
   public get x() {
     return this.bounds?.x || 0;
   }
@@ -37,7 +39,9 @@ export default abstract class GraphPin {
     return this.bounds?.height || 0;
   }
 
-  public abstract get pin(): Pin;
+  public get color() {
+    return 'white';
+  }
 
   public mouseup(event: MouseEvent) {
     this.pin.mouseup(event);

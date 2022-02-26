@@ -23,7 +23,8 @@ html {
 }
 
 #visual-scripting > .visual-scripting-layer-canvas {
-  background-color: rgb(48, 48, 48);
+  background: transparent;
+  /* background-color: transparent; */
   position: absolute;
 }
 
