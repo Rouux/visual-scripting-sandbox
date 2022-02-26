@@ -1,10 +1,20 @@
-import Service from '../../../service/service';
 import NotificationService from '../../../service/notification/notification.service';
-import Pin, { AvailableType } from '../pin';
+import Service from '../../../service/service';
+import Pin, { AvailableType, IPin } from '../pin';
+
+export interface IDataPin<K extends keyof AvailableType = keyof AvailableType>
+  extends IPin {
+  type: K;
+  value: AvailableType[K];
+  defaultValue: AvailableType[K];
+}
 
 export default abstract class DataPin<
-  K extends keyof AvailableType = keyof AvailableType
-> extends Pin {
+    K extends keyof AvailableType = keyof AvailableType
+  >
+  extends Pin
+  implements IDataPin<K>
+{
   public type: K;
   private _value: AvailableType[K];
   private _defaultValue: AvailableType[K];

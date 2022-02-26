@@ -59,7 +59,7 @@ export default class NodeLibrary {
       const results = Array.isArray(callbackResult)
         ? [...callbackResult]
         : [callbackResult];
-      metadatas.outputs.forEach(({ name }, index) => {
+      metadatas.dataOutputs.forEach(({ name }, index) => {
         builder.setValue(name, results[index]);
       });
       return builder.build();
@@ -85,10 +85,10 @@ export default class NodeLibrary {
     metadatas.executionOutputs.forEach(({ name }) =>
       node.addExecutionOutput(new ExecutionOutputPin(name))
     );
-    metadatas.inputs.forEach(({ name, type, defaultValue }) =>
+    metadatas.dataInputs.forEach(({ name, type, defaultValue }) =>
       node.addInput(new DataInputPin(name, type, defaultValue))
     );
-    metadatas.outputs.forEach(({ name, type, defaultValue }) =>
+    metadatas.dataOutputs.forEach(({ name, type, defaultValue }) =>
       node.addOutput(new DataOutputPin(name, type, defaultValue))
     );
     return node;

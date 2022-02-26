@@ -1,8 +1,8 @@
-import ExecutionInputPin from '../../model/pin/execution-pin/input/execution-input-pin';
 import { defineMetadata } from '../../utils/decorator-utils';
+import { ExecutionPinDecorator } from '../decorators';
 
 export default function executionInputsDecorator(
-  ...inputs: ExecutionInputPin[]
+  ...inputs: ExecutionPinDecorator[]
 ) {
   return function (target: unknown, propertyKey: string) {
     defineMetadata('executionInputs', inputs, target, propertyKey);

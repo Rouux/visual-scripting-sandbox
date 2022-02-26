@@ -1,6 +1,6 @@
+import PinService from '../../service/pin.service';
 import Service from '../../service/service';
 import { MouseButton } from '../../utils/utils';
-import PinService from '../../service/pin.service';
 import Entity from '../entity';
 import Node from '../node/node';
 import GraphPin from './graph-pin';
@@ -13,7 +13,11 @@ export type AvailableType = {
   any: any;
 };
 
-export default abstract class Pin extends Entity {
+export interface IPin {
+  readonly name: string;
+}
+
+export default abstract class Pin extends Entity implements IPin {
   public readonly name: string;
   public node: Node;
 
