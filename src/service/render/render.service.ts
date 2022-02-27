@@ -193,7 +193,7 @@ export default class RenderService extends Service {
       context.fillRect(0, startY - this._camera.y, this.bounds.width, 1);
     }
 
-    context.fillStyle = 'rgba(200, 200, 200, 0.6)';
+    context.fillStyle = 'rgba(200, 200, 200, 0.8)';
     context.fillRect(-this._camera.x, 0, 3, this.bounds.height);
     context.fillRect(0, -this._camera.y, this.bounds.width, 3);
   }
