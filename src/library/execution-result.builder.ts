@@ -3,8 +3,11 @@ export interface IExecutionResult {
   _values: { [key: string]: unknown };
 }
 
-export function isExecutionResult(object: unknown): object is IExecutionResult {
+export function isExecutionResult(
+  object?: unknown
+): object is IExecutionResult {
   return (
+    object &&
     Object.prototype.hasOwnProperty.call(object, '_metadata') &&
     Object.prototype.hasOwnProperty.call(object, '_values')
   );
