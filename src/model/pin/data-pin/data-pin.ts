@@ -1,5 +1,5 @@
-import NotificationService from '../../../service/notification/notification.service';
-import Service from '../../../service/service';
+import NotificationService from '../../../core/service/notification/notification.service';
+import Service from '../../../core/service/service';
 import Pin, { AvailableType, IPin } from '../pin';
 
 export interface IDataPin<K extends keyof AvailableType = keyof AvailableType>

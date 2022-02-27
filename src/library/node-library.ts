@@ -1,8 +1,8 @@
+import NodeService from '../core/service/node.service';
+import Service from '../core/service/service';
 import { IDecorators } from '../decorators/decorators';
 import Node, { NodeCallback } from '../model/node/node';
 import NodeBuilder from '../model/node/node.builder';
-import NodeService from '../service/node.service';
-import Service from '../service/service';
 import { getDecorators } from '../utils/decorator-utils';
 
 export default class NodeLibrary {

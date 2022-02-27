@@ -1,4 +1,4 @@
-import Node from '../model/node/node';
+import Node from '../../model/node/node';
 import Service from './service';
 
 export default class NodeService extends Service {

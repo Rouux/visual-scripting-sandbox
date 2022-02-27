@@ -1,5 +1,5 @@
 import RenderEngine from '../../core/engine/render/render.engine';
-import CameraService from '../../service/camera.service';
+import CameraService from '../../core/service/camera.service';
 import DataGraphPin from '../pin/data-pin/data-graph-pin';
 import GraphPin, { PIN_SIZE } from '../pin/graph-pin';
 import Node from './node';

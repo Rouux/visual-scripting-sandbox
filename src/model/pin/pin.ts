@@ -1,5 +1,5 @@
-import PinService from '../../service/pin.service';
-import Service from '../../service/service';
+import PinService from '../../core/service/pin.service';
+import Service from '../../core/service/service';
 import { MouseButton } from '../../utils/utils';
 import Entity from '../entity';
 import Node from '../node/node';

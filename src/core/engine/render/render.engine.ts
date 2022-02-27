@@ -1,9 +1,9 @@
 import GraphNode from '../../../model/node/graph-node';
-import CameraService from '../../../service/camera.service';
-import NodeService from '../../../service/node.service';
-import PinService from '../../../service/pin.service';
-import Service from '../../../service/service';
 import { MouseButton, roundUp } from '../../../utils/utils';
+import CameraService from '../../service/camera.service';
+import NodeService from '../../service/node.service';
+import PinService from '../../service/pin.service';
+import Service from '../../service/service';
 import FpsCounter from './fps-counter';
 import GraphCanvasElement from './graph-canvas-element';
 import Layers, { Layer } from './layers';
