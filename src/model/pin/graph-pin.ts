@@ -1,5 +1,10 @@
 import { RenderEngine } from '../../core/engine/render/render.engine';
-import { AvailableType, Pin } from './pin';
+import { PinService } from '../../core/service/pin.service';
+import { Service } from '../../core/service/service';
+import { MouseButton } from '../../utils/utils';
+import { GraphElement } from '../graph-element';
+import { GraphNode } from '../node/graph-node';
+import { AvailableType } from './pin';
 
 export const PIN_SIZE = 20;
 
@@ -10,65 +15,66 @@ export const PIN_COLOR: Record<keyof AvailableType, string> = {
   any: 'white'
 };
 
-export abstract class GraphPin {
-  protected bounds: DOMRect;
+export abstract class GraphPin extends GraphElement {
+  public readonly name: string;
+  public graphNode: GraphNode;
   protected _renderEngine: RenderEngine;
-  protected _pin: Pin;
+  protected _pinService: PinService;
 
-  constructor(pin: Pin) {
+  constructor(name: string, x = 0, y = 0) {
+    super(x, y, PIN_SIZE, PIN_SIZE);
+    this.name = name;
     this._renderEngine = window._rvs.engine.renderEngine;
-    this._pin = pin;
+    this._pinService = Service.retrieve(PinService);
   }
 
-  public abstract get pin(): Pin;
+  public abstract get hasLinkedPin(): boolean;
+  public abstract canLinkTo(target: GraphPin): boolean;
+  public abstract linkTo(target: GraphPin): boolean;
+  public abstract unlink(target: GraphPin, stop?: boolean): void;
+  public abstract unlinkAll(): void;
 
-  public get x() {
-    return this.bounds?.x || 0;
-  }
-
-  public get y() {
-    return this.bounds?.y || 0;
-  }
-
-  public get width() {
-    return this.bounds?.width || 0;
-  }
-
-  public get height() {
-    return this.bounds?.height || 0;
+  public move(event: MouseEvent, deltaX: number, deltaY: number): boolean {
+    this.x += deltaX;
+    this.y += deltaY;
+    return deltaX !== 0 && deltaY !== 0;
   }
 
   public get color() {
     return 'white';
   }
 
-  public mouseup(event: MouseEvent) {
-    this.pin.mouseup(event);
+  public get node() {
+    return this.graphNode.node;
   }
 
-  public mousedown(event: MouseEvent) {
-    this.pin.mousedown(event);
-  }
-
-  public abstract draw(
-    renderEngine: RenderEngine,
-    localX: number,
-    localY: number
-  ): void;
-
-  protected updateBounds(localX: number, localY: number) {
-    if (this.bounds === undefined) {
-      this.bounds = DOMRect.fromRect({
-        x: localX,
-        y: localY,
-        width: PIN_SIZE,
-        height: PIN_SIZE
-      });
-    } else {
-      this.bounds.x = localX;
-      this.bounds.y = localY;
+  public mouseUp = (event: MouseEvent) => {
+    if (
+      event.button === MouseButton.LEFT &&
+      this._pinService.selectedPin !== undefined &&
+      this._pinService.selectedPin !== this &&
+      this._pinService.selectedPin.node !== this.node
+    ) {
+      if (this.canLinkTo(this._pinService.selectedPin)) {
+        this.unlink(this._pinService.selectedPin, false);
+        this.linkTo(this._pinService.selectedPin);
+      }
+      if (this._pinService.selectedPin.canLinkTo(this)) {
+        this._pinService.selectedPin.unlink(this, false);
+        this._pinService.selectedPin.linkTo(this);
+      }
     }
-  }
+    // this.pin.mouseup(event);
+  };
+
+  public mouseDown = (event: MouseEvent) => {
+    // this.pin.mousedown(event);
+    if (event.button === MouseButton.LEFT) {
+      this._pinService.selectedPin = this;
+    } else if (this.hasLinkedPin && event.button === MouseButton.WHEEL) {
+      this.unlinkAll();
+    }
+  };
 
   public inBounds(x: number, y: number) {
     return (

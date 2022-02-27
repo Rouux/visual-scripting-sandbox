@@ -18,12 +18,4 @@ export class NodeService extends Service {
     const selected = this._nodes.splice(index, 1)[0];
     this._nodes.push(selected);
   }
-
-  public getGraphNodeAt(x: number, y: number) {
-    for (let index = this._nodes.length - 1; index >= 0; index--) {
-      const node = this._nodes[index];
-      if (node.graphNode.inBounds(x, y)) return node.graphNode;
-    }
-    return undefined;
-  }
 }

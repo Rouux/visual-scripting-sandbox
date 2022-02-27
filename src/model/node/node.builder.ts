@@ -9,15 +9,17 @@ import {
   isExecutionResult
 } from '../../library/execution-result.builder';
 import { toArrayIfNeeded } from '../../utils/utils';
-import { DataInputPin } from '../pin/data-pin/input/data-input-pin';
-import { DataOutputPin } from '../pin/data-pin/output/data-output-pin';
-import { ExecutionInputPin } from '../pin/execution-pin/input/execution-input-pin';
-import { ExecutionOutputPin } from '../pin/execution-pin/output/execution-output-pin';
+import { DataInputGraphPin } from '../pin/data-pin/input/data-input-graph-pin';
+import { DataOutputGraphPin } from '../pin/data-pin/output/data-output-graph-pin';
+import { ExecutionInputGraphPin } from '../pin/execution-pin/input/execution-input-graph-pin';
+import { ExecutionOutputGraphPin } from '../pin/execution-pin/output/execution-output-graph-pin';
+import { PIN_SIZE } from '../pin/graph-pin';
+import { GraphNode } from './graph-node';
 import { Node, NodeCallback } from './node';
 
 export class NodeBuilder {
-  private _node: Node;
-  private constructor(node: Node) {
+  private _node: GraphNode;
+  private constructor(node: GraphNode) {
     this._node = node;
   }
 
@@ -29,11 +31,12 @@ export class NodeBuilder {
     const { metadata } = metadatas;
     const nodeName = metadata?.nodeName ?? name;
     const node = new Node(nodeName, this.build(callback, metadatas));
+    const graphNode = new GraphNode(node);
     if (metadata?.needExecution) {
-      node.addExecutionInput(new ExecutionInputPin());
-      node.addExecutionOutput(new ExecutionOutputPin());
+      graphNode.addExecutionInput(new ExecutionInputGraphPin(undefined));
+      graphNode.addExecutionOutput(new ExecutionOutputGraphPin(undefined));
     }
-    return new NodeBuilder(node);
+    return new NodeBuilder(graphNode);
   }
 
   private static build(callback: NodeCallback, metadatas: IDecorators) {
@@ -62,7 +65,7 @@ export class NodeBuilder {
   public addExecutionInputs(executionInputs: ExecutionPinDecorator[]) {
     if (executionInputs) {
       executionInputs.forEach(({ name }) =>
-        this._node.addExecutionInput(new ExecutionInputPin(name))
+        this._node.addExecutionInput(new ExecutionInputGraphPin(name))
       );
     }
     return this;
@@ -71,7 +74,7 @@ export class NodeBuilder {
   public addExecutionOutputs(executionOutputs: ExecutionPinDecorator[]) {
     if (executionOutputs) {
       executionOutputs.forEach(({ name }) =>
-        this._node.addExecutionOutput(new ExecutionOutputPin(name))
+        this._node.addExecutionOutput(new ExecutionOutputGraphPin(name))
       );
     }
     return this;
@@ -80,7 +83,7 @@ export class NodeBuilder {
   public addDataInputs(dataInputs: DataPinDecorator[]) {
     if (dataInputs) {
       dataInputs.forEach(({ name, type, defaultValue }) =>
-        this._node.addDataInput(new DataInputPin(name, type, defaultValue))
+        this._node.addDataInput(new DataInputGraphPin(name, type, defaultValue))
       );
     }
     return this;
@@ -89,13 +92,43 @@ export class NodeBuilder {
   public addDataOutputs(dataOutputs: DataPinDecorator[]) {
     if (dataOutputs) {
       dataOutputs.forEach(({ name, type, defaultValue }) =>
-        this._node.addDataOutput(new DataOutputPin(name, type, defaultValue))
+        this._node.addDataOutput(
+          new DataOutputGraphPin(name, type, defaultValue)
+        )
       );
     }
     return this;
   }
 
-  public build(): Node {
+  public build(): GraphNode {
+    const localX = 0;
+    const localY = 30;
+    let index = 0;
+    this._node.executionInputs.forEach((input) => {
+      input.setPosition(localX + 5, localY + index * (PIN_SIZE + 3));
+      index++;
+    });
+    this._node.dataInputs.forEach((input) => {
+      input.setPosition(localX + 5, localY + index * (PIN_SIZE + 3));
+      index++;
+    });
+
+    index = 0;
+    this._node.executionOutputs.forEach((output) => {
+      output.setPosition(
+        localX + this._node.width - PIN_SIZE - 5,
+        localY + index * (PIN_SIZE + 3)
+      );
+      index++;
+    });
+    this._node.dataOutputs.forEach((output) => {
+      output.setPosition(
+        localX + this._node.width - PIN_SIZE - 5,
+        localY + index * (PIN_SIZE + 3)
+      );
+      index++;
+    });
+    console.log(this._node);
     return this._node;
   }
 }

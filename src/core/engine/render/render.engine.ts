@@ -1,4 +1,7 @@
+import { GraphElement } from '../../../model/graph-element';
+import { GraphElementArray } from '../../../model/graph-element-array';
 import { GraphNode } from '../../../model/node/graph-node';
+import { Node } from '../../../model/node/node';
 import { roundUp } from '../../../utils/utils';
 import { CameraService } from '../../service/camera.service';
 import { NodeService } from '../../service/node.service';
@@ -16,6 +19,7 @@ export class RenderEngine {
   public targetNode: GraphNode;
   public drawCalls: number;
 
+  private readonly _graphElements: GraphElementArray;
   private _logicEngine: LogicEngine;
   private _camera: CameraService;
   private _nodeService: NodeService;
@@ -27,7 +31,14 @@ export class RenderEngine {
     this.targetElement = targetElement;
     this.layers = new Layers(targetElement);
     this.drawCalls = 0;
+    this._graphElements = new GraphElementArray();
     this._fpsCounter = new FpsCounter();
+  }
+
+  addNode(graphNode: GraphNode) {
+    this._graphElements.push(graphNode);
+    this._graphElements.push(...graphNode.pins);
+    return graphNode;
   }
 
   init() {
@@ -54,23 +65,35 @@ export class RenderEngine {
       }, fps : ${this._fpsCounter.fixedFps()}`
     );
 
-    this.layers.clearAll(this.bounds.width, this.bounds.height);
-
     if (this._pinService.isCreatingLink) {
       this.layers.invalidateLayers(Layer.LINK);
     }
+
+    this.layers.clearAll(this.bounds.width, this.bounds.height);
+
     this.drawBackgroundGraph(this.layers.BACKGROUND);
 
-    this._nodeService.nodes.forEach((node) => {
-      node.graphNode.draw(this, this._camera);
-    });
+    // console.log(this._graphElements);
+    this._graphElements.forEach((ge) => ge.draw(this, this._camera));
 
-    this._pinService.draw(this._camera.mouseX, this._camera.mouseY);
+    // this._nodeService.nodes.forEach((node) => {
+    //   node.graphNode.draw(this, this._camera);
+    // });
+
+    this._pinService.draw(
+      this._camera,
+      this._camera.mouseX,
+      this._camera.mouseY
+    );
 
     this.layers.reset();
 
     requestAnimationFrame(this.draw);
   };
+
+  public addGraphElement(graphElement: GraphElement): void {
+    this._graphElements.push(graphElement);
+  }
 
   private debug = (...args: unknown[]) => {
     const text = args.join('');
@@ -89,13 +112,21 @@ export class RenderEngine {
   public updateCursorStyleOnNodeHover = (event: MouseEvent) => {
     const x = event.offsetX + this._camera.x;
     const y = event.offsetY + this._camera.y;
-    const targetNode = this._nodeService.getGraphNodeAt(x, y);
-    if (targetNode) {
-      targetNode.mouseHover(event, x, y);
+    const graphElement = this.getGraphElementAt(x, y);
+    if (graphElement) {
+      graphElement.mouseHover(event, x, y);
     } else if (!this._logicEngine.mouseHeld) {
       document.body.style.cursor = 'default';
     }
   };
+
+  public getGraphElementAt(x: number, y: number): GraphElement | undefined {
+    for (let index = this._graphElements.length - 1; index >= 0; index--) {
+      const graphElement = this._graphElements[index];
+      if (graphElement.inBounds(x, y)) return graphElement;
+    }
+    return undefined;
+  }
 
   private drawBackgroundGraph(graphCanvas: GraphCanvasElement): void {
     if (!graphCanvas.needRedraw) return;

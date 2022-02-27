@@ -1,10 +1,10 @@
-import { PIN_SIZE } from '../../model/pin/graph-pin';
-import { Pin } from '../../model/pin/pin';
+import { GraphPin, PIN_SIZE } from '../../model/pin/graph-pin';
 import { RenderEngine } from '../engine/render/render.engine';
+import { CameraService } from './camera.service';
 import { Service } from './service';
 
 export class PinService extends Service {
-  private _selectedPin: Pin;
+  private _selectedPin: GraphPin;
   private _renderEngine: RenderEngine;
 
   public constructor() {
@@ -19,7 +19,7 @@ export class PinService extends Service {
     return this._selectedPin !== undefined;
   }
 
-  public set selectedPin(selectedPin: Pin) {
+  public set selectedPin(selectedPin: GraphPin) {
     this._selectedPin = selectedPin;
   }
 
@@ -27,17 +27,15 @@ export class PinService extends Service {
     return this._selectedPin;
   }
 
-  public draw = (mouseX: number, mouseY: number) => {
+  public draw = (camera: CameraService, mouseX: number, mouseY: number) => {
     if (this.isCreatingLink && this._renderEngine.layers.LINK.needRedraw) {
       const { context } = this._renderEngine.layers.LINK;
+      const { x, y } = camera.toLocalPosition(this.selectedPin);
       const offset = PIN_SIZE / 2;
       context.lineWidth = 5;
-      context.strokeStyle = this.selectedPin.graphPin.color;
+      context.strokeStyle = this.selectedPin.color;
       context.beginPath();
-      context.moveTo(
-        this.selectedPin.graphPin.x + offset,
-        this.selectedPin.graphPin.y + offset
-      );
+      context.moveTo(x + offset, y + offset);
       context.lineTo(mouseX, mouseY);
       context.stroke();
     }

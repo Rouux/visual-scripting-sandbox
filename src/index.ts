@@ -24,9 +24,7 @@ const main = (targetId: string) => {
   const { renderEngine, logicEngine } = window._rvs.engine;
 
   Service.provide(new NotificationService());
-  Service.provide(
-    new CameraService(-window.innerWidth / 2, -window.innerHeight / 2)
-  );
+  Service.provide(new CameraService());
   Service.provide(new NodeService());
   const pinService = Service.provide(new PinService());
   const executionService = Service.provide(new ExecutionService());
@@ -54,3 +52,8 @@ NodeLibrary.loadLibrary(
 document.getElementById('btn-start').addEventListener('click', () => {
   Service.retrieve(ExecutionService).start();
 });
+
+// Service.retrieve(CameraService).move(
+//   -window.innerWidth / 2,
+//   -window.innerHeight / 2
+// );

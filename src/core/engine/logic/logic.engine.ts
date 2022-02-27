@@ -67,10 +67,16 @@ export class LogicEngine {
       (event) => {
         const localX = event.offsetX + this._camera.x;
         const localY = event.offsetY + this._camera.y;
-        this.targetNode = this._nodeService.getGraphNodeAt(localX, localY);
-        if (this.targetNode) {
-          this._nodeService.selectNode(this.targetNode.node);
-          this.targetNode.mousedown(event, localX, localY);
+        const graphElement = this._renderEngine.getGraphElementAt(
+          localX,
+          localY
+        );
+        if (graphElement) {
+          if (graphElement instanceof GraphNode) {
+            this.targetNode = graphElement;
+            this._nodeService.selectNode(this.targetNode.node);
+          }
+          graphElement.mouseDown(event, localX, localY);
         } else {
           this._renderEngine.layers.invalidateAll();
           this.mouseHeld = true;
@@ -85,9 +91,12 @@ export class LogicEngine {
       (event) => {
         const localX = event.offsetX + this._camera.x;
         const localY = event.offsetY + this._camera.y;
-        const targetNode = this._nodeService.getGraphNodeAt(localX, localY);
-        if (targetNode) {
-          targetNode.dblclick(event, localX, localY);
+        const graphElement = this._renderEngine.getGraphElementAt(
+          localX,
+          localY
+        );
+        if (graphElement) {
+          graphElement.dblClick(event, localX, localY);
         }
       }
     );
@@ -100,9 +109,12 @@ export class LogicEngine {
       (event) => {
         const localX = event.offsetX + this._camera.x;
         const localY = event.offsetY + this._camera.y;
-        const targetNode = this._nodeService.getGraphNodeAt(localX, localY);
-        if (targetNode) {
-          targetNode.mouseup(event, localX, localY);
+        const graphElement = this._renderEngine.getGraphElementAt(
+          localX,
+          localY
+        );
+        if (graphElement) {
+          graphElement.mouseUp(event, localX, localY);
         }
       }
     );

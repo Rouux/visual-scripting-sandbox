@@ -1,21 +1,11 @@
 import { AvailableType, Pin } from '../../pin';
 import { DataPin } from '../data-pin';
 import { DataOutputPin } from '../output/data-output-pin';
-import { DataInputGraphPin } from './data-input-graph-pin';
 
 export class DataInputPin<
   K extends keyof AvailableType = keyof AvailableType
 > extends DataPin<K> {
   private _linkedPin: DataOutputPin;
-
-  constructor(name: string, type: K, defaultValue?: AvailableType[K]) {
-    super(name, type, defaultValue);
-    this._graphPin = new DataInputGraphPin(this);
-  }
-
-  public get graphPin(): DataInputGraphPin {
-    return this._graphPin as DataInputGraphPin;
-  }
 
   public get linkedPin(): DataOutputPin {
     return this._linkedPin as DataOutputPin;

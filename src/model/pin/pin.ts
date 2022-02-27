@@ -3,7 +3,6 @@ import { Service } from '../../core/service/service';
 import { MouseButton } from '../../utils/utils';
 import { Entity } from '../entity';
 import { Node } from '../node/node';
-import { GraphPin } from './graph-pin';
 
 export type AvailableType = {
   number: number;
@@ -22,7 +21,6 @@ export abstract class Pin extends Entity implements IPin {
   public node: Node;
 
   protected pinService: PinService;
-  protected _graphPin: GraphPin;
 
   public constructor(name: string) {
     super();
@@ -30,7 +28,6 @@ export abstract class Pin extends Entity implements IPin {
     this.pinService = Service.retrieve(PinService);
   }
 
-  public abstract get graphPin(): GraphPin;
   public abstract get hasLinkedPin(): boolean;
   public abstract canLinkTo(target: Pin): boolean;
   public abstract linkTo(target: Pin): boolean;
@@ -38,29 +35,26 @@ export abstract class Pin extends Entity implements IPin {
   public abstract unlinkAll(): void;
 
   public mouseup(event: MouseEvent): void {
-    if (
-      event.button === MouseButton.LEFT &&
-      this.pinService.selectedPin !== undefined &&
-      this.pinService.selectedPin !== this &&
-      this.pinService.selectedPin.node !== this.node
-    ) {
-      if (this.canLinkTo(this.pinService.selectedPin)) {
-        this.unlink(this.pinService.selectedPin, false);
-        this.linkTo(this.pinService.selectedPin);
-      }
-      if (this.pinService.selectedPin.canLinkTo(this)) {
-        this.pinService.selectedPin.unlink(this, false);
-        this.pinService.selectedPin.linkTo(this);
-      }
-    }
+    // if (
+    //   event.button === MouseButton.LEFT &&
+    //   this.pinService.selectedPin.pin !== undefined &&
+    //   this.pinService.selectedPin.pin !== this &&
+    //   this.pinService.selectedPin.pin.node !== this.node
+    // ) {
+    //   if (this.canLinkTo(this.pinService.selectedPin.pin)) {
+    //     this.unlink(this.pinService.selectedPin.pin, false);
+    //     this.linkTo(this.pinService.selectedPin.pin);
+    //   }
+    //   if (this.pinService.selectedPin.pin.canLinkTo(this)) {
+    //     this.pinService.selectedPin.pin.unlink(this, false);
+    //     this.pinService.selectedPin.pin.linkTo(this);
+    //   }
+    // }
   }
 
   public mousedown(event: MouseEvent): void {
     if (this.hasLinkedPin && event.button === MouseButton.WHEEL) {
       this.unlinkAll();
-    }
-    if (event.button === MouseButton.LEFT) {
-      this.pinService.selectedPin = this;
     }
   }
 }

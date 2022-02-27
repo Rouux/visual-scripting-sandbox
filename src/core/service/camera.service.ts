@@ -1,3 +1,4 @@
+import { GraphElement } from '../../model/graph-element';
 import { Service } from './service';
 
 export class CameraService extends Service {
@@ -13,6 +14,10 @@ export class CameraService extends Service {
     super();
     this.x = x;
     this.y = y;
+  }
+
+  public toLocalPosition(graphElement: GraphElement) {
+    return { x: graphElement.x - this.x, y: graphElement.y - this.y };
   }
 
   public move(deltaX: number, deltaY: number): boolean {

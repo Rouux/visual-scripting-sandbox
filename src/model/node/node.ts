@@ -9,7 +9,6 @@ import { ExecutionInputPinArray } from '../pin/execution-pin/input/execution-inp
 import { ExecutionOutputPin } from '../pin/execution-pin/output/execution-output-pin';
 import { ExecutionOutputPinArray } from '../pin/execution-pin/output/execution-output-pin-array';
 import { Pin } from '../pin/pin';
-import { GraphNode } from './graph-node';
 
 export const HEADER_MARGIN = 25;
 
@@ -18,7 +17,6 @@ export type NodeCallback = (...args: any[]) => any;
 
 export class Node extends Entity {
   public name: string;
-  public graphNode: GraphNode;
 
   private readonly _executionInputs = new ExecutionInputPinArray();
   private readonly _executionOutputs = new ExecutionOutputPinArray();
@@ -30,7 +28,6 @@ export class Node extends Entity {
     super();
     this.name = name;
     this._callback = callback;
-    this.graphNode = new GraphNode(this);
   }
 
   public get hasExecutionPin(): boolean {
@@ -62,22 +59,24 @@ export class Node extends Entity {
     return this._dataOutputs.copy();
   }
 
-  public executeCode() {
+  public executeCode(...args: unknown[]) {
     if (!this._callback) {
       throw new Error(`No code implemented for ${this.name}`);
     }
-    const result = this._callback(...this._dataInputs.getValues());
+    const result = this._callback(...args);
     console.debug('executing code in ', this.name, ' resulting in ', result);
     const executionResult = result as IExecutionResult;
     this._dataOutputs.assignValuesByOutputName(executionResult._values);
     const outputs = executionResult._metadata.execution;
-    if (outputs?.length > 0) {
-      outputs
-        .map((name) => this._executionOutputs.findByName(name))
-        .forEach((output) => output?.executeNext());
-    } else {
-      this._executionOutputs.executeAll();
-    }
+    console.log('code executed : ', outputs);
+    return executionResult;
+    // if (outputs?.length > 0) {
+    //   outputs
+    //     .map((name) => this._executionOutputs.findByName(name))
+    //     .forEach((output) => output?.executeNext());
+    // } else {
+    //   this._executionOutputs.executeAll();
+    // }
   }
 
   public addExecutionInput(input: ExecutionInputPin): this {
