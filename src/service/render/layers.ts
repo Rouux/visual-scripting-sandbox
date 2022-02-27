@@ -7,6 +7,8 @@ export enum Layer {
   HUD
 }
 
+export const ALL_LAYERS = [Layer.BACKGROUND, Layer.NODE, Layer.LINK, Layer.HUD];
+
 export type LayerKey = keyof typeof Layer;
 
 export type ILayers = {
@@ -14,11 +16,13 @@ export type ILayers = {
 };
 
 export default class Layers implements ILayers {
-  private readonly _targetElement: HTMLElement;
   public readonly BACKGROUND: GraphCanvasElement;
   public readonly NODE: GraphCanvasElement;
   public readonly LINK: GraphCanvasElement;
   public readonly HUD: GraphCanvasElement;
+
+  private readonly _targetElement: HTMLElement;
+  private _invalidatedLayers: Layer[];
 
   public constructor(targetElement: HTMLElement) {
     this._targetElement = targetElement;
@@ -26,6 +30,7 @@ export default class Layers implements ILayers {
     this.NODE = this.buildGraphCanvasElement(Layer.NODE);
     this.LINK = this.buildGraphCanvasElement(Layer.LINK);
     this.HUD = this.buildGraphCanvasElement(Layer.HUD);
+    this._invalidatedLayers = [...ALL_LAYERS];
   }
 
   public resizeAll(width: number, height: number) {
@@ -35,10 +40,34 @@ export default class Layers implements ILayers {
     });
   }
 
-  public clearAll(width: number, height: number) {
-    this.loopOverAll().forEach((canvas) => {
-      canvas.clearRect(0, 0, width, height);
-    });
+  public invalidateLayers(...layers: Layer[]) {
+    this._invalidatedLayers.push(...layers);
+    layers.forEach(
+      (layer) => (this.getCanvasElementByLayer(layer).needRedraw = true)
+    );
+  }
+
+  private getCanvasElementByLayer(layer: Layer) {
+    return this[Layer[layer] as keyof Layers] as GraphCanvasElement;
+  }
+
+  public invalidateAll() {
+    this.invalidateLayers(...ALL_LAYERS);
+  }
+
+  public isOneInvalidated(...layers: Layer[]) {
+    return layers.some((layer) => this._invalidatedLayers.includes(layer));
+  }
+
+  public reset() {
+    this.loopOverAll().forEach((canvas) => (canvas.needRedraw = false));
+    this._invalidatedLayers = [];
+  }
+
+  public clearAll(width: number, height: number, force = false) {
+    this.loopOverAll()
+      .filter(({ layer }) => this._invalidatedLayers.includes(layer) || force)
+      .forEach((canvas) => canvas.clearRect(0, 0, width, height));
   }
 
   private loopOverAll() {

@@ -5,7 +5,8 @@ import NodeService from '../node.service';
 import PinService from '../pin.service';
 import Service from '../service';
 import FpsCounter from './fps-counter';
-import Layers from './layers';
+import GraphCanvasElement from './graph-canvas-element';
+import Layers, { Layer } from './layers';
 
 export default class RenderService extends Service {
   public readonly targetElement: HTMLElement;
@@ -53,8 +54,10 @@ export default class RenderService extends Service {
       const mouseDeltaY = this.oldMouseY - this._camera.mouseY;
 
       if (this.mouseHeld && event.buttons === 4) {
+        this.layers.invalidateAll();
         this._camera.move(mouseDeltaX, mouseDeltaY);
       } else if (this.targetNode) {
+        this.layers.invalidateLayers(Layer.NODE, Layer.LINK);
         this.targetNode.move(event, -mouseDeltaX, -mouseDeltaY);
       }
       this.oldMouseX = this._camera.mouseX;
@@ -64,6 +67,7 @@ export default class RenderService extends Service {
       this.mouseHeld = false;
       this.targetNode = undefined;
       this._pinService.selectedPin = undefined;
+      this.layers.invalidateAll();
     });
     this.layers.HUD.nativeElement.addEventListener(
       'mousemove',
@@ -77,6 +81,7 @@ export default class RenderService extends Service {
         this._nodeService.selectNode(this.targetNode.node);
         this.targetNode.mousedown(event, localX, localY);
       } else {
+        this.layers.invalidateAll();
         this.mouseHeld = true;
         if (event.button === MouseButton.WHEEL) {
           document.body.style.cursor = 'crosshair';
@@ -109,6 +114,7 @@ export default class RenderService extends Service {
   }
 
   resize = () => {
+    this.layers.invalidateAll();
     this.layers.resizeAll(window.innerWidth, window.innerHeight);
     this.bounds = this.layers.HUD.getBoundingClientRect();
     this._camera.width = this.bounds.width;
@@ -122,15 +128,21 @@ export default class RenderService extends Service {
         this._camera.y
       }, fps : ${this._fpsCounter.fixedFps()}`
     );
+
     this.layers.clearAll(this.bounds.width, this.bounds.height);
 
-    this.drawBackgroundGraph(this.layers.BACKGROUND.context);
+    if (this._pinService.isCreatingLink) {
+      this.layers.invalidateLayers(Layer.LINK);
+    }
+    this.drawBackgroundGraph(this.layers.BACKGROUND);
 
     this._nodeService.nodes.forEach((node) => {
       node.graphNode.draw(this, this._camera);
     });
 
     this._pinService.draw(this._camera.mouseX, this._camera.mouseY);
+
+    this.layers.reset();
 
     requestAnimationFrame(this.draw);
   };
@@ -160,8 +172,11 @@ export default class RenderService extends Service {
     }
   };
 
-  private drawBackgroundGraph(context: CanvasRenderingContext2D): void {
+  private drawBackgroundGraph(graphCanvas: GraphCanvasElement): void {
+    if (!graphCanvas.needRedraw) return;
+    const { context } = graphCanvas;
     context.canvas.style.background = 'rgb(48, 48, 48)';
+
     context.fillStyle = 'rgba(220, 220, 220, 0.2)';
     for (
       let startX = roundUp(this._camera.x);

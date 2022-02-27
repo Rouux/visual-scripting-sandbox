@@ -26,6 +26,7 @@ pinService.init();
 renderService.init();
 executionService.init();
 
+renderService.layers.invalidateAll();
 requestAnimationFrame(renderService.draw);
 
 // --- Tests --- //

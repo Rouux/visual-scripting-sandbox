@@ -1,3 +1,5 @@
+import { Layer } from './render/layers';
+import RenderService from './render/render.service';
 import Service from './service';
 
 export default class CameraService extends Service {
@@ -15,7 +17,7 @@ export default class CameraService extends Service {
     this.y = y;
   }
 
-  move(deltaX: number, deltaY: number): boolean {
+  public move(deltaX: number, deltaY: number): boolean {
     this.x += deltaX;
     this.y += deltaY;
     return deltaX !== 0 && deltaY !== 0;

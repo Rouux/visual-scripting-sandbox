@@ -2,8 +2,10 @@ import { Layer } from './layers';
 
 export default class GraphCanvasElement {
   public readonly layer: Layer;
+
   private readonly _context: CanvasRenderingContext2D;
   private readonly _canvas: HTMLCanvasElement;
+  private _needRedraw: boolean;
 
   public constructor(layer: Layer) {
     this.layer = layer;
@@ -36,6 +38,14 @@ export default class GraphCanvasElement {
 
   public set height(height: number) {
     this._canvas.height = height;
+  }
+
+  public get needRedraw() {
+    return this._needRedraw;
+  }
+
+  public set needRedraw(redraw: boolean) {
+    this._needRedraw = redraw;
   }
 
   public getBoundingClientRect(): DOMRect {

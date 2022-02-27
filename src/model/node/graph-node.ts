@@ -76,7 +76,7 @@ export default class GraphNode {
     }
   }
 
-  move(event: MouseEvent, deltaX: number, deltaY: number): boolean {
+  public move(event: MouseEvent, deltaX: number, deltaY: number): boolean {
     if (!this._canBeDragged) return false;
     this.x += deltaX;
     this.y += deltaY;
@@ -110,9 +110,10 @@ export default class GraphNode {
   }
 
   draw(renderService: RenderService, camera: CameraService): void {
+    if (!renderService.layers.NODE.needRedraw) return;
+    const nodeLayerContext = renderService.layers.NODE.context;
     const localX = this.x - camera.x;
     let localY = this.y - camera.y;
-    const nodeLayerContext = renderService.layers.NODE.context;
     this.drawHeader(nodeLayerContext, localX, localY);
     this.drawName(nodeLayerContext, localX, localY);
     this.drawBack(nodeLayerContext, localX, localY);
