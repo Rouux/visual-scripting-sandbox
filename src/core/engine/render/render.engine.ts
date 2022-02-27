@@ -1,9 +1,10 @@
 import { GraphNode } from '../../../model/node/graph-node';
-import { MouseButton, roundUp } from '../../../utils/utils';
+import { roundUp } from '../../../utils/utils';
 import { CameraService } from '../../service/camera.service';
 import { NodeService } from '../../service/node.service';
 import { PinService } from '../../service/pin.service';
 import { Service } from '../../service/service';
+import { LogicEngine } from '../logic/logic.engine';
 import { FpsCounter } from './fps-counter';
 import { GraphCanvasElement } from './graph-canvas-element';
 import { Layer, Layers } from './layers';
@@ -13,11 +14,9 @@ export class RenderEngine {
   public readonly layers: Layers;
   public bounds: DOMRect;
   public targetNode: GraphNode;
-  public mouseHeld: boolean;
-  public oldMouseX: number;
-  public oldMouseY: number;
   public drawCalls: number;
 
+  private _logicEngine: LogicEngine;
   private _camera: CameraService;
   private _nodeService: NodeService;
   private _pinService: PinService;
@@ -27,89 +26,16 @@ export class RenderEngine {
   constructor(targetElement: HTMLElement) {
     this.targetElement = targetElement;
     this.layers = new Layers(targetElement);
-    this.mouseHeld = false;
-    this.oldMouseX = 0;
-    this.oldMouseY = 0;
     this.drawCalls = 0;
     this._fpsCounter = new FpsCounter();
   }
 
   init() {
+    this._logicEngine = window._rvs.engine.logicEngine;
     this._camera = Service.retrieve(CameraService);
     this._nodeService = Service.retrieve(NodeService);
     this._pinService = Service.retrieve(PinService);
-    this.initListeners();
     this.resize();
-  }
-
-  private initListeners() {
-    window.addEventListener('load', this.resize);
-    window.addEventListener('resize', this.resize);
-    window.addEventListener('focusout', () => (this.mouseHeld = false));
-    window.addEventListener('mousemove', (event) => {
-      this._camera.mouseX = event.clientX - this.bounds.left;
-      this._camera.mouseY = event.clientY - this.bounds.top;
-      const mouseDeltaX = this.oldMouseX - this._camera.mouseX;
-      const mouseDeltaY = this.oldMouseY - this._camera.mouseY;
-
-      if (this.mouseHeld && event.buttons === 4) {
-        this.layers.invalidateAll();
-        this._camera.move(mouseDeltaX, mouseDeltaY);
-      } else if (this.targetNode) {
-        this.layers.invalidateLayers(Layer.NODE, Layer.LINK);
-        this.targetNode.move(event, -mouseDeltaX, -mouseDeltaY);
-      }
-      this.oldMouseX = this._camera.mouseX;
-      this.oldMouseY = this._camera.mouseY;
-    });
-    window.addEventListener('mouseup', () => {
-      this.mouseHeld = false;
-      this.targetNode = undefined;
-      this._pinService.selectedPin = undefined;
-      this.layers.invalidateAll();
-    });
-    this.layers.HUD.nativeElement.addEventListener(
-      'mousemove',
-      this.updateCursorStyleOnNodeHover
-    );
-    this.layers.HUD.nativeElement.addEventListener('mousedown', (event) => {
-      const localX = event.offsetX + this._camera.x;
-      const localY = event.offsetY + this._camera.y;
-      this.targetNode = this._nodeService.getGraphNodeAt(localX, localY);
-      if (this.targetNode) {
-        this._nodeService.selectNode(this.targetNode.node);
-        this.targetNode.mousedown(event, localX, localY);
-      } else {
-        this.layers.invalidateAll();
-        this.mouseHeld = true;
-        if (event.button === MouseButton.WHEEL) {
-          document.body.style.cursor = 'crosshair';
-        }
-      }
-    });
-    this.layers.HUD.nativeElement.addEventListener('dblclick', (event) => {
-      const localX = event.offsetX + this._camera.x;
-      const localY = event.offsetY + this._camera.y;
-      const targetNode = this._nodeService.getGraphNodeAt(localX, localY);
-      if (targetNode) {
-        targetNode.dblclick(event, localX, localY);
-      }
-    });
-    this.layers.HUD.nativeElement.addEventListener('contextmenu', (event) =>
-      event.preventDefault()
-    );
-    this.layers.HUD.nativeElement.addEventListener('mouseup', (event) => {
-      const localX = event.offsetX + this._camera.x;
-      const localY = event.offsetY + this._camera.y;
-      const targetNode = this._nodeService.getGraphNodeAt(localX, localY);
-      if (targetNode) {
-        targetNode.mouseup(event, localX, localY);
-      }
-    });
-    this.layers.HUD.nativeElement.addEventListener(
-      'focusout',
-      () => (this.mouseHeld = false)
-    );
   }
 
   resize = () => {
@@ -160,13 +86,13 @@ export class RenderEngine {
     return this._debugElement;
   }
 
-  private updateCursorStyleOnNodeHover = (event: MouseEvent) => {
+  public updateCursorStyleOnNodeHover = (event: MouseEvent) => {
     const x = event.offsetX + this._camera.x;
     const y = event.offsetY + this._camera.y;
     const targetNode = this._nodeService.getGraphNodeAt(x, y);
     if (targetNode) {
       targetNode.mouseHover(event, x, y);
-    } else if (!this.mouseHeld) {
+    } else if (!this._logicEngine.mouseHeld) {
       document.body.style.cursor = 'default';
     }
   };

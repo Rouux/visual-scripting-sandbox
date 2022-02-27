@@ -42,7 +42,7 @@ export abstract class DataGraphPin extends GraphPin {
       event.offsetX + PIN_SIZE,
       event.offsetY - PIN_SIZE
     );
-    document.getElementById('visual-scripting').appendChild(inputHtml);
+    window._rvs.target.appendChild(inputHtml);
     event.preventDefault();
     inputHtml.focus();
     const destroyEditingInput = () => {
@@ -67,7 +67,7 @@ export abstract class DataGraphPin extends GraphPin {
       this.x + PIN_SIZE + 2,
       this.y - 2
     );
-    document.getElementById('visual-scripting').appendChild(spanElement);
+    window._rvs.target.appendChild(spanElement);
     const canvas = this._renderEngine.layers.HUD.nativeElement;
     const destroyTooltip = (event?: MouseEvent) => {
       if (event && this.inBounds(event.offsetX, event.offsetY)) return;

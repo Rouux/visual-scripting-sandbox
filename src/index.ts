@@ -1,3 +1,4 @@
+import { LogicEngine } from './core/engine/logic/logic.engine';
 import { RenderEngine } from './core/engine/render/render.engine';
 import { CameraService } from './core/service/camera.service';
 import { ExecutionService } from './core/service/execution.service';
@@ -10,14 +11,17 @@ import { NodeLibrary } from './library/node-library';
 import { SystemLibrary } from './library/system-library';
 import { VariableLibrary } from './library/variable-library';
 
-const main = (target: string) => {
+const main = (targetId: string) => {
+  const target = document.getElementById(targetId);
   window._rvs = {
+    target,
     engine: {
-      renderEngine: new RenderEngine(document.getElementById(target))
+      renderEngine: new RenderEngine(target),
+      logicEngine: new LogicEngine()
     }
   };
 
-  const { renderEngine } = window._rvs.engine;
+  const { renderEngine, logicEngine } = window._rvs.engine;
 
   Service.provide(new NotificationService());
   Service.provide(
@@ -28,6 +32,7 @@ const main = (target: string) => {
   const executionService = Service.provide(new ExecutionService());
 
   pinService.init();
+  logicEngine.init();
   renderEngine.init();
   executionService.init();
 
