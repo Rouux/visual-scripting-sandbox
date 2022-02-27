@@ -1,4 +1,4 @@
-import RenderService from '../../../service/render/render.service';
+import RenderEngine from '../../../core/engine/render/render.engine';
 import GraphPin, { PIN_COLOR, PIN_SIZE } from '../graph-pin';
 import DataPin from './data-pin';
 
@@ -21,8 +21,8 @@ export default abstract class DataGraphPin extends GraphPin {
     return this.destroyTooltip !== undefined;
   }
 
-  public draw(renderService: RenderService, localX: number, localY: number) {
-    const { context } = renderService.layers.NODE;
+  public draw(renderEngine: RenderEngine, localX: number, localY: number) {
+    const { context } = renderEngine.layers.NODE;
     context.fillStyle = PIN_COLOR[this.pin.type];
     super.updateBounds(localX, localY);
     const halfPinSize = PIN_SIZE / 2;
@@ -68,7 +68,7 @@ export default abstract class DataGraphPin extends GraphPin {
       this.y - 2
     );
     document.getElementById('visual-scripting').appendChild(spanElement);
-    const canvas = this.renderService.layers.HUD.nativeElement;
+    const canvas = this._renderEngine.layers.HUD.nativeElement;
     const destroyTooltip = (event?: MouseEvent) => {
       if (event && this.inBounds(event.offsetX, event.offsetY)) return;
       canvas.removeEventListener('mousemove', destroyTooltip);

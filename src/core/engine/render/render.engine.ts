@@ -1,14 +1,14 @@
-import GraphNode from '../../model/node/graph-node';
-import { MouseButton, roundUp } from '../../utils/utils';
-import CameraService from '../camera.service';
-import NodeService from '../node.service';
-import PinService from '../pin.service';
-import Service from '../service';
+import GraphNode from '../../../model/node/graph-node';
+import CameraService from '../../../service/camera.service';
+import NodeService from '../../../service/node.service';
+import PinService from '../../../service/pin.service';
+import Service from '../../../service/service';
+import { MouseButton, roundUp } from '../../../utils/utils';
 import FpsCounter from './fps-counter';
 import GraphCanvasElement from './graph-canvas-element';
 import Layers, { Layer } from './layers';
 
-export default class RenderService extends Service {
+export default class RenderEngine {
   public readonly targetElement: HTMLElement;
   public readonly layers: Layers;
   public bounds: DOMRect;
@@ -25,7 +25,6 @@ export default class RenderService extends Service {
   private _fpsCounter: FpsCounter;
 
   constructor(targetElement: HTMLElement) {
-    super();
     this.targetElement = targetElement;
     this.layers = new Layers(targetElement);
     this.mouseHeld = false;

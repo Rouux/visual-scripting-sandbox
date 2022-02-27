@@ -1,5 +1,4 @@
-import RenderService from '../../service/render/render.service';
-import Service from '../../service/service';
+import RenderEngine from '../../core/engine/render/render.engine';
 import Pin, { AvailableType } from './pin';
 
 export const PIN_SIZE = 20;
@@ -12,12 +11,12 @@ export const PIN_COLOR: Record<keyof AvailableType, string> = {
 };
 
 export default abstract class GraphPin {
-  public renderService: RenderService;
   protected bounds: DOMRect;
+  protected _renderEngine: RenderEngine;
   protected _pin: Pin;
 
   constructor(pin: Pin) {
-    this.renderService = Service.retrieve(RenderService);
+    this._renderEngine = window._rvs.engine.renderEngine;
     this._pin = pin;
   }
 
@@ -52,7 +51,7 @@ export default abstract class GraphPin {
   }
 
   public abstract draw(
-    renderService: RenderService,
+    renderEngine: RenderEngine,
     localX: number,
     localY: number
   ): void;

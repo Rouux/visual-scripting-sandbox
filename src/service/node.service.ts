@@ -1,14 +1,8 @@
-import Service from './service';
 import Node from '../model/node/node';
-import RenderService from './render/render.service';
+import Service from './service';
 
 export default class NodeService extends Service {
   private readonly _nodes: Node[] = [];
-  public renderService: RenderService;
-
-  public init() {
-    this.renderService = Service.retrieve(RenderService);
-  }
 
   public get nodes(): Node[] {
     return [...this._nodes];

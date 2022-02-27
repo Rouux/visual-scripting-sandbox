@@ -1,3 +1,4 @@
+import RenderEngine from './core/engine/render/render.engine';
 import MathLibrary from './library/math-library';
 import NodeLibrary from './library/node-library';
 import SystemLibrary from './library/system-library';
@@ -7,29 +8,36 @@ import ExecutionService from './service/execution.service';
 import NodeService from './service/node.service';
 import NotificationService from './service/notification/notification.service';
 import PinService from './service/pin.service';
-import RenderService from './service/render/render.service';
 import Service from './service/service';
 
-const renderService = Service.provide(
-  new RenderService(document.getElementById('visual-scripting'))
-);
-Service.provide(new NotificationService());
-Service.provide(
-  new CameraService(-window.innerWidth / 2, -window.innerHeight / 2)
-);
-const nodeService = Service.provide(new NodeService());
-const pinService = Service.provide(new PinService());
-const executionService = Service.provide(new ExecutionService());
+const main = (target: string) => {
+  window._rvs = {
+    engine: {
+      renderEngine: new RenderEngine(document.getElementById(target))
+    }
+  };
 
-nodeService.init();
-pinService.init();
-renderService.init();
-executionService.init();
+  const { renderEngine } = window._rvs.engine;
 
-renderService.layers.invalidateAll();
-requestAnimationFrame(renderService.draw);
+  Service.provide(new NotificationService());
+  Service.provide(
+    new CameraService(-window.innerWidth / 2, -window.innerHeight / 2)
+  );
+  Service.provide(new NodeService());
+  const pinService = Service.provide(new PinService());
+  const executionService = Service.provide(new ExecutionService());
+
+  pinService.init();
+  renderEngine.init();
+  executionService.init();
+
+  renderEngine.layers.invalidateAll();
+  requestAnimationFrame(renderEngine.draw);
+};
 
 // --- Tests --- //
+
+main('visual-scripting');
 
 NodeLibrary.loadLibrary(
   document.getElementById('node-library') as HTMLDivElement,
@@ -39,5 +47,5 @@ NodeLibrary.loadLibrary(
 );
 
 document.getElementById('btn-start').addEventListener('click', () => {
-  executionService.start();
+  Service.retrieve(ExecutionService).start();
 });

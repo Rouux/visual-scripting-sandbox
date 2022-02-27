@@ -1,19 +1,18 @@
+import RenderEngine from '../core/engine/render/render.engine';
 import { PIN_SIZE } from '../model/pin/graph-pin';
 import Pin from '../model/pin/pin';
-import { Layer } from './render/layers';
-import RenderService from './render/render.service';
 import Service from './service';
 
 export default class PinService extends Service {
   private _selectedPin: Pin;
-  public renderService: RenderService;
+  private _renderEngine: RenderEngine;
 
   public constructor() {
     super();
   }
 
   public init() {
-    this.renderService = Service.retrieve(RenderService);
+    this._renderEngine = window._rvs.engine.renderEngine;
   }
 
   public get isCreatingLink(): boolean {
@@ -29,8 +28,8 @@ export default class PinService extends Service {
   }
 
   public draw = (mouseX: number, mouseY: number) => {
-    if (this.isCreatingLink && this.renderService.layers.LINK.needRedraw) {
-      const { context } = this.renderService.layers.LINK;
+    if (this.isCreatingLink && this._renderEngine.layers.LINK.needRedraw) {
+      const { context } = this._renderEngine.layers.LINK;
       const offset = PIN_SIZE / 2;
       context.lineWidth = 5;
       context.strokeStyle = this.selectedPin.graphPin.color;

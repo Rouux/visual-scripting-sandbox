@@ -21,6 +21,7 @@ export default class GraphCanvasElement {
   }
 
   public get context() {
+    this.needRedraw = true;
     return this._context;
   }
 

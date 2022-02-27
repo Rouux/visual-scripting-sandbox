@@ -1,7 +1,5 @@
+import RenderEngine from '../../core/engine/render/render.engine';
 import CameraService from '../../service/camera.service';
-import PinService from '../../service/pin.service';
-import RenderService from '../../service/render/render.service';
-import Service from '../../service/service';
 import DataGraphPin from '../pin/data-pin/data-graph-pin';
 import GraphPin, { PIN_SIZE } from '../pin/graph-pin';
 import Node from './node';
@@ -9,18 +7,14 @@ import Node from './node';
 export const HEADER_MARGIN = 25;
 
 export default class GraphNode {
-  public renderService: RenderService;
-  public pinService: PinService;
-
   public node: Node;
   public x: number;
   public y: number;
-
+  protected _renderEngine: RenderEngine;
   private _canBeDragged: boolean;
 
   constructor(node: Node, x = 0, y = 0) {
-    this.renderService = Service.retrieve(RenderService);
-    this.pinService = Service.retrieve(PinService);
+    this._renderEngine = window._rvs.engine.renderEngine;
     this.node = node;
     this.x = x;
     this.y = y;
@@ -109,9 +103,9 @@ export default class GraphNode {
     return this._inHeaderBounds(x, y) || this._inBodyBounds(x, y);
   }
 
-  draw(renderService: RenderService, camera: CameraService): void {
-    if (!renderService.layers.NODE.needRedraw) return;
-    const nodeLayerContext = renderService.layers.NODE.context;
+  draw(renderEngine: RenderEngine, camera: CameraService): void {
+    if (!renderEngine.layers.NODE.needRedraw) return;
+    const nodeLayerContext = renderEngine.layers.NODE.context;
     const localX = this.x - camera.x;
     let localY = this.y - camera.y;
     this.drawHeader(nodeLayerContext, localX, localY);
@@ -119,19 +113,19 @@ export default class GraphNode {
     this.drawBack(nodeLayerContext, localX, localY);
 
     localY += HEADER_MARGIN + 5;
-    this.drawInputs(renderService, localX, localY);
-    this.drawOutputs(renderService, localX, localY);
+    this.drawInputs(renderEngine, localX, localY);
+    this.drawOutputs(renderEngine, localX, localY);
   }
 
   private drawInputs(
-    renderService: RenderService,
+    renderEngine: RenderEngine,
     localX: number,
     localY: number
   ) {
     let index = 0;
     this.node.executionInputs.forEach((input) => {
       input.graphPin.draw(
-        renderService,
+        renderEngine,
         localX + 5,
         localY + index * (PIN_SIZE + 3)
       );
@@ -139,7 +133,7 @@ export default class GraphNode {
     });
     this.node.dataInputs.forEach((input) => {
       input.graphPin.draw(
-        renderService,
+        renderEngine,
         localX + 5,
         localY + index * (PIN_SIZE + 3)
       );
@@ -148,14 +142,14 @@ export default class GraphNode {
   }
 
   private drawOutputs(
-    renderService: RenderService,
+    renderEngine: RenderEngine,
     localX: number,
     localY: number
   ) {
     let index = 0;
     this.node.executionOutputs.forEach((output) => {
       output.graphPin.draw(
-        renderService,
+        renderEngine,
         localX + this.width - PIN_SIZE - 5,
         localY + index * (PIN_SIZE + 3)
       );
@@ -163,7 +157,7 @@ export default class GraphNode {
     });
     this.node.dataOutputs.forEach((output) => {
       output.graphPin.draw(
-        renderService,
+        renderEngine,
         localX + this.width - PIN_SIZE - 5,
         localY + index * (PIN_SIZE + 3)
       );

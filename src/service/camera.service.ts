@@ -1,5 +1,3 @@
-import { Layer } from './render/layers';
-import RenderService from './render/render.service';
 import Service from './service';
 
 export default class CameraService extends Service {
