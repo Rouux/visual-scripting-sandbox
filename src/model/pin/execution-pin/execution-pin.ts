@@ -1,9 +1,9 @@
-import Pin, { IPin } from '../pin';
+import { IPin, Pin } from '../pin';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IExecutionPin extends IPin {}
 
-export default abstract class ExecutionPin extends Pin {
+export abstract class ExecutionPin extends Pin {
   protected _linkedPin: ExecutionPin;
 
   public constructor(name: string) {

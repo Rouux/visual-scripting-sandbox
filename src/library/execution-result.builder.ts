@@ -10,7 +10,7 @@ export function isExecutionResult(object: unknown): object is IExecutionResult {
   );
 }
 
-export default class ExecutionResultBuilder {
+export class ExecutionResultBuilder {
   private _executionResult: IExecutionResult;
 
   private constructor() {

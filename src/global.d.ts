@@ -1,4 +1,4 @@
-import RenderEngine from './core/engine/render/render.engine';
+import { RenderEngine } from './core/engine/render/render.engine';
 
 declare global {
   interface Window {

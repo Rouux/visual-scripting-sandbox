@@ -1,5 +1,5 @@
-import RenderEngine from '../../core/engine/render/render.engine';
-import Pin, { AvailableType } from './pin';
+import { RenderEngine } from '../../core/engine/render/render.engine';
+import { AvailableType, Pin } from './pin';
 
 export const PIN_SIZE = 20;
 
@@ -10,7 +10,7 @@ export const PIN_COLOR: Record<keyof AvailableType, string> = {
   any: 'white'
 };
 
-export default abstract class GraphPin {
+export abstract class GraphPin {
   protected bounds: DOMRect;
   protected _renderEngine: RenderEngine;
   protected _pin: Pin;

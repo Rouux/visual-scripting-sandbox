@@ -1,9 +1,9 @@
-import RenderEngine from '../../../../core/engine/render/render.engine';
+import { RenderEngine } from '../../../../core/engine/render/render.engine';
 import { PIN_SIZE } from '../../graph-pin';
-import ExecutionGraphPin from '../execution-graph-pin';
-import ExecutionOutputPin from '../output/execution-output-pin';
+import { ExecutionGraphPin } from '../execution-graph-pin';
+import { ExecutionOutputPin } from '../output/execution-output-pin';
 
-export default class ExecutionInputGraphPin extends ExecutionGraphPin {
+export class ExecutionInputGraphPin extends ExecutionGraphPin {
   public get pin(): ExecutionOutputPin {
     return this._pin as ExecutionOutputPin;
   }

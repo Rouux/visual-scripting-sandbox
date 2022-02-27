@@ -1,4 +1,4 @@
-export default abstract class Entity {
+export abstract class Entity {
   private static _nextId = 0;
 
   public readonly id: number;

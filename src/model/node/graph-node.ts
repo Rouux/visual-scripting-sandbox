@@ -1,12 +1,12 @@
-import RenderEngine from '../../core/engine/render/render.engine';
-import CameraService from '../../core/service/camera.service';
-import DataGraphPin from '../pin/data-pin/data-graph-pin';
-import GraphPin, { PIN_SIZE } from '../pin/graph-pin';
-import Node from './node';
+import { RenderEngine } from '../../core/engine/render/render.engine';
+import { CameraService } from '../../core/service/camera.service';
+import { DataGraphPin } from '../pin/data-pin/data-graph-pin';
+import { GraphPin, PIN_SIZE } from '../pin/graph-pin';
+import { Node } from './node';
 
 export const HEADER_MARGIN = 25;
 
-export default class GraphNode {
+export class GraphNode {
   public node: Node;
   public x: number;
   public y: number;

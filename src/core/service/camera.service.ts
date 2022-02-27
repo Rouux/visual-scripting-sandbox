@@ -1,6 +1,6 @@
-import Service from './service';
+import { Service } from './service';
 
-export default class CameraService extends Service {
+export class CameraService extends Service {
   public x: number;
   public y: number;
   public width: number;

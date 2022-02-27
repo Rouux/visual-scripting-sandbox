@@ -6,7 +6,7 @@ export interface INotification {
 
 export type NotificationOptions = Omit<INotification, 'level'>;
 
-export default class Notification implements INotification {
+export class Notification implements INotification {
   private static _nextId = 0;
 
   public readonly id: number;

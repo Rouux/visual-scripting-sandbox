@@ -1,8 +1,8 @@
-import RenderEngine from '../../../core/engine/render/render.engine';
-import GraphPin, { PIN_COLOR, PIN_SIZE } from '../graph-pin';
-import DataPin from './data-pin';
+import { RenderEngine } from '../../../core/engine/render/render.engine';
+import { GraphPin, PIN_COLOR, PIN_SIZE } from '../graph-pin';
+import { DataPin } from './data-pin';
 
-export default abstract class DataGraphPin extends GraphPin {
+export abstract class DataGraphPin extends GraphPin {
   private _isEditing: boolean;
   public destroyTooltip: (event?: MouseEvent) => void;
 

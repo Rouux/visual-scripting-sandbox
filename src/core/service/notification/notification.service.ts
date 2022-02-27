@@ -1,5 +1,6 @@
-import Service from '../service';
-import Notification, {
+import { Service } from '../service';
+import {
+  Notification,
   NotificationLevel,
   NotificationOptions,
   NOTIFICATION_COLOR_PER_LEVEL
@@ -9,7 +10,7 @@ export type INotificationService = {
   maxOpened?: number;
 };
 
-export default class NotificationService
+export class NotificationService
   extends Service
   implements INotificationService
 {

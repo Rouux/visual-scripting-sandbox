@@ -1,4 +1,4 @@
-import Decorators, { IDecorators } from '../decorators/decorators';
+import { Decorators, IDecorators } from '../decorators/decorators';
 
 export function getDecorators<T>(library: T, property: keyof T): IDecorators {
   const decorators = new Decorators();

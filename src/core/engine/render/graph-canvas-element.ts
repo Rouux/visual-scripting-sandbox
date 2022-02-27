@@ -1,6 +1,6 @@
 import { Layer } from './layers';
 
-export default class GraphCanvasElement {
+export class GraphCanvasElement {
   public readonly layer: Layer;
 
   private readonly _context: CanvasRenderingContext2D;

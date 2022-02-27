@@ -1,22 +1,22 @@
 import { IExecutionResult } from '../../library/execution-result.builder';
-import Entity from '../entity';
-import DataInputPin from '../pin/data-pin/input/data-input-pin';
-import DataInputPinArray from '../pin/data-pin/input/data-input-pin-array';
-import DataOutputPin from '../pin/data-pin/output/data-output-pin';
-import DataOutputPinArray from '../pin/data-pin/output/data-output-pin-array';
-import ExecutionInputPin from '../pin/execution-pin/input/execution-input-pin';
-import ExecutionInputPinArray from '../pin/execution-pin/input/execution-input-pin-array';
-import ExecutionOutputPin from '../pin/execution-pin/output/execution-output-pin';
-import ExecutionOutputPinArray from '../pin/execution-pin/output/execution-output-pin-array';
-import Pin from '../pin/pin';
-import GraphNode from './graph-node';
+import { Entity } from '../entity';
+import { DataInputPin } from '../pin/data-pin/input/data-input-pin';
+import { DataInputPinArray } from '../pin/data-pin/input/data-input-pin-array';
+import { DataOutputPin } from '../pin/data-pin/output/data-output-pin';
+import { DataOutputPinArray } from '../pin/data-pin/output/data-output-pin-array';
+import { ExecutionInputPin } from '../pin/execution-pin/input/execution-input-pin';
+import { ExecutionInputPinArray } from '../pin/execution-pin/input/execution-input-pin-array';
+import { ExecutionOutputPin } from '../pin/execution-pin/output/execution-output-pin';
+import { ExecutionOutputPinArray } from '../pin/execution-pin/output/execution-output-pin-array';
+import { Pin } from '../pin/pin';
+import { GraphNode } from './graph-node';
 
 export const HEADER_MARGIN = 25;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type NodeCallback = (...args: any[]) => any;
 
-export default class Node extends Entity {
+export class Node extends Entity {
   public name: string;
   public graphNode: GraphNode;
 

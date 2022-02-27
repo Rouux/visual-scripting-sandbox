@@ -1,6 +1,6 @@
-import DataInputPin from './data-input-pin';
+import { DataInputPin } from './data-input-pin';
 
-export default class DataInputPinArray extends Array<DataInputPin> {
+export class DataInputPinArray extends Array<DataInputPin> {
   public getValues(): unknown[] {
     return this.map((input) => input.value);
   }

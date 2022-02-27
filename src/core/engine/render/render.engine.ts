@@ -1,14 +1,14 @@
-import GraphNode from '../../../model/node/graph-node';
+import { GraphNode } from '../../../model/node/graph-node';
 import { MouseButton, roundUp } from '../../../utils/utils';
-import CameraService from '../../service/camera.service';
-import NodeService from '../../service/node.service';
-import PinService from '../../service/pin.service';
-import Service from '../../service/service';
-import FpsCounter from './fps-counter';
-import GraphCanvasElement from './graph-canvas-element';
-import Layers, { Layer } from './layers';
+import { CameraService } from '../../service/camera.service';
+import { NodeService } from '../../service/node.service';
+import { PinService } from '../../service/pin.service';
+import { Service } from '../../service/service';
+import { FpsCounter } from './fps-counter';
+import { GraphCanvasElement } from './graph-canvas-element';
+import { Layer, Layers } from './layers';
 
-export default class RenderEngine {
+export class RenderEngine {
   public readonly targetElement: HTMLElement;
   public readonly layers: Layers;
   public bounds: DOMRect;

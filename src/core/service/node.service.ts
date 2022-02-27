@@ -1,7 +1,7 @@
-import Node from '../../model/node/node';
-import Service from './service';
+import { Node } from '../../model/node/node';
+import { Service } from './service';
 
-export default class NodeService extends Service {
+export class NodeService extends Service {
   private readonly _nodes: Node[] = [];
 
   public get nodes(): Node[] {

@@ -1,6 +1,6 @@
-import DataOutputPin from './data-output-pin';
+import { DataOutputPin } from './data-output-pin';
 
-export default class DataOutputPinArray extends Array<DataOutputPin> {
+export class DataOutputPinArray extends Array<DataOutputPin> {
   public assignValuesByOutputName(source: { [key: string]: unknown }): void {
     this.forEach((output) => (output.value = source[output.name]));
   }

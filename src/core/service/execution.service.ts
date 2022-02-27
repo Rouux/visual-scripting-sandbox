@@ -1,9 +1,9 @@
-import Node from '../../model/node/node';
-import ExecutionOutputPin from '../../model/pin/execution-pin/output/execution-output-pin';
-import NodeService from './node.service';
-import Service from './service';
+import { Node } from '../../model/node/node';
+import { ExecutionOutputPin } from '../../model/pin/execution-pin/output/execution-output-pin';
+import { NodeService } from './node.service';
+import { Service } from './service';
 
-export default class ExecutionService extends Service {
+export class ExecutionService extends Service {
   public startNode: Node;
 
   private _nodeService: NodeService;

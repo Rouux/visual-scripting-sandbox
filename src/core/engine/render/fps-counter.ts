@@ -1,4 +1,4 @@
-export default class FpsCounter {
+export class FpsCounter {
   private _frames: number;
   private _lastFpsUpdateTime: number;
   private _fps: number;

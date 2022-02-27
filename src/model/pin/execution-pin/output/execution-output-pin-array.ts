@@ -1,6 +1,6 @@
-import ExecutionOutputPin from './execution-output-pin';
+import { ExecutionOutputPin } from './execution-output-pin';
 
-export default class ExecutionOutputPinArray extends Array<ExecutionOutputPin> {
+export class ExecutionOutputPinArray extends Array<ExecutionOutputPin> {
   public findByName(name: string): ExecutionOutputPin | undefined {
     return this.find((output) => output.name === name);
   }

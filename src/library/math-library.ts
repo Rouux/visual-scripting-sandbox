@@ -1,8 +1,8 @@
 import 'reflect-metadata';
-import inputsDecorator from '../decorators/input/inputs.decorator';
-import outputsDecorator from '../decorators/output/outputs.decorator';
+import { inputsDecorator } from '../decorators/input/inputs.decorator';
+import { outputsDecorator } from '../decorators/output/outputs.decorator';
 
-export default class MathLibrary {
+export class MathLibrary {
   @inputsDecorator(
     { name: 'arg0', type: 'number', defaultValue: 0 },
     { name: 'arg1', type: 'number', defaultValue: 0 }

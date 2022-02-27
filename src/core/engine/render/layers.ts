@@ -1,4 +1,4 @@
-import GraphCanvasElement from './graph-canvas-element';
+import { GraphCanvasElement } from './graph-canvas-element';
 
 export enum Layer {
   BACKGROUND,
@@ -15,7 +15,7 @@ export type ILayers = {
   [key in LayerKey]: GraphCanvasElement;
 };
 
-export default class Layers implements ILayers {
+export class Layers implements ILayers {
   public readonly BACKGROUND: GraphCanvasElement;
   public readonly NODE: GraphCanvasElement;
   public readonly LINK: GraphCanvasElement;

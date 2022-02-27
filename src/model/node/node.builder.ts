@@ -3,18 +3,19 @@ import {
   ExecutionPinDecorator,
   IDecorators
 } from '../../decorators/decorators';
-import ExecutionResultBuilder, {
+import {
+  ExecutionResultBuilder,
   IExecutionResult,
   isExecutionResult
 } from '../../library/execution-result.builder';
 import { toArrayIfNeeded } from '../../utils/utils';
-import DataInputPin from '../pin/data-pin/input/data-input-pin';
-import DataOutputPin from '../pin/data-pin/output/data-output-pin';
-import ExecutionInputPin from '../pin/execution-pin/input/execution-input-pin';
-import ExecutionOutputPin from '../pin/execution-pin/output/execution-output-pin';
-import Node, { NodeCallback } from './node';
+import { DataInputPin } from '../pin/data-pin/input/data-input-pin';
+import { DataOutputPin } from '../pin/data-pin/output/data-output-pin';
+import { ExecutionInputPin } from '../pin/execution-pin/input/execution-input-pin';
+import { ExecutionOutputPin } from '../pin/execution-pin/output/execution-output-pin';
+import { Node, NodeCallback } from './node';
 
-export default class NodeBuilder {
+export class NodeBuilder {
   private _node: Node;
   private constructor(node: Node) {
     this._node = node;

@@ -1,8 +1,8 @@
-import RenderEngine from '../../../core/engine/render/render.engine';
-import GraphPin, { PIN_SIZE } from '../graph-pin';
-import ExecutionPin from './execution-pin';
+import { RenderEngine } from '../../../core/engine/render/render.engine';
+import { GraphPin, PIN_SIZE } from '../graph-pin';
+import { ExecutionPin } from './execution-pin';
 
-export default abstract class ExecutionGraphPin extends GraphPin {
+export abstract class ExecutionGraphPin extends GraphPin {
   public abstract get pin(): ExecutionPin;
 
   public draw(renderEngine: RenderEngine, localX: number, localY: number) {

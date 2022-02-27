@@ -1,11 +1,11 @@
-import NodeService from '../core/service/node.service';
-import Service from '../core/service/service';
+import { NodeService } from '../core/service/node.service';
+import { Service } from '../core/service/service';
 import { IDecorators } from '../decorators/decorators';
-import Node, { NodeCallback } from '../model/node/node';
-import NodeBuilder from '../model/node/node.builder';
+import { Node, NodeCallback } from '../model/node/node';
+import { NodeBuilder } from '../model/node/node.builder';
 import { getDecorators } from '../utils/decorator-utils';
 
-export default class NodeLibrary {
+export class NodeLibrary {
   private static LibraryMetadatas: [
     string,
     (...args: unknown[]) => unknown,

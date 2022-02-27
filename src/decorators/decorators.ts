@@ -18,7 +18,7 @@ export interface IDecorators {
   hash: () => string;
 }
 
-export default class Decorators implements IDecorators {
+export class Decorators implements IDecorators {
   public dataInputs: DataPinDecorator[];
   public dataOutputs: DataPinDecorator[];
   public executionOutputs: ExecutionPinDecorator[];

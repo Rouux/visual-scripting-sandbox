@@ -1,15 +1,16 @@
 /* eslint-disable no-console */
 import 'reflect-metadata';
-import executionInputsDecorator from '../decorators/input/execution-inputs.decorator';
-import inputsDecorator from '../decorators/input/inputs.decorator';
+import { executionInputsDecorator } from '../decorators/input/execution-inputs.decorator';
+import { inputsDecorator } from '../decorators/input/inputs.decorator';
 import { metadataDecorator } from '../decorators/metadata.decorator';
-import executionOutputsDecorator from '../decorators/output/execution-outputs.decorator';
-import outputsDecorator from '../decorators/output/outputs.decorator';
-import ExecutionResultBuilder, {
+import { executionOutputsDecorator } from '../decorators/output/execution-outputs.decorator';
+import { outputsDecorator } from '../decorators/output/outputs.decorator';
+import {
+  ExecutionResultBuilder,
   IExecutionResult
 } from './execution-result.builder';
 
-export default class SystemLibrary {
+export class SystemLibrary {
   @metadataDecorator({ nodeName: 'Print', needExecution: true })
   @inputsDecorator({ name: 'text', type: 'string', defaultValue: '' })
   @outputsDecorator({ name: 'text', type: 'string', defaultValue: '' })

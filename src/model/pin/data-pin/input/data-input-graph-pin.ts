@@ -1,9 +1,9 @@
-import RenderEngine from '../../../../core/engine/render/render.engine';
+import { RenderEngine } from '../../../../core/engine/render/render.engine';
 import { PIN_SIZE } from '../../graph-pin';
-import DataGraphPin from '../data-graph-pin';
-import DataInputPin from './data-input-pin';
+import { DataGraphPin } from '../data-graph-pin';
+import { DataInputPin } from './data-input-pin';
 
-export default class DataInputGraphPin extends DataGraphPin {
+export class DataInputGraphPin extends DataGraphPin {
   public get pin(): DataInputPin {
     return this._pin as DataInputPin;
   }

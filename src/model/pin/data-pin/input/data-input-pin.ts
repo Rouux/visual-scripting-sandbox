@@ -1,9 +1,9 @@
-import Pin, { AvailableType } from '../../pin';
-import DataPin from '../data-pin';
-import DataOutputPin from '../output/data-output-pin';
-import DataInputGraphPin from './data-input-graph-pin';
+import { AvailableType, Pin } from '../../pin';
+import { DataPin } from '../data-pin';
+import { DataOutputPin } from '../output/data-output-pin';
+import { DataInputGraphPin } from './data-input-graph-pin';
 
-export default class DataInputPin<
+export class DataInputPin<
   K extends keyof AvailableType = keyof AvailableType
 > extends DataPin<K> {
   private _linkedPin: DataOutputPin;
